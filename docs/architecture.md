@@ -100,7 +100,7 @@
 │ - 需求澄清 (brainstorming)                                                   │
 │ - 方案调研                                                                   │
 │ - 方案对比 (至少2-3个)                                                       │
-│ - 产出: specs/design-docs/NNN-title.md                                       │
+│ - 产出: docs/design-docs/NNN-title.md                                       │
 └─────────────────────────────────────────────────────────────────────────────┘
     │
     ▼
@@ -319,7 +319,7 @@ Phase 6-7: 按需加载 05-phase-6-7.md (5.2KB)
 需求输入
     │
     ▼
-specs/design-docs/NNN-title.md  (Phase 0.5)
+docs/design-docs/NNN-title.md  (Phase 0.5)
     │
     ▼
 specs/plans/PLAN-XXX.md         (Phase 1)
