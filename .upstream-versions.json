@@ -7,16 +7,18 @@
     "path": "skills/superpowers/"
   },
   "gstack": {
+    "repo": "https://github.com/garrytan/gstack",
     "path": "~/.claude/skills/gstack",
     "version": "1.39.0.0",
     "last_sync": "2026-05-15",
-    "skill_count":        8,
+    "skill_count":        47,
     "skill_path": "skills/gstack/"
   },
   "hybrid": {
     "description": "Superpowers + GStack 混合流程",
     "skill_count":        1,
-    "path": "skills/hybrid/"
+    "path": "skills/hybrid/",
+    "version": "v3.7"
   },
   "custom": {
     "description": "自定义扩展技能",

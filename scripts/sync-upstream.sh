@@ -214,7 +214,7 @@ sync_gstack() {
             local gstack_version=$(cat "$GSTACK_PATH/VERSION")
             log_info "当前 gstack 版本: $gstack_version"
         fi
-        local gs_count=$(find "$GSTACK_PATH" -name "SKILL.md" 2>/dev/null | wc -l)
+        local gs_count=$(find "$GSTACK_PATH" -maxdepth 2 -name "SKILL.md" 2>/dev/null | wc -l)
         log_info "上游 gstack 技能数量: $gs_count"
         local local_count=$(find "$PROJECT_ROOT/skills/gstack" -name "SKILL.md" 2>/dev/null | wc -l)
         log_info "本地 gstack 技能数量: $local_count"
@@ -224,49 +224,46 @@ sync_gstack() {
     # 创建目录
     mkdir -p "$PROJECT_ROOT/skills/gstack"
     
-    # 同步 gstack 技能到 skills/gstack/
-    log_info "复制 gstack 技能到 skills/gstack/..."
+    # 自动检测所有包含 SKILL.md 的技能目录
+    log_info "自动检测并复制 gstack 技能到 skills/gstack/..."
     
-    # 设计类技能
-    for skill in design design-consultation design-html design-review design-shotgun; do
-        if [[ -d "$GSTACK_PATH/$skill" ]]; then
+    # 获取上游所有包含 SKILL.md 的目录
+    local skills=()
+    while IFS= read -r -d '' dir; do
+        skill=$(basename "$dir")
+        skills+=("$skill")
+    done < <(find "$GSTACK_PATH" -maxdepth 1 -type d -name "*" ! -name ".*" -print0)
+    
+    # 手动检测（更可靠的方法）
+    cd "$GSTACK_PATH"
+    for skill in */; do
+        skill=${skill%/}  # 移除末尾的 /
+        if [[ -f "$GSTACK_PATH/$skill/SKILL.md" ]]; then
             log_info "  同步技能: $skill"
             rm -rf "$PROJECT_ROOT/skills/gstack/$skill"
             cp -r "$GSTACK_PATH/$skill" "$PROJECT_ROOT/skills/gstack/" 2>/dev/null || true
         fi
     done
     
-    # browse 技能
-    if [[ -d "$GSTACK_PATH/browse" ]]; then
-        log_info "  同步技能: gstack-browse"
+    # 特殊处理：browse 重命名为 gstack-browse
+    if [[ -d "$PROJECT_ROOT/skills/gstack/browse" ]]; then
+        log_info "  重命名: browse → gstack-browse"
         rm -rf "$PROJECT_ROOT/skills/gstack/gstack-browse"
-        mkdir -p "$PROJECT_ROOT/skills/gstack/gstack-browse"
-        cp -r "$GSTACK_PATH/browse/"* "$PROJECT_ROOT/skills/gstack/gstack-browse/" 2>/dev/null || true
-    fi
-    
-    # review 技能
-    if [[ -d "$GSTACK_PATH/review" ]]; then
-        log_info "  同步技能: review"
-        rm -rf "$PROJECT_ROOT/skills/gstack/review"
-        cp -r "$GSTACK_PATH/review" "$PROJECT_ROOT/skills/gstack/" 2>/dev/null || true
-    fi
-    
-    # qa 技能
-    if [[ -d "$GSTACK_PATH/qa" ]]; then
-        log_info "  同步技能: qa"
-        rm -rf "$PROJECT_ROOT/skills/gstack/qa"
-        cp -r "$GSTACK_PATH/qa" "$PROJECT_ROOT/skills/gstack/" 2>/dev/null || true
+        mv "$PROJECT_ROOT/skills/gstack/browse" "$PROJECT_ROOT/skills/gstack/gstack-browse"
     fi
     
     # 同步工具脚本
     log_info "复制 gstack 工具脚本..."
     mkdir -p "$PROJECT_ROOT/gstack-skills"
+    rm -rf "$PROJECT_ROOT/gstack-skills/bin"
     cp -r "$GSTACK_PATH/bin" "$PROJECT_ROOT/gstack-skills/" 2>/dev/null || true
     cp "$GSTACK_PATH/setup" "$PROJECT_ROOT/gstack-skills/" 2>/dev/null || true
     cp "$GSTACK_PATH/VERSION" "$PROJECT_ROOT/gstack-skills/" 2>/dev/null || true
     cp "$GSTACK_PATH/package.json" "$PROJECT_ROOT/gstack-skills/" 2>/dev/null || true
     
-    log_success "GStack 同步完成 (同步到 skills/gstack/)"
+    # 统计同步的技能数量
+    local synced_count=$(find "$PROJECT_ROOT/skills/gstack" -name "SKILL.md" 2>/dev/null | wc -l)
+    log_success "GStack 同步完成 (同步 $synced_count 个技能到 skills/gstack/)"
 }
 
 # 更新版本文件
