@@ -43,7 +43,7 @@ skills/
 
 来自 GStack 的工程工具技能，提供丰富的开发和审查工具。
 
-**包含技能 (7个)**:
+**包含技能 (8个)**:
 - `design` - 设计工具
 - `design-consultation` - 设计咨询
 - `design-html` - HTML 设计
@@ -157,7 +157,7 @@ custom/
   "gstack": {
     "version": "x.x.x.x",
     "last_sync": "2026-05-15",
-    "skill_count": 7,
+    "skill_count": 8,
     "skill_path": "skills/gstack/"
   },
   "hybrid": {
