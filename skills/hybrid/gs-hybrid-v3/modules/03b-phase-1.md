@@ -479,7 +479,7 @@ Step 7: Commit                       ← 1min
 
 **Tech Stack:** [关键技术/库]
 
-**Design Doc:** `specs/design-docs/NNN-title.md` (if applicable)
+**Design Doc:** `docs/design-docs/NNN-title.md` (if applicable)
 **Complexity:** L1 / L2 / L3
 
 ---

@@ -1,9 +1,9 @@
 ---
 name: "gs-hybrid-v3"
-description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程。v3.6 更新：Task 拆解增强（Spec→Task 分解方法、5 类 Task 模板、依赖图、跨切面处理），完全集成 Superpowers 编码前流程。"
+description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程。v3.7 更新：完整集成 48 个 GStack 技能（含 cso、ship、office-hours 等核心技能），修复引用错误，改进技能路由表。"
 ---
 
-# Superpowers + GStack 混合流程 v3.6 (任务拆解增强版)
+# Superpowers + GStack 混合流程 v3.7 (GStack 完整集成版)
 
 > 本 Skill 强制 AI 遵循"先澄清需求(brainstorming)、再研究设计(Design Doc)、再结构化拆解Plan(writing-plans + Task拆解)、后评审、再编码"的严格流程
 > 结合 Superpowers 的逻辑严密性和 gstack 的生产级标准
@@ -82,20 +82,93 @@ Phase 7:    验证交付
 | [writing-skills](../superpowers/writing-skills/) | 创建新技能 | 技能调用 |
 | [using-superpowers](../superpowers/using-superpowers/) | 系统介绍 | 手动触发 |
 
-### GStack 技能 (9个)
+### GStack 技能 (48个)
 
-工程工具技能，来自 GStack：
+工程工具技能，来自 GStack（按类别分组）：
 
-| 技能 | 用途 | 触发方式 |
-|------|------|---------|
-| [design](../gstack/design/) | 设计工具 | 技能调用 |
-| [design-consultation](../gstack/design-consultation/) | 设计咨询 | 技能调用 |
-| [design-html](../gstack/design-html/) | HTML设计 | 技能调用 |
-| [design-review](../gstack/design-review/) | 设计审查 | 技能调用 |
-| [design-shotgun](../gstack/design-shotgun/) | 多方案设计 | 技能调用 |
-| [gstack-browse](../gstack/gstack-browse/) | 浏览器自动化 | 技能调用 |
-| [qa](../gstack/qa/) | 质量保证 | 技能调用 |
-| [review](../gstack/review/) | 代码审查 | 技能调用 |
+**规划与审查 (8个)**:
+| 技能 | 用途 |
+|------|------|
+| [autoplan](../gstack/autoplan/) | 自动审查管线 |
+| [office-hours](../gstack/office-hours/) | 产品定位问诊 |
+| [plan-ceo-review](../gstack/plan-ceo-review/) | CEO 战略审查 |
+| [plan-eng-review](../gstack/plan-eng-review/) | 工程经理审查 |
+| [plan-design-review](../gstack/plan-design-review/) | 设计师审查（规划阶段） |
+| [plan-devex-review](../gstack/plan-devex-review/) | 开发者体验审查 |
+| [plan-tune](../gstack/plan-tune/) | 规划调优 |
+| [review](../gstack/review/) | 代码审查 |
+
+**设计与前端 (6个)**:
+| 技能 | 用途 |
+|------|------|
+| [design](../gstack/design/) | 设计工具 |
+| [design-consultation](../gstack/design-consultation/) | 设计咨询 |
+| [design-html](../gstack/design-html/) | HTML设计 |
+| [design-review](../gstack/design-review/) | 设计审查 |
+| [design-shotgun](../gstack/design-shotgun/) | 多方案设计 |
+| [devex-review](../gstack/devex-review/) | 开发者体验审查（执行阶段） |
+
+**质量保证与测试 (5个)**:
+| 技能 | 用途 |
+|------|------|
+| [qa](../gstack/qa/) | QA 测试 |
+| [qa-only](../gstack/qa-only/) | 仅 QA 报告 |
+| [benchmark](../gstack/benchmark/) | 性能基准 |
+| [benchmark-models](../gstack/benchmark-models/) | 跨模型基准测试 |
+| [health](../gstack/health/) | 代码质量仪表板 |
+
+**安全与防护 (5个)**:
+| 技能 | 用途 |
+|------|------|
+| [cso](../gstack/cso/) | 首席安全官 |
+| [careful](../gstack/careful/) | 安全护栏 |
+| [freeze](../gstack/freeze/) | 编辑限制 |
+| [guard](../gstack/guard/) | 完全安全模式 |
+| [unfreeze](../gstack/unfreeze/) | 解除编辑限制 |
+
+**部署与发布 (5个)**:
+| 技能 | 用途 |
+|------|------|
+| [ship](../gstack/ship/) | 发布工程师 |
+| [land-and-deploy](../gstack/land-and-deploy/) | 部署工程师 |
+| [canary](../gstack/canary/) | 部署后监控 |
+| [landing-report](../gstack/landing-report/) | 着陆报告 |
+| [setup-deploy](../gstack/setup-deploy/) | 部署配置 |
+
+**调试与调查 (2个)**:
+| 技能 | 用途 |
+|------|------|
+| [investigate](../gstack/investigate/) | 根因调试 |
+| [codex](../gstack/codex/) | 跨模型审查 |
+
+**文档与记忆 (5个)**:
+| 技能 | 用途 |
+|------|------|
+| [document-release](../gstack/document-release/) | 发布文档更新 |
+| [document-generate](../gstack/document-generate/) | 文档生成 |
+| [learn](../gstack/learn/) | 记忆管理 |
+| [context-restore](../gstack/context-restore/) | 上下文恢复 |
+| [context-save](../gstack/context-save/) | 上下文保存 |
+
+**浏览器自动化 (3个)**:
+| 技能 | 用途 |
+|------|------|
+| [gstack-browse](../gstack/gstack-browse/) | 浏览器自动化 |
+| [open-gstack-browser](../gstack/open-gstack-browser/) | 打开 GStack 浏览器 |
+| [setup-browser-cookies](../gstack/setup-browser-cookies/) | Cookie 导入 |
+
+**工具与实用程序 (9个)**:
+| 技能 | 用途 |
+|------|------|
+| [gstack-upgrade](../gstack/gstack-upgrade/) | 自更新工具 |
+| [setup-gbrain](../gstack/setup-gbrain/) | 知识库配置 |
+| [sync-gbrain](../gstack/sync-gbrain/) | 同步知识库 |
+| [make-pdf](../gstack/make-pdf/) | PDF 生成 |
+| [scrape](../gstack/scrape/) | 网页抓取 |
+| [skillify](../gstack/skillify/) | 技能生成 |
+| [retro](../gstack/retro/) | 工程复盘 |
+| [pair-agent](../gstack/pair-agent/) | 配对代理 |
+| [openclaw](../gstack/openclaw/) | OpenClaw 集成 |
 
 ### Hybrid 技能 (1个)
 
@@ -184,7 +257,7 @@ Phase 6-7: 加载 05-phase-6-7.md (编码验证)
 │   │ 加载: 03a-phase-0-06.md                                              │   │
 │   │ - Spec 自审查 (占位符/一致性/范围/歧义)                              │   │
 │   │ - 方案调研与对比                                                     │   │
-│   │ - 产出编号设计文档 → specs/design-docs/NNN-title.md                 │   │
+│   │ - 产出编号设计文档 → docs/design-docs/NNN-title.md                 │   │
 │   │ - 用户必须确认方案选择 ✅                                            │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │      │                                                                         │
@@ -285,11 +358,13 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 阶段 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
-| **Phase 2.5** | `/design-review` | 涉及前端 | 前端视觉审查 |
-| **Phase 4** | `/qa` | L3 任务 | QA 测试、功能验证 |
-| **Phase 5** | `/cso` | L3 任务 | 安全扫描 |
-| **Phase 7** | `/qa` | 所有任务 | 部署验证 |
-| **Phase 7** | `/ship` | L3 任务 | 发布准备 |
+| **Phase 2.5** | `design-review` | 涉及前端 | 前端视觉审查 |
+| **Phase 4** | `qa` | L3 任务 | QA 测试、功能验证 |
+| **Phase 5** | `cso` | L3 任务 | 安全扫描（✅ 已修复） |
+| **Phase 6.5** | `codex` | L3 任务 | 跨模型审查 |
+| **Phase 7** | `qa` | 所有任务 | 部署验证 |
+| **Phase 7** | `ship` | L3 任务 | 发布准备（✅ 已修复） |
+| **Phase 7** | `canary` | L3 任务 | 部署后监控 |
 
 ---
 
@@ -334,6 +409,7 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
+| v3.7 | 2026-05-15 | **GStack 完整集成**：从 8 个扩展到 48 个 GStack 技能（含 cso、ship、office-hours、plan-ceo-review 等核心技能）；修复路由表引用错误（`/cso` → `cso`、`/ship` → `ship`）；GStack 技能按类别分组（规划/设计/QA/安全/部署/调试/文档/浏览器） |
 | v3.6 | 2026-05-15 | **Task 拆解增强**：新增 Spec→Task 分解方法、5 类 Task 模板（Feature/Bugfix/Config/Refactor/Integration）、Task 依赖图（依赖/并行/阻塞）、跨切面处理机制；强化 Phase 0.5a 多子系统检测标准 |
 | v3.5 | 2026-05-15 | **重大更新**：编码前流程完全集成 Superpowers，Phase 1 委托给 writing-plans（TDD五步/No Placeholders/Self-Review/Execution Handoff），保留 gs-hybrid 专属增强（风险评估/边界条件/回滚策略/Plan验证确认硬阻断） |
 | v3.4 | 2026-05-15 | Phase 0.5 拆分为 0.5a(需求澄清/brainstorming) + 0.5b(Design Doc)，新增 Spec 自审查，强化渐进式提问方法 |
@@ -367,7 +443,7 @@ Phase 0.5a: 需求澄清 (brainstorming)...
 
 Phase 0.5b: Design Doc 编写...
 → Spec 自审查 + 方案调研 + 详细设计
-→ 产出: specs/design-docs/001-auth.md
+→ 产出: docs/design-docs/001-auth.md
 
 Phase 0.6: 方案审核确认...
 → 用户确认方案选择

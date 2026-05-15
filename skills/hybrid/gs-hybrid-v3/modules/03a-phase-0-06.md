@@ -231,7 +231,7 @@
 # Design Doc: [功能名称]
 
 ## 编号
-`specs/design-docs/001-feature-name.md`
+`docs/design-docs/001-feature-name.md`
 
 ## 背景与问题
 [描述要解决什么问题]
