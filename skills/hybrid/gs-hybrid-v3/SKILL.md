@@ -1,13 +1,13 @@
 ---
 name: "gs-hybrid-v3"
-description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程。支持模块化按需加载，强制 AI 在写代码前完成逻辑规划和多角色评审，确保代码既逻辑严密又符合生产级标准。v3.3 优化：模块化拆分，按需加载。"
+description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程。v3.6 更新：Task 拆解增强（Spec→Task 分解方法、5 类 Task 模板、依赖图、跨切面处理），完全集成 Superpowers 编码前流程。"
 ---
 
-# Superpowers + GStack 混合流程 v3.3 (模块化版)
+# Superpowers + GStack 混合流程 v3.6 (任务拆解增强版)
 
-> 本 Skill 强制 AI 遵循"先研究、再规划、后评审、再编码"的严格流程
+> 本 Skill 强制 AI 遵循"先澄清需求(brainstorming)、再研究设计(Design Doc)、再结构化拆解Plan(writing-plans + Task拆解)、后评审、再编码"的严格流程
 > 结合 Superpowers 的逻辑严密性和 gstack 的生产级标准
-> **v3.3 更新**：模块化拆分，按需加载，降低上下文消耗
+> **v3.6 更新**：Task 拆解系统增强（Spec→Task 分解、5类模板、依赖图、跨切面处理）
 
 ---
 
@@ -21,7 +21,8 @@ description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程
 AI: 收到。我将按照 Superpowers + GStack Hybrid 流程执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
-Phase 0.5:  L2+ 创建 Design Doc (编号设计文档)
+Phase 0.5a: 需求澄清 (brainstorming - 渐进式提问)
+Phase 0.5b: Design Doc 编写 (编号设计文档)
 Phase 0.6:  方案审核确认 (用户必须确认方案选择)
              ↓ 用户确认方案
 Phase 1:    生成详细 PLAN.md
@@ -150,7 +151,7 @@ Phase 6-7: 加载 05-phase-6-7.md (编码验证)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                 Superpowers + GStack 混合流程 v3.3 (模块化)                   │
+│                 Superpowers + GStack 混合流程 v3.4 (模块化)                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                               │
 │   需求输入                                                                     │
@@ -167,22 +168,36 @@ Phase 6-7: 加载 05-phase-6-7.md (编码验证)
 │      │                                                                         │
 │      ▼                                                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 0.5: Design Doc (研究 & 设计)           [L1⚪ L2🔴 L3🔴]   │   │
-│   │ Phase 0.6: 方案审核确认 (强制) 🔴              [L1🔴 L2🔴 L3🔴]   │   │
+│   │ Phase 0.5a: 需求澄清 (brainstorming)           [L1⚪ L2🔴 L3🔴]   │   │
+│   │ - 探索项目上下文                                                     │   │
+│   │ - 范围评估与拆解                                                     │   │
+│   │ - 渐进式提问 (一次一个，优先选择题)                                  │   │
+│   │ - 方案探索 (2-3 个方案)                                              │   │
+│   │ - 设计呈现 (逐章节确认)                                              │   │
+│   │ - 用户确认设计 → 保存 spec 文件                                      │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│      │                                                                         │
+│      ▼                                                                         │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │ Phase 0.5b: Design Doc 编写                       [L1⚪ L2🔴 L3🔴]   │   │
+│   │ Phase 0.6:  方案审核确认 (强制) 🔴               [L1🔴 L2🔴 L3🔴]   │   │
 │   │ 加载: 03a-phase-0-06.md                                              │   │
-│   │ - 调研现有方案和业界实践                                            │   │
-│   │ - 分析至少 2-3 个可选方案                                            │   │
+│   │ - Spec 自审查 (占位符/一致性/范围/歧义)                              │   │
+│   │ - 方案调研与对比                                                     │   │
 │   │ - 产出编号设计文档 → specs/design-docs/NNN-title.md                 │   │
 │   │ - 用户必须确认方案选择 ✅                                            │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │      │                                                                         │
 │      ▼                                                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 1: 逻辑规划 (Superpowers writing-plans)     [L1✅ L2✅ L3✅]   │   │
+│   │ Phase 1: 结构化 Plan (writing-plans + Task拆解)     [L1✅ L2✅ L3✅]   │   │
 │   │ Phase 1.5: Plan验证确认 (强制) 🔴                [L1🔴 L2🔴 L3🔴]   │   │
 │   │ 加载: 03b-phase-1.md                                                 │   │
-│   │ - 基于确认的方案生成详细 PLAN.md                                      │   │
-│   │ - 定义文件变更清单、边界条件、风险评估                               │   │
+│   │ - Spec→Task 分解 (需求→任务的结构化映射)                              │   │
+│   │ - 5 类 Task 模板 (Feature/Bugfix/Config/Refactor/Integration)        │   │
+│   │ - Task 依赖图 (依赖/并行/阻塞) + 跨切面处理                          │   │
+│   │ - Bite-Sized Tasks + No Placeholders + Self-Review                   │   │
+│   │ - gs-hybrid 增强: 风险评估/边界条件/回滚策略                         │   │
 │   │ - 用户必须确认执行 ✅                                                │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │      │                                                                         │
@@ -257,8 +272,10 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 阶段 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
-| **Phase 0.5** | `brainstorming` | L2+ 任务 | 需求澄清、方案对比 |
-| **Phase 1** | `writing-plans` | 所有任务 | 编写实现计划 |
+| **Phase 0.5a** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
+| **Phase 0.5b** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
+| **Phase 1** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
+| **Phase 1.5** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
 | **Phase 2** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
 | **Phase 3** | `requesting-code-review` | L3 任务 | 架构评审 |
 | **Phase 6** | `test-driven-development` | 所有任务 | TDD 编码 |
@@ -317,6 +334,9 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
+| v3.6 | 2026-05-15 | **Task 拆解增强**：新增 Spec→Task 分解方法、5 类 Task 模板（Feature/Bugfix/Config/Refactor/Integration）、Task 依赖图（依赖/并行/阻塞）、跨切面处理机制；强化 Phase 0.5a 多子系统检测标准 |
+| v3.5 | 2026-05-15 | **重大更新**：编码前流程完全集成 Superpowers，Phase 1 委托给 writing-plans（TDD五步/No Placeholders/Self-Review/Execution Handoff），保留 gs-hybrid 专属增强（风险评估/边界条件/回滚策略/Plan验证确认硬阻断） |
+| v3.4 | 2026-05-15 | Phase 0.5 拆分为 0.5a(需求澄清/brainstorming) + 0.5b(Design Doc)，新增 Spec 自审查，强化渐进式提问方法 |
 | v3.3 | 2026-05-15 | 模块化拆分，分类维护，按需加载 |
 | v3.2 | 2026-05-14 | 强化方案审核确认环节 |
 | v3.1 | 2026-05-13 | 增加 Plan验证确认环节 |
@@ -337,19 +357,27 @@ Step 0: 评估任务复杂度...
 [加载 02-complexity.md]
 → 评估结果: L2 (中等任务)
 
-Phase 0.5: 创建 Design Doc...
+Phase 0.5a: 需求澄清 (brainstorming)...
 [加载 03a-phase-0-06.md]
+→ Announce: "使用 brainstorming 进行需求澄清"
+→ 探索项目上下文
+→ 渐进式提问 (目的 → 用户 → 约束 → 成功标准)
+→ 方案探索 (提出 2-3 个方案)
+→ 用户确认设计 → 保存 spec 文件
+
+Phase 0.5b: Design Doc 编写...
+→ Spec 自审查 + 方案调研 + 详细设计
 → 产出: specs/design-docs/001-auth.md
 
 Phase 0.6: 方案审核确认...
-→ 展示方案对比表
-→ 等待用户确认...
+→ 用户确认方案选择
 
-用户: 确认采用方案 B
-
-Phase 1: 生成 PLAN.md...
+Phase 1: 详细 Plan (writing-plans)...
 [加载 03b-phase-1.md]
-→ 产出: specs/plans/PLAN-001-auth.md
+→ Scope Check + File Structure
+→ Bite-Sized Tasks (2-5min/TDD五步)
+→ Self-Review (spec coverage/placeholder/type consistency)
+→ 产出: specs/plans/2026-05-15-auth.md
 
 Phase 1.5: Plan验证确认...
 → 等待用户确认...
@@ -378,5 +406,8 @@ AI: 启动规划流程...
 ```
 
 ---
+
+**版本**: v3.6 (任务拆解增强版，5类模板+依赖图+跨切面)
+**最后更新**: 2026-05-15
 
 **详细文档请参考各模块文件。**

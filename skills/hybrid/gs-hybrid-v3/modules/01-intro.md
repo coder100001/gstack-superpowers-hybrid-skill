@@ -22,10 +22,11 @@
 AI: 收到。我将按照 Superpowers + GStack Hybrid 流程执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
-Phase 0.5:  L2+ 创建 Design Doc (编号设计文档)
+Phase 0.5a: 需求澄清 (brainstorming - 渐进式提问 → spec 文件)
+Phase 0.5b: Design Doc 编写 (方案对比/设计决策存档)
 Phase 0.6:  方案审核确认 (用户必须确认方案选择)
              ↓ 用户确认方案
-Phase 1:    生成详细 PLAN.md
+Phase 1:    结构化 Plan (writing-plans — Spec→Task 分解/5类模板/依赖图/No Placeholders)
 Phase 1.5:  Plan验证确认 (用户必须确认执行)
              ↓ 用户确认执行
 Phase 2:    工程规范设计
@@ -152,8 +153,10 @@ concurrency_model: "promise"
 
 | 阶段 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
-| **Phase 0.5** | `brainstorming` | L2+ 任务 | 需求澄清、方案对比 |
-| **Phase 1** | `writing-plans` | 所有任务 | 编写实现计划 |
+| **Phase 0.5a** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
+| **Phase 0.5b** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
+| **Phase 1** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
+| **Phase 1.5** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
 | **Phase 2** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
 | **Phase 3** | `requesting-code-review` | L3 任务 | 架构评审 |
 | **Phase 6** | `test-driven-development` | 所有任务 | TDD 编码 |
