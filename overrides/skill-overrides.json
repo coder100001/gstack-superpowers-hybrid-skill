@@ -1,0 +1,12 @@
+{
+  "replacements": {},
+  "extensions": {
+    "gs-hybrid-v3": {
+      "additional_phases": [],
+      "custom_rules": [],
+      "modified_checks": {}
+    }
+  },
+  "disabled_skills": [],
+  "skill_aliases": {}
+}
