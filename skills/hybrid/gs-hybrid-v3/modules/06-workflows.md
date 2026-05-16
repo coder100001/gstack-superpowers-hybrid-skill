@@ -7,10 +7,37 @@
 | `/plan` | 规划流程 | 新功能开发前的完整规划 |
 | `/review` | 代码审查 | 代码完成后的质量审查 |
 | `/test` | 测试驱动 | TDD 开发流程 |
-| `/ship` | 发布准备 | 提交前的最终检查 |
 | `/qa` | 质量保证 | 功能完成后的验证 |
 | `/debug` | 调试助手 | 问题诊断与修复 |
 | `/refactor` | 重构建议 | 代码改进与优化 |
+
+---
+
+## 状态机映射
+
+### 主状态流程
+
+```
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
+    → [Context Hydration] → IMPLEMENTATION → SELF_REVIEW → QA
+    → SHIP_REVIEW → RETRO
+```
+
+### 层归属
+
+| 状态 | 层归属 | 说明 |
+|------|--------|------|
+| **IDEA** | Decision Layer | 任务接收 |
+| **DISCOVERY** | Decision Layer | 需求澄清 |
+| **REQUIREMENT_LOCK** | Decision Layer | 需求确认 |
+| **ARCH_REVIEW** | Decision Layer | 多角色架构审议 |
+| **TASK_DECOMPOSITION** | Decision Layer | 任务拆解 |
+| **Context Hydration** | Context Bridge | 加载 Spec 契约 |
+| **IMPLEMENTATION** | Execution Layer | TDD 编码（决策冻结） |
+| **SELF_REVIEW** | Execution Layer | 对照契约自审 |
+| **QA** | Execution Layer | 质量验证 |
+| **SHIP_REVIEW** | Governance | 发布检查 |
+| **RETRO** | Governance | 复盘记录 |
 
 ---
 
@@ -27,7 +54,7 @@
 ### 执行流程
 
 ```
-Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 ```
 
 ### 输出
@@ -35,7 +62,15 @@ Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5
 - 复杂度评估报告
 - Design Doc (L2+)
 - PLAN.md
+- ADR（架构决策记录）
 - 用户确认记录
+
+### Decision Layer 活动
+
+1. **DISCOVERY** - 需求澄清 (brainstorming)
+2. **REQUIREMENT_LOCK** - 需求确认 (强制用户确认)
+3. **ARCH_REVIEW** - 多角色架构审议 (5个维度)
+4. **TASK_DECOMPOSITION** - 任务拆解
 
 ---
 
@@ -52,22 +87,21 @@ Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5
 ### 执行流程
 
 ```
-Phase 2 → Phase 3 → Phase 4 (L3) → Phase 5 (L3)
+SELF_REVIEW → QA → SHIP_REVIEW
 ```
 
 ### 审查维度
 
-1. **工程规范** - 代码风格、最佳实践
-2. **架构设计** - SOLID 原则、模块职责
-3. **测试覆盖** - 测试策略、边界条件
-4. **安全扫描** - 漏洞检测、敏感信息
+1. **契约对照** - 与 Context Layer Spec 一致性
+2. **工程规范** - 代码风格、最佳实践
+3. **架构边界** - 模块职责、依赖方向
+4. **测试覆盖** - 测试策略、边界条件
 
 ### 输出
 
-- 工程规范检查报告
-- 架构评审报告
-- QA 评审报告 (L3)
-- 安全评审报告 (L3)
+- 自审报告 (SELF_REVIEW)
+- QA 评审报告 (QA)
+- 发布检查清单 (SHIP_REVIEW)
 
 ---
 
@@ -84,13 +118,13 @@ Phase 2 → Phase 3 → Phase 4 (L3) → Phase 5 (L3)
 ### 执行流程
 
 ```
-Phase 6 (TDD 模式)
+Context Hydration → IMPLEMENTATION → SELF_REVIEW
 ```
 
-### TDD 循环
+### TDD 循环（决策冻结期间）
 
 ```
-编写测试 → 运行失败 → 编写代码 → 运行通过 → 重构
+加载 Spec 契约 → 测试失败（TDD 红）→ 最简实现（TDD 绿）→ 约束内重构
 ```
 
 ### 输出
@@ -100,38 +134,11 @@ Phase 6 (TDD 模式)
 - 测试报告
 - 覆盖率报告
 
----
+### 注意事项
 
-## /ship - 发布准备
-
-### 触发方式
-
-```
-用户: /ship 准备发布
-或
-用户: hybrid ship [版本号]
-```
-
-### 执行流程
-
-```
-Phase 7 (完整验证)
-```
-
-### 验证清单
-
-- [ ] 功能验证
-- [ ] 质量验证
-- [ ] 安全验证
-- [ ] 文档检查
-- [ ] Changelog 生成
-
-### 输出
-
-- 验证交付报告
-- Changelog
-- 部署文档
-- 发布包
+- **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改
+- **上下文注水**: 必须在编码前加载所有 Spec 契约
+- **禁止跳步**: 不能在没有注水的情况下直接编码
 
 ---
 
@@ -148,21 +155,22 @@ Phase 7 (完整验证)
 ### 执行流程
 
 ```
-Phase 4 (QA 评审) → Phase 7 (验证)
+QA → SHIP_REVIEW
 ```
 
 ### 检查内容
 
 1. **功能测试** - 场景覆盖、边界条件
-2. **性能测试** - 响应时间、资源使用
-3. **兼容性测试** - 多环境验证
-4. **回归测试** - 现有功能影响
+2. **契约验证** - 与 Spec 一致性检查
+3. **回归测试** - 现有功能影响
+4. **安全扫描** - 漏洞检测、敏感信息
 
 ### 输出
 
 - QA 评审报告
 - 测试报告
 - 问题清单
+- SHIP_REVIEW 发布检查清单
 
 ---
 
@@ -182,12 +190,12 @@ Phase 4 (QA 评审) → Phase 7 (验证)
 问题理解 → 信息收集 → 根因分析 → 方案制定 → 修复验证
 ```
 
-### 调用的 Skills
+### 调用的组件
 
-- `brainstorming` - 理解问题
-- `systematic-debugging` - 根因调查
-- `/investigate` - 问题调查 (GStack)
-- `/qa` - 修复验证 (GStack)
+- `Decision Layer` - 理解问题
+- `Systematic Debugging` - 根因调查
+- `Execution Layer` - 修复实现
+- `QA` - 修复验证
 
 ### 输出
 
@@ -220,7 +228,7 @@ Phase 4 (QA 评审) → Phase 7 (验证)
 2. **合并重复** - 消除重复代码
 3. **重命名** - 提高可读性
 4. **简化条件** - 简化复杂逻辑
-5. **引入设计模式** - 改善架构
+5. **约束内优化** - 仅在 Spec 约束范围内重构
 
 ### 输出
 
@@ -229,6 +237,11 @@ Phase 4 (QA 评审) → Phase 7 (验证)
 - 重构后的代码
 - 验证结果
 
+### 注意事项
+
+- **决策冻结**: 重构不能改变已冻结的架构/需求/契约
+- **边界检查**: 重构不能突破领域边界
+
 ---
 
 ## 指令组合使用
@@ -236,7 +249,7 @@ Phase 4 (QA 评审) → Phase 7 (验证)
 ### 完整开发流程
 
 ```
-/plan → /test → /review → /qa → /ship
+/plan → /test → /review → /qa → SHIP_REVIEW → RETRO
 ```
 
 ### 快速修复流程
@@ -249,4 +262,12 @@ Phase 4 (QA 评审) → Phase 7 (验证)
 
 ```
 /review → /refactor → /test → /qa
+```
+
+### 决策冻结变更流程
+
+如果在 IMPLEMENTATION 期间需要变更冻结项，必须走以下流程：
+
+```
+记录变更请求 → 暂停实现 → 退回 Decision Layer → 更新 Context Layer → 重新注水 → 恢复实现
 ```

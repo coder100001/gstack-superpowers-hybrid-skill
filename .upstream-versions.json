@@ -2,7 +2,7 @@
   "superpowers": {
     "repo": "https://github.com/obra/superpowers",
     "version": "5.1.0",
-    "last_sync": "2026-05-15",
+    "last_sync": "2026-05-16",
     "skill_count":       14,
     "path": "skills/superpowers/"
   },
@@ -10,19 +10,19 @@
     "repo": "https://github.com/garrytan/gstack",
     "path": "~/.claude/skills/gstack",
     "version": "1.39.0.0",
-    "last_sync": "2026-05-15",
+    "last_sync": "2026-05-16",
     "skill_count":        47,
     "skill_path": "skills/gstack/"
   },
   "hybrid": {
-    "description": "Superpowers + GStack 混合流程",
+    "description": "AI Engineering Governance System - 三层架构 (Decision/Context/Execution)",
     "skill_count":        1,
     "path": "skills/hybrid/",
-    "version": "v3.7"
+    "version": "v4.0"
   },
   "custom": {
     "description": "自定义扩展技能",
     "path": "skills/custom/"
   },
-  "last_sync": "2026-05-15"
+  "last_sync": "2026-05-16"
 }

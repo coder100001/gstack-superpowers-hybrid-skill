@@ -1,13 +1,13 @@
 ---
 name: "gs-hybrid-v3"
-description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程。v3.7 更新：完整集成 48 个 GStack 技能（含 cso、ship、office-hours 等核心技能），修复引用错误，改进技能路由表。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.0 重构：从技能分类升级为职责分层系统，新增状态机、决策冻结、上下文注水机制。"
 ---
 
-# Superpowers + GStack 混合流程 v3.7 (GStack 完整集成版)
+# AI Engineering Governance System v4.0 (三层架构正式版)
 
-> 本 Skill 强制 AI 遵循"先澄清需求(brainstorming)、再研究设计(Design Doc)、再结构化拆解Plan(writing-plans + Task拆解)、后评审、再编码"的严格流程
-> 结合 Superpowers 的逻辑严密性和 gstack 的生产级标准
-> **v3.6 更新**：Task 拆解系统增强（Spec→Task 分解、5类模板、依赖图、跨切面处理）
+> **核心理念**: 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
+> 本系统将 Superpowers 的工程纪律 + GStack 的多角色审议 + Context Layer 的契约驱动，统一为可执行的三层职责系统
+> **v4.0 升级**: 从技能分类升级为职责分层系统 | 9 状态状态机 | 决策冻结 | 上下文注水
 
 ---
 
@@ -16,24 +16,38 @@ description: "结合 Superpowers 方法论和 GStack 工程标准的混合流程
 ### 启动方式
 
 ```
-用户: hybrid 帮我开发新功能
+用户: hybrid 帮我开发用户认证功能
 
-AI: 收到。我将按照 Superpowers + GStack Hybrid 流程执行：
+AI: 收到。我将按照 AI Engineering Governance System (v4.0) 三层架构执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
-Phase 0.5a: 需求澄清 (brainstorming - 渐进式提问)
-Phase 0.5b: Design Doc 编写 (编号设计文档)
-Phase 0.6:  方案审核确认 (用户必须确认方案选择)
-             ↓ 用户确认方案
-Phase 1:    生成详细 PLAN.md
-Phase 1.5:  Plan验证确认 (用户必须确认执行)
-             ↓ 用户确认执行
-Phase 2:    工程规范设计
-Phase 3:    架构师评审
-Phase 4:    QA 评审 (L3)
-Phase 5:    CSO 安全评审 (L3)
-Phase 6:    TDD 编码实现
-Phase 7:    验证交付
+
+┌─────────────────────────────────────────────────────────────────┐
+│  DECISION LAYER (决策层)                                         │
+└─────────────────────────────────────────────────────────────────┘
+IDEA:       任务接收
+DISCOVERY:  需求澄清 (Superpowers brainstorming - 渐进式提问)
+             ↓ 产出：需求文档
+REQUIREMENT_LOCK: 需求确认 (用户必须确认)
+             ↓
+ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
+             ↓ 产出：架构设计 + ADR
+TASK_DECOMPOSITION: 任务拆解 (Superpowers writing-plans)
+             ↓ 用户确认
+
+┌─────────────────────────────────────────────────────────────────┐
+│  CONTEXT LAYER (上下文层)                                        │
+└─────────────────────────────────────────────────────────────────┘
+Context Hydration: 加载所有 Spec 契约
+
+┌─────────────────────────────────────────────────────────────────┐
+│  EXECUTION LAYER (执行层)                                        │
+└─────────────────────────────────────────────────────────────────┘
+IMPLEMENTATION:  TDD 编码 (决策冻结)
+SELF_REVIEW:    自审 (对照契约)
+QA:             质量验证 (GStack qa)
+SHIP_REVIEW:    发布检查 (GStack 检查清单)
+RETRO:          复盘记录
 ```
 
 ### 专用指令
@@ -43,21 +57,32 @@ Phase 7:    验证交付
 | `/plan` | 规划流程 | 新功能开发前的完整规划 |
 | `/review` | 代码审查 | 代码完成后的质量审查 |
 | `/test` | 测试驱动 | TDD 开发流程 |
-| `/ship` | 发布准备 | 提交前的最终检查 |
 | `/qa` | 质量保证 | 功能完成后的验证 |
 | `/debug` | 调试助手 | 问题诊断与修复 |
 | `/refactor` | 重构建议 | 代码改进与优化 |
 
 ---
 
-## 技能分类索引
+## 架构职责索引
 
-本项目将技能分为三类，便于维护和更新：
+### 层职责表
+
+| 层 | 路径 | 用途 |
+|----|------|------|
+| **Decision Layer** | `decision-layer/` | 需求发散 → 多角色审议 → ADR 决策 |
+| **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 → 边界隔离 |
+| **Execution Layer** | `execution-layer/` | 受约束 TDD → 自审 → QA → 交付 |
+| **Bridges** | `bridges/` | Decision→Context 转化 + Context→Execution 注水 |
+| **Governance** | `governance/` | 决策冻结 + 状态验证 + 变更流程 |
+
+---
+
+## 原技能保留索引（向后兼容）
 
 | 分类 | 路径 | 技能数量 | 说明 |
 |------|------|---------|------|
 | **Superpowers** | `skills/superpowers/` | 14个 | 核心方法论技能 |
-| **GStack** | `skills/gstack/` | 9个 | 工程工具技能 |
+| **GStack** | `skills/gstack/` | 48+个 | 工程工具技能 |
 | **Hybrid** | `skills/hybrid/` | 1个 | 混合流程技能 |
 | **Custom** | `skills/custom/` | - | 自定义扩展 |
 
@@ -184,38 +209,38 @@ Phase 7:    验证交付
 
 > **核心理念**: 不同阶段加载不同的模块，避免一次性加载所有内容消耗上下文。
 
-### 本技能模块索引
+### 本技能模块索引（向后兼容）
 
 | 模块 | 内容 | 加载时机 |
 |------|------|---------|
-| [01-intro.md](./modules/01-intro.md) | 快速开始、项目配置、核心概念 | 初始加载 |
+| [01-intro.md](./modules/01-intro.md) | 三层架构核心概念、项目配置、核心原则 | 初始加载 |
 | [02-complexity.md](./modules/02-complexity.md) | 复杂度分级、适用矩阵 | Step 0 |
-| [03a-phase-0-06.md](./modules/03a-phase-0-06.md) | Step 0 + Phase 0.5 + 0.6 | Phase 0-0.6 |
-| [03b-phase-1.md](./modules/03b-phase-1.md) | Phase 1 逻辑规划 | Phase 1 |
-| [04a-phase-2-3.md](./modules/04a-phase-2-3.md) | Phase 2-3 工程规范 | Phase 2-3 |
-| [04b-phase-4-5.md](./modules/04b-phase-4-5.md) | Phase 4-5 QA/安全评审 | Phase 4-5 |
-| [05-phase-6-7.md](./modules/05-phase-6-7.md) | Phase 6-7 编码验证 | Phase 6-7 |
+| [03a-discovery-arch.md](./modules/03a-discovery-arch.md) | IDEA→DISCOVERY→ARCH_REVIEW | 决策层阶段 |
+| [03b-task-decomposition.md](./modules/03b-task-decomposition.md) | TASK_DECOMPOSITION | 任务拆解 |
+| [04a-execution-hydration.md](./modules/04a-execution-hydration.md) | 上下文注水、TDD | 执行层前置 |
+| [04b-self-review.md](./modules/04b-self-review.md) | 自审、QA | 执行层阶段 |
+| [05-ship-review-retro.md](./modules/05-ship-review-retro.md) | SHIP_REVIEW、RETRO | 交付与复盘 |
 | [06-workflows.md](./modules/06-workflows.md) | 专用流程指令 | 指令触发 |
-| [07-handling.md](./modules/07-handling.md) | 异常处理机制 | 异常发生时 |
+| [07-handling.md](./modules/07-handling.md) | 异常处理、变更流程 | 异常/变更 |
 
 ### 加载策略
 
 ```
-初始: 加载 01-intro.md (基础配置和概念)
+初始: 加载 01-intro.md (三层架构、核心原则
       ↓
-Step 0: 加载 02-complexity.md (复杂度评估)
+Step 0: 加载 02-complexity.md (复杂度评估 → L1/L2/L3)
       ↓
-Phase 0-0.6: 加载 03a-phase-0-06.md (设计阶段)
+Decision Layer: 加载 03a-discovery-arch.md (需求发散、架构审议)
       ↓
-Phase 1: 加载 03b-phase-1.md (规划阶段)
+TASK_DECOMPOSITION: 加载 03b-task-decomposition.md (任务拆解)
       ↓
-Phase 2-3: 加载 04a-phase-2-3.md (工程评审)
+Execution Layer: 加载 04a-execution-hydration.md (上下文注水)
       ↓
-Phase 4-5: 加载 04b-phase-4-5.md (QA/安全评审)
+SELF_REVIEW/QA: 加载 04b-self-review.md (自审、QA)
       ↓
-Phase 6-7: 加载 05-phase-6-7.md (编码验证)
+SHIP_REVIEW/RETRO: 加载 05-ship-review-retro.md (交付、复盘)
       ↓
-异常: 加载 07-handling.md (异常处理)
+异常/变更: 加载 07-handling.md (异常处理)
 ```
 
 ---
@@ -223,101 +248,96 @@ Phase 6-7: 加载 05-phase-6-7.md (编码验证)
 ## 流程概览
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                 Superpowers + GStack 混合流程 v3.4 (模块化)                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                               │
-│   需求输入                                                                     │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Step 0: 复杂度评估                                                   │   │
-│   │ 加载: 02-complexity.md                                               │   │
-│   │ - 统计变更文件数                                                     │   │
-│   │ - 预估代码行数                                                       │   │
-│   │ - 识别架构影响                                                       │   │
-│   │ - 确定级别: L1 / L2 / L3                                            │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 0.5a: 需求澄清 (brainstorming)           [L1⚪ L2🔴 L3🔴]   │   │
-│   │ - 探索项目上下文                                                     │   │
-│   │ - 范围评估与拆解                                                     │   │
-│   │ - 渐进式提问 (一次一个，优先选择题)                                  │   │
-│   │ - 方案探索 (2-3 个方案)                                              │   │
-│   │ - 设计呈现 (逐章节确认)                                              │   │
-│   │ - 用户确认设计 → 保存 spec 文件                                      │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 0.5b: Design Doc 编写                       [L1⚪ L2🔴 L3🔴]   │   │
-│   │ Phase 0.6:  方案审核确认 (强制) 🔴               [L1🔴 L2🔴 L3🔴]   │   │
-│   │ 加载: 03a-phase-0-06.md                                              │   │
-│   │ - Spec 自审查 (占位符/一致性/范围/歧义)                              │   │
-│   │ - 方案调研与对比                                                     │   │
-│   │ - 产出编号设计文档 → docs/design-docs/NNN-title.md                 │   │
-│   │ - 用户必须确认方案选择 ✅                                            │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 1: 结构化 Plan (writing-plans + Task拆解)     [L1✅ L2✅ L3✅]   │   │
-│   │ Phase 1.5: Plan验证确认 (强制) 🔴                [L1🔴 L2🔴 L3🔴]   │   │
-│   │ 加载: 03b-phase-1.md                                                 │   │
-│   │ - Spec→Task 分解 (需求→任务的结构化映射)                              │   │
-│   │ - 5 类 Task 模板 (Feature/Bugfix/Config/Refactor/Integration)        │   │
-│   │ - Task 依赖图 (依赖/并行/阻塞) + 跨切面处理                          │   │
-│   │ - Bite-Sized Tasks + No Placeholders + Self-Review                   │   │
-│   │ - gs-hybrid 增强: 风险评估/边界条件/回滚策略                         │   │
-│   │ - 用户必须确认执行 ✅                                                │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 2: 工程规范设计                             [L1⚪ L2🟡 L3🔴]   │   │
-│   │ Phase 3: 架构师评审                               [L1⚪ L2🟡 L3🔴]   │   │
-│   │ 加载: 04a-phase-2-3.md                                               │   │
-│   │ - 架构设计审查                                                       │   │
-│   │ - SOLID 原则检查                                                     │   │
-│   │ - 技术栈合规检查                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 4: QA 评审                                  [L1⚪ L2⚪ L3🔴]   │   │
-│   │ Phase 5: CSO 安全评审                             [L1⚪ L2⚪ L3🔴]   │   │
-│   │ 加载: 04b-phase-4-5.md                                               │   │
-│   │ - 测试策略制定                                                       │   │
-│   │ - 边界条件识别                                                       │   │
-│   │ - 安全漏洞扫描                                                       │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│      │                                                                         │
-│      ▼                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ Phase 6: 编码实现 (Test-Driven Development)     [L1✅ L2✅ L3✅]   │   │
-│   │ Phase 7: 验证交付                               [L1✅ L2✅ L3✅]   │   │
-│   │ 加载: 05-phase-6-7.md                                                │   │
-│   │ - 先写测试，再写功能                                                  │   │
-│   │ - 小步快跑，频繁验证                                                  │   │
-│   │ - 生成交付物 (测试报告、Changelog)                                    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                               │
-│   图例: ✅ 必须  🟡 L2+必须  🔴 L3必须  ⚪ 可选  🔴 强制确认               │
-│                                                                               │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│         AI Engineering Governance System v4.0 — 三层职责分层 (三层架构)                       │
+├─────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                         │
+│   需求输入                                                                               │
+│      │                                                                                   │
+│      ▼                                                                                   │
+│   ┌───────────────────────────────────────────────────────────────────────────┐       │
+│   │ Step 0: 复杂度评估                                                     │       │
+│   │ 加载: 02-complexity.md                                               │       │
+│   │ - 统计变更文件数                                                     │       │
+│   │ - 预估代码行数                                                       │       │
+│   │ - 确定级别: L1 / L2 / L3                                            │       │
+│   └───────────────────────────────────────────────────────────────────────────┘       │
+│      │                                                                                   │
+│      ▼                                                                                   │
+│   ┌───────────────────────────────────────────────────────────────────────────┐       │
+│   │ ◆ DECISION LAYER (决策层)                                               │       │
+│   ├───────────────────────────────────────────────────────────────────────────┤       │
+│   │ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION  │       │
+│   │ [L1⚪   [L1⚪  [L1🔴  [L1⚪   [L1✅  │       │
+│   │         L2🔴   L2🔴   L2🔴   L2✅  │       │
+│   │         L3🔴   L3🔴   L3🔴   L3✅  │       │
+│   │ 加载: 03a-discovery-arch.md, architecture-review.md                    │       │
+│   │ - DISCOVERY: Superpowers brainstorming → 需求文档                        │       │
+│   │ - REQUIREMENT_LOCK: 用户必须确认 🔴                                 │       │
+│   │ - ARCH_REVIEW: 5 个维度审议 → ADR                                   │       │
+│   │ - TASK_DECOMPOSITION: writing-plans → 任务清单                        │       │
+│   └───────────────────────────────────────────────────────────────────────────┘       │
+│      │                                                                                   │
+│      ▼                                                                                   │
+│   ┌───────────────────────────────────────────────────────────────────────────┐       │
+│   │ ◆ CONTEXT LAYER (上下文层) → 桥接                                             │       │
+│   ├───────────────────────────────────────────────────────────────────────────┤       │
+│   │ Context Hydration (强制) 🔴                                            │       │
+│   │ 加载: decision-to-context.md, context-to-execution.md                      │       │
+│   │ - 加载所有 Spec 契约 → 进入 Execution Layer 必须完成                     │       │
+│   └───────────────────────────────────────────────────────────────────────────┘       │
+│      │                                                                                   │
+│      ▼                                                                                   │
+│   ┌───────────────────────────────────────────────────────────────────────────┐       │
+│   │ ◆ EXECUTION LAYER (执行层)                                               │       │
+│   ├───────────────────────────────────────────────────────────────────────────┤       │
+│   │ IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO       │       │
+│   │ [L1✅      [L1✅    [L1✅    [L1✅    [L1✅  │       │
+│   │           L2✅      L2🟡    L2🟡    L2⚪  │       │
+│   │           L3✅      L3🔴    L3🔴    L3🔴  │       │
+│   │ 加载: 04a-execution-hydration.md, 04b-self-review.md             │       │
+│   │ - IMPLEMENTATION: TDD (决策冻结)                                   │       │
+│   │ - SELF_REVIEW: 对照契约自审                                         │       │
+│   │ - QA: GStack qa                                                       │       │
+│   │ - SHIP_REVIEW: 发布检查                                             │       │
+│   │ - RETRO: 复盘记录                                                   │       │
+│   └───────────────────────────────────────────────────────────────────────────┘       │
+│                                                                                         │
+│   图例: ✅ 必须   🟡 L2+必须   🔴 L3必须   ⚪ 可选   🔴 强制确认                         │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 状态转换验证
+
+| 当前状态 | 目标状态 | 合法前置 | L1 | L2/L3 |
+|---------|---------|---------|----|-------|
+| IDEA → | DISCOVERY | 总是 | ✅ | ✅ |
+| DISCOVERY → | REQUIREMENT_LOCK | IDEA | ✅ | ✅ |
+| REQUIREMENT_LOCK → | ARCH_REVIEW | DISCOVERY | ✅ | ✅ |
+| ARCH_REVIEW → | TASK_DECOMPOSITION | REQUIREMENT_LOCK | ✅ | ✅ |
+| TASK_DECOMPOSITION → | Context Hydration | ARCH_REVIEW | ✅ | ✅ |
+| Context Hydration → | IMPLEMENTATION | TASK_DECOMPOSITION | ✅ | ✅ |
+| IMPLEMENTATION → | SELF_REVIEW | IMPLEMENTATION | ✅ | ✅ |
+| SELF_REVIEW → | QA | SELF_REVIEW | ✅ | ✅ |
+| QA → | SHIP_REVIEW | QA | ✅ | ✅ |
+| SHIP_REVIEW → | RETRO | SHIP_REVIEW | ✅ | ✅ |
+| 任意 → | Decision Layer | 决策冻结变更 | 变更流程 | 变更流程 |
 
 ---
 
 ## 强制阻断规则
 
 <HARD-GATE>
-1. **Phase 0.6 方案审核确认**: 用户必须明确确认方案选择，否则不能进入 Phase 1
-2. **Phase 1.5 Plan验证确认**: 用户必须明确确认 PLAN，否则不能进入 Phase 2
-3. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断流程
-4. **评审不通过**: 如果评审发现阻断性问题，必须修复后才能继续
+1. **REQUIREMENT_LOCK 需求确认**: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
+2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration
+3. **Context Hydration**: 执行层编码前必须完成上下文注水，否则禁止进入 IMPLEMENTATION
+4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
+5. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
+6. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
+7. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
 </HARD-GATE>
 
 ---
@@ -360,11 +380,92 @@ concurrency_model: "goroutine"          # 并发模型
 |------|-------|---------|------|
 | **Phase 2.5** | `design-review` | 涉及前端 | 前端视觉审查 |
 | **Phase 4** | `qa` | L3 任务 | QA 测试、功能验证 |
-| **Phase 5** | `cso` | L3 任务 | 安全扫描（✅ 已修复） |
+| **Phase 5** | `cso` | L3 任务 | 安全扫描 |
 | **Phase 6.5** | `codex` | L3 任务 | 跨模型审查 |
 | **Phase 7** | `qa` | 所有任务 | 部署验证 |
-| **Phase 7** | `ship` | L3 任务 | 发布准备（✅ 已修复） |
-| **Phase 7** | `canary` | L3 任务 | 部署后监控 |
+
+### 新三层架构路由
+
+v4.0 引入职责分层架构，映射旧技能到三层职责系统：
+
+| 层 | 职责 | 核心文件 | 映射的旧技能 |
+|:---|:-----|:---------|:------------|
+| **Decision Layer** | 多角色审议、方案决策 | [architecture-review](../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `plan-design-review`, `plan-devex-review`, `office-hours`, `brainstorming` |
+| **Context Layer** | 上下文持久化、契约强制 | [project-spec](../../../context-layer/specs/project-spec.md), [hydration](../../../context-layer/hydration/hydration.md) | `context-save`, `context-restore`, `learn` |
+| **Execution Layer** | 受约束实现、验证 | [implementation](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
+| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-to-execution](../../../bridges/context-to-execution.md) | 新增职责 |
+| **Governance** | 跨层规则强制 | [decision-freeze](../../../governance/decision-freeze.md) | `freeze`, `guard`, `careful` |
+
+---
+
+## 状态机与流程映射
+
+v4.0 引入严格的状态机，确保流程不可跳步：
+
+```
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
+    → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
+```
+
+| 旧 Phase | 新状态 | 层归属 | 产出物 |
+|:---------|:-------|:-------|:-------|
+| Phase 0.5a | DISCOVERY | Decision Layer | 需求文档（功能/非功能/边界） |
+| Phase 0.5b | ARCH_REVIEW | Decision Layer | 架构设计文档 + ADR |
+| Phase 0.6 | REQUIREMENT_LOCK | Decision Layer | 确认的需求清单 |
+| Phase 1 | TASK_DECOMPOSITION | Decision Layer | 任务清单（含验收标准） |
+| Phase 6 | IMPLEMENTATION | Execution Layer | 通过测试的代码 |
+| Phase 7 (自审) | SELF_REVIEW | Execution Layer | 自审报告（对照契约） |
+| Phase 4 | QA | Execution Layer | 回归测试报告 |
+| Phase 7 (发布) | SHIP_REVIEW | Governance | 发布检查清单 |
+| 新增 | RETRO | Governance | 复盘记录 |
+
+---
+
+## 三层架构核心原则
+
+1. **思考与实现严格分离**: Decision Layer 负责决策，Execution Layer 负责执行，互不越界
+2. **所有决策必须有记录和理由**: 每个 ADR 记录方案、否决理由、风险、回滚策略
+3. **上下文契约是唯一真相来源**: Context Layer 的 spec 是执行的唯一依据
+4. **执行时不允许偏离契约**: Execution Layer 必须在约束范围内工作
+5. **变更必须走正式流程**: 冻结项变更需退回 Decision Layer 重新审议
+
+---
+
+## 治理规则
+
+### 决策冻结
+一旦进入 IMPLEMENTATION 状态，以下内容被冻结：
+- 架构决策
+- 需求范围
+- API 契约
+- 领域边界
+
+变更冻结项必须退回 Decision Layer 重新审议。
+
+**详细规则**: [decision-freeze.md](../../../governance/decision-freeze.md)
+
+### 上下文注水
+进入 Execution Layer 前必须加载：
+1. project-spec（项目约束）
+2. architecture-spec（架构约束）
+3. 当前 ADR 历史
+4. 活跃约束清单
+
+**详细协议**: [context-to-execution.md](../../../bridges/context-to-execution.md)
+
+---
+
+## 三层架构文件索引
+
+| 路径 | 内容 |
+|:-----|:-----|
+| [decision-layer/reviews/](../../../decision-layer/reviews/) | 多角色审议协议 |
+| [context-layer/specs/](../../../context-layer/specs/) | 上下文约束契约 |
+| [context-layer/hydration/](../../../context-layer/hydration/) | 注水规范 |
+| [execution-layer/](../../../execution-layer/) | 执行规则 |
+| [bridges/](../../../bridges/) | 层间桥接协议 |
+| [governance/](../../../governance/) | 治理规则 |
+| [docs/design-docs/](../../../docs/design-docs/) | 设计文档 |
 
 ---
 
@@ -392,6 +493,11 @@ concurrency_model: "goroutine"          # 并发模型
 | **维护更新** | 同步策略、扩展方法 | [docs/maintenance.md](../../../docs/maintenance.md) |
 | **技能目录** | 技能分类说明 | [skills/README.md](../../../skills/README.md) |
 | **完整分析** | 三项目对比分析 | [COMPLETE_ANALYSIS.md](../../../COMPLETE_ANALYSIS.md) |
+| **三层架构设计** | AI Engineering Governance System 设计 | [docs/design-docs/002-ai-engineering-governance-system.md](../../../docs/design-docs/002-ai-engineering-governance-system.md) |
+| **决策层** | 多角色架构审议协议 | [decision-layer/reviews/architecture-review.md](../../../decision-layer/reviews/architecture-review.md) |
+| **上下文层** | 项目约束运行时契约 | [context-layer/specs/project-spec.md](../../../context-layer/specs/project-spec.md) |
+| **桥接层** | 上下文灌入协议 | [bridges/context-to-execution.md](../../../bridges/context-to-execution.md) |
+| **治理层** | 决策冻结规则 | [governance/decision-freeze.md](../../../governance/decision-freeze.md) |
 
 ### 同步更新清单
 
@@ -409,6 +515,7 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
+| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；修复所有悬空引用；Skill 路由表新增三层架构映射 |
 | v3.7 | 2026-05-15 | **GStack 完整集成**：从 8 个扩展到 48 个 GStack 技能（含 cso、ship、office-hours、plan-ceo-review 等核心技能）；修复路由表引用错误（`/cso` → `cso`、`/ship` → `ship`）；GStack 技能按类别分组（规划/设计/QA/安全/部署/调试/文档/浏览器） |
 | v3.6 | 2026-05-15 | **Task 拆解增强**：新增 Spec→Task 分解方法、5 类 Task 模板（Feature/Bugfix/Config/Refactor/Integration）、Task 依赖图（依赖/并行/阻塞）、跨切面处理机制；强化 Phase 0.5a 多子系统检测标准 |
 | v3.5 | 2026-05-15 | **重大更新**：编码前流程完全集成 Superpowers，Phase 1 委托给 writing-plans（TDD五步/No Placeholders/Self-Review/Execution Handoff），保留 gs-hybrid 专属增强（风险评估/边界条件/回滚策略/Plan验证确认硬阻断） |
@@ -483,7 +590,7 @@ AI: 启动规划流程...
 
 ---
 
-**版本**: v3.6 (任务拆解增强版，5类模板+依赖图+跨切面)
-**最后更新**: 2026-05-15
+**版本**: v4.0 (三层架构正式版 · AI Engineering Governance System)
+**最后更新**: 2026-05-16
 
 **详细文档请参考各模块文件。**

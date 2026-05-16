@@ -1,24 +1,24 @@
-# 03b - Phase 1: 逻辑规划 (writing-plans) + Phase 1.5
+# 03b — Decision Layer: TASK_DECOMPOSITION
 
-## Phase 1: 逻辑规划
+## TASK_DECOMPOSITION 状态
 
-**触发条件**: Phase 0.6 用户确认方案后 | **适用级别**: ✅ 所有级别必须
+**触发条件**: CONTEXT_COMPLETE 状态用户确认方案后 | **适用级别**: ✅ 所有级别必须
 
 **调用 Skill**: `writing-plans`
 
-> Phase 1 完全委托给 Superpowers 的 `writing-plans` 技能。
-> gs-hybrid 只在此之上增加：Spec→Task 分解方法、Task 模板分类、依赖图、跨切面处理、风险评估增强、回滚策略、Plan 验证确认（Phase 1.5）。
+> TASK_DECOMPOSITION 状态完全委托给 Superpowers 的 `writing-plans` 技能。
+> gs-hybrid 只在此之上增加：Spec→Task 分解方法、Task 模板分类、依赖图、跨切面处理、风险评估增强、回滚策略、Plan 验证确认。
 
 ---
 
-### Phase 1 执行流程
+### TASK_DECOMPOSITION 执行流程
 
 ```
-Phase 0.6 方案确认
+CONTEXT_COMPLETE 方案确认
   │
   ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  Phase 1: writing-plans + gs-hybrid 任务拆解增强              │
+│  TASK_DECOMPOSITION: writing-plans + gs-hybrid 任务拆解增强   │
 │                                                              │
 │  1. Scope Check (最终防线)                                    │
 │  2. File Structure (文件映射)                                 │
@@ -42,11 +42,11 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
   │
   ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  Phase 1.5: Plan 验证确认 (gs-hybrid 专属)                   │
+│  Plan 验证确认 (gs-hybrid 专属)                              │
 │  范围/风险/验收/回滚 验证 → 用户硬阻断确认                     │
 └──────────────────────────────────────────────────────────────┘
   │
-  ▼ Phase 2 (工程规范设计)
+  ▼ EXECUTION_DESIGN 状态 (工程规范设计)
 ```
 
 ---
@@ -55,13 +55,13 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 
 ### 1. Scope Check (最终防线)
 
-Phase 0.5a 已用结构化标准做过多子系统检测。这里作为**最后防线**：
+CONTEXT_COMPLETE 状态已用结构化标准做过多子系统检测。这里作为**最后防线**：
 
 - 如果 spec 仍覆盖多个独立子系统 → **在此提出拆**，不继续
 - 一个 plan 只产出可独立运行、可测试的软件
-- 一旦此阶段仍检测到多子系统，回退到 Phase 0.5a 重新拆解
+- 一旦此阶段仍检测到多子系统，回退到 CONTEXT_COMPLETE 状态重新拆解
 
-**参考判定标准** (与 Phase 0.5a 一致):
+**参考判定标准** (与 CONTEXT_COMPLETE 一致):
 - 独立数据模型 / 独立用户界面 / 独立部署单元 / 独立用户角色 / 独立外部依赖
 - 满足任意 2 项 → 独立子系统
 
@@ -570,16 +570,16 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 
 | 日期 | 变更内容 | 来源 |
 |------|---------|------|
-| YYYY-MM-DD | 初始版本 | Phase 1 writing-plans |
+| YYYY-MM-DD | 初始版本 | TASK_DECOMPOSITION writing-plans |
 
 ---
 
-## Phase 1.5: Plan 验证确认
+## Plan 验证确认
 
-**触发条件**: Phase 1 plan 完成后 | **适用级别**: 🔴 所有级别必须执行
+**触发条件**: TASK_DECOMPOSITION 状态 plan 完成后 | **适用级别**: 🔴 所有级别必须执行
 
 <HARD-GATE>
-**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能开始执行。
+**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能进入 EXECUTION_DESIGN 状态。
 </HARD-GATE>
 
 ### 验证清单
@@ -646,7 +646,7 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 
 ### 🚨 用户最终确认
 
-请确认 Plan 完整无误，可以开始执行：
+请确认 Plan 完整无误，可以进入下一状态：
 - [ ] 范围确认
 - [ ] Task 拆解方式认可
 - [ ] 风险接受
@@ -654,9 +654,9 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - [ ] 回滚方案确认
 
 **确认后请回复**:
-> "Plan 验证通过，请开始执行"
+> "Plan 验证通过，请进入 EXECUTION_DESIGN"
 
-**⚠️ 阻断规则**: 未收到用户明确确认前，不得开始 Phase 2 或 Phase 6
+**⚠️ 阻断规则**: 未收到用户明确确认前，不得进入 EXECUTION_DESIGN 或 EXECUTION 状态
 ```
 
 ### 简化版清单 (L1 任务)
@@ -671,18 +671,18 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - [ ] 回滚方案可行？
 
 ### 🚨 用户最终确认
-请确认可以开始执行。
+请确认可以进入下一状态。
 
 **确认后请回复**:
-> "Plan 验证通过，请开始执行"
+> "Plan 验证通过，请进入 EXECUTION_DESIGN"
 ```
 
 ### 阻断规则
 
 - ❌ 用户未回复 → 等待
 - ❌ 用户要求修改 → 修改后重新验证
-- ❌ 用户放弃 → 回到 Phase 0.6
-- ✅ 用户确认 → 继续 Phase 2
+- ❌ 用户放弃 → 回到 CONTEXT_COMPLETE 状态
+- ✅ 用户确认 → 继续 EXECUTION_DESIGN 状态
 
 ### 输出要求
 

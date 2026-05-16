@@ -78,6 +78,13 @@ create_backup() {
         cp -r "$PROJECT_ROOT/skills/hybrid" "$backup_path/skills/"
     fi
     
+    # 备份三层架构目录
+    for dir in decision-layer context-layer execution-layer bridges governance; do
+        if [[ -d "$PROJECT_ROOT/$dir" ]]; then
+            cp -r "$PROJECT_ROOT/$dir" "$backup_path/"
+        fi
+    done
+    
     # 备份 gstack-skills 目录
     if [[ -d "$PROJECT_ROOT/gstack-skills" ]]; then
         cp -r "$PROJECT_ROOT/gstack-skills" "$backup_path/"
@@ -123,6 +130,14 @@ do_rollback() {
         rm -rf "$PROJECT_ROOT/skills/hybrid"
         cp -r "$backup_path/skills/hybrid" "$PROJECT_ROOT/skills/"
     fi
+    
+    # 恢复三层架构目录
+    for dir in decision-layer context-layer execution-layer bridges governance; do
+        if [[ -d "$backup_path/$dir" ]]; then
+            rm -rf "$PROJECT_ROOT/$dir"
+            cp -r "$backup_path/$dir" "$PROJECT_ROOT/"
+        fi
+    done
     
     # 恢复 gstack-skills
     if [[ -d "$backup_path/gstack-skills" ]]; then
@@ -331,6 +346,13 @@ show_structure() {
     echo "├── gstack/          # GStack 工程技能 ($gs_count 个)"
     echo "├── hybrid/          # 混合流程技能 ($hybrid_count 个)"
     echo "└── custom/          # 自定义扩展"
+    echo ""
+    echo "三层架构目录:"
+    echo "├── decision-layer/  # 决策层 (多角色审议)"
+    echo "├── context-layer/   # 上下文层 (契约、注水)"
+    echo "├── execution-layer/ # 执行层 (受约束的实现)"
+    echo "├── bridges/         # 桥接层"
+    echo "└── governance/      # 治理层 (决策冻结)"
     echo ""
 }
 

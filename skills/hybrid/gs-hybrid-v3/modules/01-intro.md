@@ -1,4 +1,4 @@
-# 01 - 快速开始、项目配置、核心概念
+# 01 — 三层架构核心概念、项目配置
 
 ## 快速开始
 
@@ -6,46 +6,43 @@
 
 | 指令 | 流程 | 说明 |
 |------|------|------|
-| `/plan` 或 `hybrid plan` | 规划流程 | 新功能开发前的完整规划 |
-| `/review` 或 `hybrid review` | 代码审查 | 代码完成后的质量审查 |
-| `/test` 或 `hybrid test` | 测试驱动 | TDD 开发流程 |
-| `/ship` 或 `hybrid ship` | 发布准备 | 提交前的最终检查 |
-| `/qa` 或 `hybrid qa` | 质量保证 | 功能完成后的验证 |
+| `/plan` 或 `hybrid plan` | 规划流程 | IDEA → TASK_DECOMPOSITION |
+| `/review` 或 `hybrid review` | 自审/代码审查 | SELF_REVIEW 流程 |
+| `/test` 或 `hybrid test` | 测试驱动 | 进入 IMPLEMENTATION（确保 Context Hydration） |
+| `/qa` 或 `hybrid qa` | 质量保证 | QA 阶段验证 |
 | `/debug` 或 `hybrid debug` | 调试助手 | 问题诊断与修复 |
-| `/refactor` 或 `hybrid refactor` | 重构建议 | 代码改进与优化 |
+| `/refactor` 或 `hybrid refactor` | 重构建议 | 约束内代码改进 |
 
 ### 标准工作流
 
 ```
-用户: "hybrid 帮我开发新功能"
+用户: "hybrid 帮我开发用户认证功能"
 
-AI: 收到。我将按照 Superpowers + GStack Hybrid 流程执行：
+AI: 收到。我将按照 AI Engineering Governance System v4.0 执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
-Phase 0.5a: 需求澄清 (brainstorming - 渐进式提问 → spec 文件)
-Phase 0.5b: Design Doc 编写 (方案对比/设计决策存档)
-Phase 0.6:  方案审核确认 (用户必须确认方案选择)
-             ↓ 用户确认方案
-Phase 1:    结构化 Plan (writing-plans — Spec→Task 分解/5类模板/依赖图/No Placeholders)
-Phase 1.5:  Plan验证确认 (用户必须确认执行)
-             ↓ 用户确认执行
-Phase 2:    工程规范设计
-Phase 3:    架构师评审
-Phase 4:    QA 评审 (L3)
-Phase 5:    CSO 安全评审 (L3)
-Phase 6:    TDD 编码实现
-Phase 7:    验证交付
+
+◆ DECISION LAYER (决策层)
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
+      需求澄清      用户必须确认      多角色审议      任务拆解
+
+◆ CONTEXT LAYER (上下文层)
+Context Hydration (强制) — 加载所有 Spec 契约
+
+◆ EXECUTION LAYER (执行层)
+IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
+TDD编码      自审对照    QA验证     发布检查    复盘记录
 ```
 
 <HARD-GATE>
-在用户确认方案、审查 PLAN 之前，不要进入下一阶段。这适用于所有任务，无论看起来多简单。
+在用户确认需求、确认执行计划、完成上下文注水之前，不要进入下一阶段。这适用于 L2/L3 所有任务。
 </HARD-GATE>
 
 ---
 
 ## 项目配置
 
-**使用本 Skill 前，必须根据当前项目填充以下配置。** 所有 `{{KEY}}` 占位符将替换为下方对应值。若配置缺失，流程将阻断并提示补充。
+> **使用本 Skill 前，必须根据当前项目填充以下配置。** 所有 `{{KEY}}` 占位符将替换为下方对应值。若配置缺失，流程将阻断并提示补充。
 
 ### 通用配置模板
 
@@ -129,62 +126,58 @@ concurrency_model: "promise"
 
 ---
 
-## 核心概念定义
+## 三层架构核心概念
 
 | 概念 | 定义 |
-|-----|------|
-| **Design Doc** | 编号设计文档，存储在 `docs/design-docs/` 目录，记录重大功能/改动的调研、设计决策和演进理由 |
-| **方案审核确认** | 在 Design Doc 完成后、Plan 创建前，AI 必须展示多个可选方案对比，由用户确认选择哪个方案 |
-| **Plan验证确认** | 在 Plan 完成后、编码开始前，AI 必须进行范围、风险、验收标准的验证，由用户确认开始执行 |
-| **变更文件数** | 新增、修改、删除的文件总数（不含自动生成文件） |
-| **新增代码行** | 不含空行和注释的净增代码行数 |
-| **架构影响** | 涉及模块间接口、数据流、部署方式的变更 |
-| **风险等级** | 低：仅影响非核心功能；中：影响核心功能但可回滚；高：涉及数据迁移或不可逆变更 |
-| **接口变更** | 对已有公共 API 的签名、参数、返回值的修改 |
-| **依赖变更** | 新增或替换项目依赖管理器中的外部依赖 |
+|------|------|
+| **Decision Layer (决策层)** | 负责想清楚做什么：需求发散、多角色审议、ADR 决策 |
+| **Context Layer (上下文层)** | 负责固化共识：Spec 契约、约束、边界，防止上下文漂移 |
+| **Execution Layer (执行层)** | 负责受约束实现：TDD 编码、自审、验证，**不能做设计决策** |
+| **Context Hydration (上下文注水)** | 进入执行层前必须加载所有 Spec，确保执行是在约束内完成 |
+| **Decision Freeze (决策冻结)** | 执行期间架构/需求/契约不可自行更改，必须走 Decision Layer 变更流程 |
+| **ADR (Architecture Decision Record)** | 架构决策记录，存储在 `docs/design-docs/` 目录 |
+| **Spec Contract (Spec 契约)** | 上下文层的项目/架构/约束/边界文档，是执行的唯一真相来源 |
+| **5 个决策维度** | 产品、架构、性能、安全、运维，多角色审议的独立视角 |
 
 ---
 
-## Skill 路由表（按需加载）
+## Skill 路由表（向后兼容）
 
-> **核心理念**: 不同阶段加载不同的 skill，避免一次性加载所有 skill 消耗上下文。
+### 三层架构路由
 
-### Superpowers Skills 路由
+| 层 | 核心文件 | 映射的原技能 |
+|----|---------|-------------|
+| Decision Layer | [architecture-review.md](../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `brainstorming`, `design` |
+| Context Layer | [context-to-execution.md](../../../bridges/context-to-execution.md), [project-spec.md](../../../context-layer/specs/project-spec.md) | `context-save`, `context-restore` |
+| Execution Layer | [implementation.md](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
+| Bridges | [decision-to-context.md](../../../bridges/decision-to-context.md) | 新增职责 |
+| Governance | [decision-freeze.md](../../../governance/decision-freeze.md) | 新增职责 |
 
-| 阶段 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **Phase 0.5a** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
-| **Phase 0.5b** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
-| **Phase 1** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
-| **Phase 1.5** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
-| **Phase 2** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
-| **Phase 3** | `requesting-code-review` | L3 任务 | 架构评审 |
-| **Phase 6** | `test-driven-development` | 所有任务 | TDD 编码 |
-| **Phase 7** | `verification-before-completion` | 所有任务 | 验证交付 |
+### 原技能保留参考
 
-### GStack Skills 路由
-
-| 阶段 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **Phase 2.5** | `/design-review` | 涉及前端 | 前端视觉审查 |
-| **Phase 4** | `/qa` | L3 任务 | QA 测试、功能验证 |
-| **Phase 5** | `/cso` | L3 任务 | 安全扫描 |
-| **Phase 7** | `/qa` | 所有任务 | 部署验证 |
-| **Phase 7** | `/ship` | L3 任务 | 发布准备 |
+| 原阶段 | 新状态 | 用途 |
+|-------|-------|------|
+| Phase 0.5a | DISCOVERY | 需求澄清 (brainstorming) |
+| Phase 0.5b | ARCH_REVIEW | 架构审议 (architecture-review) |
+| Phase 0.6 | REQUIREMENT_LOCK | 需求确认 |
+| Phase 1 | TASK_DECOMPOSITION | 任务拆解 (writing-plans) |
+| Phase 1.5 | TASK_DECOMPOSITION 确认 | 用户确认执行计划 |
+| Phase 2-3 | ARCH_REVIEW 已包含 | 架构评审已合并到多角色审议 |
+| Phase 4-5 | QA | QA 验证 (GStack qa) |
+| Phase 6 | IMPLEMENTATION | TDD 编码 (test-driven-development) |
+| Phase 7 | SELF_REVIEW/SHIP_REVIEW | 自审、发布检查 |
 
 ---
 
 ## 模块文件索引
 
-按需加载参考以下模块：
-
 | 模块 | 内容 |
 |------|------|
 | [02-complexity.md](./02-complexity.md) | 复杂度分级、适用矩阵 |
-| [03a-phase-0-06.md](./03a-phase-0-06.md) | Step 0 + Phase 0.5 + 0.6 |
-| [03b-phase-1.md](./03b-phase-1.md) | Phase 1 逻辑规划 |
-| [04a-phase-2-3.md](./04a-phase-2-3.md) | Phase 2-3 工程规范 |
-| [04b-phase-4-5.md](./04b-phase-4-5.md) | Phase 4-5 QA/安全评审 |
-| [05-phase-6-7.md](./05-phase-6-7.md) | Phase 6-7 编码验证 |
+| [03a-discovery-arch.md](./03a-discovery-arch.md) | IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW |
+| [03b-task-decomposition.md](./03b-task-decomposition.md) | TASK_DECOMPOSITION |
+| [04a-execution-hydration.md](./04a-execution-hydration.md) | Context Hydration → IMPLEMENTATION |
+| [04b-self-review.md](./04b-self-review.md) | SELF_REVIEW → QA |
+| [05-ship-review-retro.md](./05-ship-review-retro.md) | SHIP_REVIEW → RETRO |
 | [06-workflows.md](./06-workflows.md) | 专用流程指令 |
-| [07-handling.md](./07-handling.md) | 异常处理机制 |
+| [07-handling.md](./07-handling.md) | 异常处理、变更流程 |
