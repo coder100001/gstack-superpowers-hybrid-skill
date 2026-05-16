@@ -109,7 +109,15 @@ v4.0 解决了以下关键问题：
 - L1 任务涉及边界模糊时触发
 - 用户明确要求评审时触发
 
-**决策维度 (5个)**:
+**决策维度（按复杂度分级）**:
+
+| 级别 | 启用维度 | 说明 |
+|------|---------|------|
+| L1 | 跳过 | 无架构变更时不触发 ARCH_REVIEW |
+| L2 | Product + Architect | 2 维度审议，聚焦业务价值与技术可行性 |
+| L3 | 全 5 维度 | Product + Architect + Performance + Security + Operations |
+
+**5 个维度定义**（L3 全量，L2 仅用前 2 项）：
 
 | 维度 | 审议重点 | 映射技能 |
 |------|---------|:---------|
@@ -126,6 +134,8 @@ v4.0 解决了以下关键问题：
 - 回滚策略
 - 架构决策记录 (ADR)
 
+详细审议规则请参考 [SKILL.md - 架构审议章节](../skills/hybrid/gs-hybrid-v3/modules/03a-discovery-arch.md)
+
 ### Context Layer (上下文层)
 
 **职责**: 上下文持久化、Spec 契约、边界强制
@@ -140,14 +150,18 @@ v4.0 解决了以下关键问题：
 | **constraints-spec** | 事务、并发、命名、安全 | 实现级 |
 | **ADR** | 架构决策历史 | 全局 |
 
-**上下文注水协议**:
-在执行任何实现工作前，必须加载：
-1. 项目规范（project-spec）
-2. 架构规范（architecture-spec）
-3. 活跃决策（当前 ADR）
-4. 活跃约束（active constraints）
+**上下文注水协议（分级制）**:
 
-注水完成前禁止进入执行层。
+| 优先级 | 加载内容 | L1 | L2 | L3 |
+|--------|---------|:--:|:--:|:--:|
+| **P0** | 技术栈确认 + 当前任务验收标准 + 模块边界 | ✅ | ✅ | ✅ |
+| **P1** | 工程规范 + 性能约束 + 相关 ADR | ⚪ | 🟡 | ✅ |
+| **P2** | 完整架构图 + SOLID 检查 + 全部 ADR 历史 | ⚪ | ⚪ | ✅ |
+
+**阻断规则**: P0 项缺失 → 禁止进入 Execution Layer。  
+**记录规则**: P1/P2 项缺失 → 记录技术债务，不阻断。
+
+详细注水规则请参考 [SKILL.md - Context Hydration 章节](../skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md)
 
 ### Execution Layer (执行层)
 
@@ -200,21 +214,35 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 ### 状态详情
 
-| 状态 | 层归属 | 职责 | 产出物 | L1 | L2/L3 |
-|------|--------|------|---------|:----|:------|
-| **IDEA** | Decision | 任务接收 | — | ✅ | ✅ |
-| **DISCOVERY** | Decision | 需求澄清 (brainstorming) | 需求文档（功能/非功能/边界） | ⚪ | 🔴 |
-| **REQUIREMENT_LOCK** | Decision | 需求确认 | 确认的需求清单 | 🔴 | 🔴 |
-| **ARCH_REVIEW** | Decision | 多角色架构审议 | 架构设计文档 + ADR | ⚪ | 🔴 |
-| **TASK_DECOMPOSITION** | Decision | 任务拆解 | 任务清单（含验收标准） | ✅ | ✅ |
-| **Context Hydration** | Context Bridge | 加载 Spec 契约 | 注水完成确认 | 🔴 | 🔴 |
-| **IMPLEMENTATION** | Execution | TDD 编码（决策冻结） | 通过测试的代码 | ✅ | ✅ |
-| **SELF_REVIEW** | Execution | 对照契约自审 | 自审报告 | ✅ | ✅ |
-| **QA** | Execution | 质量验证 | 回归测试报告 | ✅ | 🟡 |
-| **SHIP_REVIEW** | Governance | 发布检查 | 发布检查清单 | ✅ | 🟡 |
-| **RETRO** | Governance | 复盘记录 | 复盘记录 | ✅ | ⚪ |
+| 状态 | 层归属 | 职责 | 产出物 | L1 | L2 | L3 |
+|------|--------|------|---------|:--:|:--:|:--:|
+| **IDEA** | Decision | 任务接收 | — | ✅ | ✅ | ✅ |
+| **DISCOVERY** | Decision | 需求澄清 (brainstorming) | 需求文档 | ⚪ | 🔴 | 🔴 |
+| **REQUIREMENT_LOCK** | Decision | 需求确认 | 确认的需求清单 | 🔴(合并) | 🔴 | 🔴 |
+| **ARCH_REVIEW** | Decision | 多角色架构审议 | 架构设计 + ADR | ⚪ | 🟡 | 🔴 |
+| **TASK_DECOMPOSITION** | Decision | 任务拆解 | 任务清单 | ✅ | ✅ | ✅ |
+| **PLAN_CONFIRM** | Decision | Plan 验证确认 | 确认记录 | 🔴(合并) | 🔴 | 🔴 |
+| **Context Hydration** | Context Bridge | 加载 Spec 契约 | 注水完成确认 | ⚪ | 🟡 | 🔴 |
+| **IMPLEMENTATION** | Execution | TDD 编码（决策冻结） | 通过测试的代码 | ✅ | ✅ | ✅ |
+| **SELF_REVIEW** | Execution | 对照契约自审 | 自审报告 | ⚪ | 🟡 | 🔴 |
+| **QA** | Execution | 质量验证 | 回归测试报告 | ⚪ | ⚪ | 🔴 |
+| **SHIP_REVIEW** | Governance | 发布检查 | 发布检查清单 | ✅ | ✅ | ✅ |
+| **RETRO** | Governance | 复盘记录 | 复盘记录 | ⚪ | ⚪ | 🔴 |
 
-**图例**: ✅ 必须 · 🟡 L2+必须 · 🔴 L3必须/强制确认 · ⚪ 可选
+**图例**: ✅ 必须 · 🟡 L2+必须 · 🔴 必须/强制确认 · ⚪ 可选 · 🔴(合并) L1 合并确认
+
+### L1 快速通道规则
+
+L1 任务（文件<3, 代码<100行）适用以下简化：
+- DISCOVERY + REQUIREMENT_LOCK → **合并为单次确认**
+- TASK_DECOMPOSITION + PLAN_CONFIRM → **合并为单次确认**
+- ARCH_REVIEW → **跳过**（无架构变更时）
+- Context Hydration → **仅 P0 阻断项**（技术栈 + 验收标准）
+- SELF_REVIEW → **跳过**
+- QA → **跳过**
+- RETRO → **跳过**
+
+详细分级规则请参考 [SKILL.md - 复杂度评估章节](../skills/hybrid/gs-hybrid-v3/modules/02-complexity.md)
 
 ### 状态转换验证
 
@@ -462,14 +490,19 @@ Layer          Layer          Layer
 <HARD-GATE>
 
 1. **REQUIREMENT_LOCK 需求确认**: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
+   - L1 快速通道: 可与 DISCOVERY 合并为单次确认
 2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration
-3. **Context Hydration**: 执行层编码前必须完成上下文注水，否则禁止进入 IMPLEMENTATION
+   - L1 快速通道: 可与 REQUIREMENT_LOCK 合并为单次确认
+3. **Context Hydration**: 执行层编码前必须完成 P0 项加载，否则禁止进入 IMPLEMENTATION
 4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
 5. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
-6. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
+6. **配置缺失**: 优先自动发现，失败则提示用户补充，记录为技术债务
 7. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
+8. **GStack 技能激活**: 满足触发条件时必须显式调用，不得跳过
 
 </HARD-GATE>
+
+详细阻断规则请参考 [SKILL.md - 各模块硬阻断定义](../skills/hybrid/gs-hybrid-v3/modules/)
 
 ---
 
@@ -598,9 +631,23 @@ specs/plans/PLAN-XXX.md (TASK_DECOMPOSITION)
 
 | 版本 | 日期 | 变更内容 |
 |------|------|:---------|
+| **v4.1** | **2026-05-16** | **规则化重构**: L1 快速通道（合并确认点）；ARCH_REVIEW 分级审议（L2→2维度，L3→5维度）；Context Hydration 分级（P0/P1/P2）；GStack 技能显式激活规则；安全审查委托 gstack:cso；项目配置自动发现；文档单一真相源 |
 | **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 完全重写，从 5 层架构升级为 3 层（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；与 SKILL.md 和 design-doc-002 完全一致 |
 | v3.7 | 2026-05-15 | GStack 完整集成：从 8 个扩展到 48 个 GStack 技能 |
 | v3.0 | 2026-05-12 | 初始版本，结合 Superpowers + GStack |
+
+---
+
+## 文档维护规则
+
+**本文档为索引层**，所有详细规则指向 [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)。禁止在本文档中重复定义与 SKILL.md 冲突的内容。
+
+| 文档 | 角色 | 同步方式 |
+|:-----|:-----|:---------|
+| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | 唯一真相源 | 手动维护 |
+| [README.md](../README.md) | 项目索引 | 链接引用 |
+| [getting-started.md](./getting-started.md) | 快速开始 | 链接引用 |
+| [skills-reference.md](./skills-reference.md) | 技能列表 | 自动生成 |
 
 ---
 

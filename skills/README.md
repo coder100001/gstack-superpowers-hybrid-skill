@@ -67,9 +67,12 @@ skills/
 
 **特点**:
 - 模块化设计，按需加载
-- 复杂度分级 (L1/L2/L3)
-- 多角色评审 (架构师/QA/CSO)
+- 复杂度分级 (L1/L2/L3)，L1 快速通道合并确认点
+- 多角色评审 (L2→2维度，L3→5维度)
+- GStack 技能显式激活（满足条件时调用）
 - 强制确认机制
+
+**主入口**: [gs-hybrid-v3/SKILL.md](./hybrid/gs-hybrid-v3/SKILL.md)
 
 **使用方式**:
 ```bash
@@ -85,6 +88,8 @@ hybrid 帮我开发新功能
 /debug   # 调试助手
 /refactor # 重构建议
 ```
+
+**文档维护规则**: 本目录下所有技能的详细定义以其各自的 SKILL.md 为唯一真相源。本文档仅提供索引，禁止重复定义。
 
 ### 4. custom/ - 自定义扩展
 
@@ -125,8 +130,8 @@ hybrid 帮我开发新功能
 
 1. **Superpowers 技能**: 完全由上游同步，不要手动修改
 2. **GStack 技能**: 完全由上游同步，不要手动修改
-3. **Hybrid 技能**: 可以修改，但建议通过扩展方式
-4. **Custom 技能**: 完全自由，不会被同步影响
+3. **Hybrid 技能**: 以 [SKILL.md](./hybrid/gs-hybrid-v3/SKILL.md) 为唯一真相源，修改后同步相关索引文档
+4. **Custom 技能**: 完全自由，不受同步影响
 
 ### 扩展方式
 
@@ -169,10 +174,24 @@ custom/
 
 ---
 
+## 文档维护规则
+
+| 文档 | 角色 | 同步方式 |
+|:-----|:-----|:---------|
+| [SKILL.md](./hybrid/gs-hybrid-v3/SKILL.md) | 唯一真相源 | 手动维护 |
+| [README.md](../README.md) | 项目索引 | 链接引用 |
+| [getting-started.md](../docs/getting-started.md) | 快速开始 | 链接引用 |
+| [architecture.md](../docs/architecture.md) | 架构设计 | 链接引用 |
+| [skills-reference.md](../docs/skills-reference.md) | 技能列表 | 自动生成 |
+
+**原则**: 所有详细规则以 SKILL.md 为准。其他文档仅提供索引和链接，禁止重复定义。
+
+---
+
 ## 最佳实践
 
 1. **定期同步**: 建议每周运行一次同步脚本
 2. **同步前备份**: 使用 `--backup` 参数创建备份
 3. **验证后提交**: 同步后在测试环境验证
 4. **自定义隔离**: 所有自定义内容放在 `custom/` 目录
-5. **文档更新**: 修改技能后更新相关文档
+5. **文档更新**: 修改 SKILL.md 后，同步更新相关索引文档（README.md, getting-started.md, architecture.md）

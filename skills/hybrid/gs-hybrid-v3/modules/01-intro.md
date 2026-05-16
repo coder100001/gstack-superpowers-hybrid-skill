@@ -42,87 +42,50 @@ TDD编码      自审对照    QA验证     发布检查    复盘记录
 
 ## 项目配置
 
-> **使用本 Skill 前，必须根据当前项目填充以下配置。** 所有 `{{KEY}}` 占位符将替换为下方对应值。若配置缺失，流程将阻断并提示补充。
+> **配置加载优先级**: 自动发现 > 显式配置 > 默认模板
+> 若自动发现失败且未提供显式配置，流程将阻断并提示补充。
 
-### 通用配置模板
+### 配置自动发现规则
+
+进入 Step 0（复杂度评估）时，AI 必须按以下顺序尝试自动发现项目配置：
+
+| 配置项 | 发现路径 | 示例 |
+|--------|---------|------|
+| **language** | `package.json` → `go.mod` → `pyproject.toml` → `Cargo.toml` | `"TypeScript"`, `"Go"`, `"Python"` |
+| **test_command** | `package.json` scripts.test → `Makefile` test → 语言默认 | `"npm test"`, `"go test ./..."` |
+| **lint_command** | `package.json` scripts.lint → `.github/workflows` → 语言默认 | `"eslint ."`, `"golangci-lint run"` |
+| **security_scanner** | 语言推断 | `"npm audit"`, `"gosec ./..."` |
+
+**自动发现成功** → 记录到上下文，继续流程  
+**自动发现失败** → 提示用户提供，不阻断但记录为技术债务
+
+### 显式配置模板（自动发现失败时使用）
 
 ```yaml
-# ============================================================
-# 项目基础配置
-# ============================================================
 project:
   name: "your-project-name"
-  language: "Go 1.21+"  # 或 "Python 3.11+", "TypeScript 5.0+"
-  framework: "Gin"      # 或 "Django", "React", etc.
+  language: "Go 1.21+"
+  framework: "Gin"
 
-# ============================================================
-# 测试配置
-# ============================================================
 testing:
   test_command: "go test ./... -race"
   coverage_command: "go test ./... -coverprofile=coverage.out"
-  bench_command: "go test -bench=. -benchmem ./..."
 
-# ============================================================
-# 代码质量
-# ============================================================
 quality:
   lint_command: "golangci-lint run"
-  code_review_guide: "https://github.com/golang/go/wiki/CodeReviewComments"
 
-# ============================================================
-# 安全扫描
-# ============================================================
 security:
   scanner: "gosec ./..."
-  secret_patterns:
-    - "password\\s*=\\s*[\"'][^\"']*[\"']"
-    - "api_key\\s*=\\s*[\"'][^\"']*[\"']"
-  injection_patterns:
-    - "fmt\\.Sprintf.*%s.*query"
-    - "exec\\.Command.*input"
 
-# ============================================================
-# 并发模型 (用于泄漏检查)
-# ============================================================
 concurrency:
-  model: "goroutine"  # 或 "asyncio", "thread"
+  model: "goroutine"
 ```
 
-### 快速配置示例
+### 快速配置参考
 
-**Go 项目**:
-```yaml
-language: "Go 1.21+"
-test_command: "go test ./... -race"
-coverage_command: "go test ./... -coverprofile=coverage.out"
-bench_command: "go test -bench=. -benchmem ./..."
-lint_command: "golangci-lint run"
-security_scanner: "gosec ./..."
-concurrency_model: "goroutine"
-```
-
-**Python 项目**:
-```yaml
-language: "Python 3.11+"
-test_command: "pytest --cov=src tests/"
-coverage_command: "pytest --cov-report=xml --cov=src tests/"
-bench_command: "pytest --benchmark-only tests/"
-lint_command: "ruff check . && black --check ."
-security_scanner: "bandit -r src/"
-concurrency_model: "asyncio"
-```
-
-**Node.js/TypeScript 项目**:
-```yaml
-language: "TypeScript 5.0+"
-test_command: "npm test"
-coverage_command: "npm run test:coverage"
-bench_command: "npm run benchmark"
-lint_command: "eslint . --ext .ts,.tsx"
-security_scanner: "npm audit"
-concurrency_model: "promise"
-```
+**Go**: `go test ./... -race` / `golangci-lint run` / `gosec ./...`  
+**Python**: `pytest` / `ruff check .` / `bandit -r src/`  
+**Node.js**: `npm test` / `eslint .` / `npm audit`
 
 ---
 

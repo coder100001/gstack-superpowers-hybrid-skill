@@ -59,13 +59,15 @@
 
 **简化流程**:
 ```
-Step 0 → Phase 0.6 → Phase 1 → Phase 1.5 → Phase 6 → Phase 7
+Step 0 → DISCOVERY → REQUIREMENT_LOCK → TASK_DECOMPOSITION → IMPLEMENTATION → SHIP_REVIEW
 ```
 
-**要求**: 
-- Phase 0.6 和 Phase 1.5 必须执行，不能跳过
-- 可跳过 Design Doc (Phase 0.5)
-- 可跳过多角色评审 (Phase 2-5)
+**要求**:
+- DISCOVERY 与 REQUIREMENT_LOCK 合并为单次确认（见 03a-discovery-arch.md L1 快速通道）
+- TASK_DECOMPOSITION 与 PLAN 验证合并为单次确认（见 03b-task-decomposition.md L1 快速通道）
+- 可跳过 ARCH_REVIEW（无架构变更时）
+- 可跳过 SELF_REVIEW/QA（编码后直接进入 SHIP_REVIEW）
+- 不产出独立 ADR
 
 ### L2 - 中等任务 (标准流程)
 
@@ -77,14 +79,14 @@ Step 0 → Phase 0.6 → Phase 1 → Phase 1.5 → Phase 6 → Phase 7
 
 **标准流程**:
 ```
-Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5 → Phase 2-3 → Phase 6 → Phase 7
+Step 0 → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → Context Hydration → IMPLEMENTATION → SELF_REVIEW → SHIP_REVIEW
 ```
 
-**注意**: 
-- Phase 0.6 和 Phase 1.5 必须执行
-- 需要 Phase 0.5 (Design Doc)
-- 需要 Phase 2-3 (工程规范 + 架构评审)
-- 可跳过 Phase 4-5 (QA/安全评审)
+**要求**:
+- REQUIREMENT_LOCK 与 TASK_DECOMPOSITION 确认分离（两次硬阻断）
+- ARCH_REVIEW 启用 2 维度审议（Product + Architect，见 03a-discovery-arch.md）
+- 可跳过 QA（L2 不强制）
+- 产出简要 ADR
 
 ### L3 - 复杂任务 (完整流程)
 
@@ -96,30 +98,36 @@ Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5 → Phase 2-3 → P
 
 **完整流程**:
 ```
-Step 0 → Phase 0.5 → Phase 0.6 → Phase 1 → Phase 1.5 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
+Step 0 → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → Context Hydration → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
-**要求**: 所有阶段必须执行
+**要求**:
+- 所有硬阻断点必须执行（REQUIREMENT_LOCK、TASK_DECOMPOSITION 确认）
+- ARCH_REVIEW 启用全 5 维度审议
+- QA 强制（调用 gstack:qa）
+- RETRO 强制产出复盘记录
+- 产出完整 ADR
 
 ---
 
 ## 流程阶段适用矩阵
 
-| Phase | 名称 | L1 | L2 | L3 | 说明 |
+| 状态 | 名称 | L1 | L2 | L3 | 说明 |
 |:-----:|------|:--:|:--:|:--:|------|
-| 0 | 复杂度评估 | ✅ | ✅ | ✅ | 所有任务必须 |
-| 0.5 | Design Doc | ⚪ | 🔴 | 🔴 | L2+ 必须 |
-| 0.6 | 方案审核确认 | 🔴 | 🔴 | 🔴 | 所有级别必须 |
-| 1 | 逻辑规划 | ✅ | ✅ | ✅ | 所有级别必须 |
-| 1.5 | Plan验证确认 | 🔴 | 🔴 | 🔴 | 所有级别必须 |
-| 2 | 工程规范设计 | ⚪ | 🟡 | 🔴 | L1 可选，L2+ 必须 |
-| 3 | 架构师评审 | ⚪ | 🟡 | 🔴 | L1 可选，L2+ 必须 |
-| 4 | QA 评审 | ⚪ | ⚪ | 🔴 | L3 必须 |
-| 5 | CSO 安全评审 | ⚪ | ⚪ | 🔴 | L3 必须 |
-| 6 | 编码实现 | ✅ | ✅ | ✅ | 所有级别必须 |
-| 7 | 验证交付 | ✅ | ✅ | ✅ | 所有级别必须 |
+| Step 0 | 复杂度评估 | ✅ | ✅ | ✅ | 所有任务必须 |
+| DISCOVERY | 需求澄清 | ⚪ | 🔴 | 🔴 | L1 可选，L2+ 必须 |
+| REQUIREMENT_LOCK | 需求确认 | 🔴(合并) | 🔴 | 🔴 | L1 与 DISCOVERY 合并确认 |
+| ARCH_REVIEW | 架构审议 | ⚪ | 🟡 | 🔴 | L1 跳过，L2→2维度，L3→5维度 |
+| TASK_DECOMPOSITION | 任务拆解 | ✅ | ✅ | ✅ | 所有级别必须 |
+| PLAN_CONFIRM | Plan 确认 | 🔴(合并) | 🔴 | 🔴 | L1 与 TASK_DECOMPOSITION 合并确认 |
+| Context Hydration | 上下文注水 | ⚪ | 🟡 | 🔴 | L1 简化，L2+ 必须 |
+| IMPLEMENTATION | 编码实现 | ✅ | ✅ | ✅ | 所有级别必须 |
+| SELF_REVIEW | 自审 | ⚪ | 🟡 | 🔴 | L1 跳过，L2+ 必须 |
+| QA | 质量验证 | ⚪ | ⚪ | 🔴 | 仅 L3 强制（调用 gstack:qa） |
+| SHIP_REVIEW | 发布检查 | ✅ | ✅ | ✅ | 所有级别必须 |
+| RETRO | 复盘记录 | ⚪ | ⚪ | 🔴 | 仅 L3 强制 |
 
-> 图例：✅ 必须 | 🟡 L2+ 必须 | 🔴 必须 | ⚪ 可选
+> 图例：✅ 必须 | 🟡 L2+ 必须 | 🔴 必须 | ⚪ 可选 | 🔴(合并) L1 合并确认
 
 ---
 

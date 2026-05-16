@@ -59,85 +59,53 @@ ls gstack-skills/bin/ | wc -l  # 应该显示 53+
 
 ### 项目配置
 
+**配置加载优先级**: 自动发现 > 显式配置 > 默认模板。
+
+详细配置规则请参考 [SKILL.md - 项目配置章节](../skills/hybrid/gs-hybrid-v3/modules/01-intro.md)。
+
+#### 自动发现规则
+
+进入 Step 0（复杂度评估）时，AI 按以下顺序尝试自动发现项目配置：
+
+| 配置项 | 发现路径 | 示例 |
+|--------|---------|------|
+| **language** | `package.json` → `go.mod` → `pyproject.toml` → `Cargo.toml` | `"TypeScript"`, `"Go"`, `"Python"` |
+| **test_command** | `package.json` scripts.test → `Makefile` test → 语言默认 | `"npm test"`, `"go test ./..."` |
+| **lint_command** | `package.json` scripts.lint → `.github/workflows` → 语言默认 | `"eslint ."`, `"golangci-lint run"` |
+| **security_scanner** | 语言推断 | `"npm audit"`, `"gosec ./..."` |
+
+**自动发现成功** → 记录到上下文，继续流程  
+**自动发现失败** → 提示用户提供，不阻断但记录为技术债务
+
+#### 显式配置（自动发现失败时使用）
+
 在项目根目录创建 `.trae/rules/project_rules.md`：
 
 ```yaml
-# ============================================================
-# 项目基础配置
-# ============================================================
 project:
   name: "your-project-name"
-  language: "Go 1.21+"  # 或 "Python 3.11+", "TypeScript 5.0+"
-  framework: "Gin"      # 或 "Django", "React", etc.
+  language: "Go 1.21+"
+  framework: "Gin"
 
-# ============================================================
-# 测试配置
-# ============================================================
 testing:
   test_command: "go test ./... -race"
   coverage_command: "go test ./... -coverprofile=coverage.out"
-  bench_command: "go test -bench=. -benchmem ./..."
 
-# ============================================================
-# 代码质量
-# ============================================================
 quality:
   lint_command: "golangci-lint run"
-  code_review_guide: "https://github.com/golang/go/wiki/CodeReviewComments"
 
-# ============================================================
-# 安全扫描
-# ============================================================
 security:
   scanner: "gosec ./..."
-  secret_patterns:
-    - "password\\s*=\\s*[\"'][^\"']*[\"']"
-    - "api_key\\s*=\\s*[\"'][^\"']*[\"']"
-  injection_patterns:
-    - "fmt\\.Sprintf.*%s.*query"
-    - "exec\\.Command.*input"
 
-# ============================================================
-# 并发模型
-# ============================================================
 concurrency:
-  model: "goroutine"  # 或 "asyncio", "thread"
+  model: "goroutine"
 ```
 
-### 快速配置示例
+#### 快速配置参考
 
-**Go 项目**:
-```yaml
-language: "Go 1.21+"
-test_command: "go test ./... -race"
-coverage_command: "go test ./... -coverprofile=coverage.out"
-bench_command: "go test -bench=. -benchmem ./..."
-lint_command: "golangci-lint run"
-security_scanner: "gosec ./..."
-concurrency_model: "goroutine"
-```
-
-**Python 项目**:
-```yaml
-language: "Python 3.11+"
-test_command: "pytest --cov=src tests/"
-coverage_command: "pytest --cov-report=xml --cov=src tests/"
-bench_command: "pytest --benchmark-only tests/"
-lint_command: "ruff check . &amp;&amp; black --check ."
-security_scanner: "bandit -r src/"
-concurrency_model: "asyncio"
-```
-
-**Node.js/TypeScript 项目**:
-```yaml
-language: "TypeScript 5.0+"
-test_command: "npm test"
-coverage_command: "npm run test:coverage"
-bench_command: "npm run benchmark"
-lint_command: "eslint . --ext .ts,.tsx"
-security_scanner: "npm audit"
-concurrency_model: "promise"
-```
+**Go**: `go test ./... -race` / `golangci-lint run` / `gosec ./...`  
+**Python**: `pytest` / `ruff check .` / `bandit -r src/`  
+**Node.js**: `npm test` / `eslint .` / `npm audit`
 
 ---
 
@@ -181,15 +149,19 @@ AI 将执行：
 6. **Context Hydration**: 上下文契约注入
 7. **IMPLEMENTATION**: TDD 编码实现
 8. **SELF_REVIEW**: 自审（对照契约）
-9. **QA**: 质量验证
+9. **QA**: 质量验证（L3 强制，调用 gstack:qa）
 10. **SHIP_REVIEW**: 交付审查
-11. **RETRO**: 复盘记录
+11. **RETRO**: 复盘记录（L3 强制）
 
 ### 复杂度分级响应
 
-- **L1（小修复）**：可跳过决策层，直接执行，但必须自审
-- **L2（新功能/中等重构）**：必须经过决策层架构评审和上下文注水
-- **L3（跨系统/安全敏感）**：必须全流程，含多角色审议、安全评审、QA、复盘
+| 级别 | 判定标准 | 简化规则 |
+|------|---------|---------|
+| **L1（小修复）** | 文件<3, 代码<100行 | DISCOVERY + REQUIREMENT_LOCK 合并为单次确认；可跳过 ARCH_REVIEW；不产出独立 ADR |
+| **L2（新功能/中等重构）** | 文件3-8, 代码100-500行 | ARCH_REVIEW 启用 2 维度审议（Product + Architect）；QA 可选 |
+| **L3（跨系统/安全敏感）** | 文件>8, 代码>500行 | 全流程；ARCH_REVIEW 全 5 维度；QA 强制（gstack:qa）；RETRO 强制 |
+
+> 详细分级规则请参考 [SKILL.md - 复杂度评估章节](../skills/hybrid/gs-hybrid-v3/modules/02-complexity.md)
 
 ### 专用指令
 
@@ -344,6 +316,8 @@ skills/custom/
 - 避免 AI 擅自决定重要事项
 - 减少返工和方向错误
 
+**L1 快速通道**: 简单任务可将需求确认与 Plan 确认合并为单次对话。
+
 ### Q7: 什么是 Context Hydration？
 
 Context Hydration 是执行层的强制前置步骤：
@@ -352,11 +326,28 @@ Context Hydration 是执行层的强制前置步骤：
 3. 明确当前状态和约束
 4. 确认理解后才允许进入编码
 
+**分级规则**: L1 仅需 P0 阻断项（技术栈 + 验收标准），L2+ 需完整加载。
+
+### Q8: GStack 技能何时激活？
+
+GStack 技能不是默认加载，而是满足条件时显式调用：
+- 代码涉及用户输入 → 调用 `gstack:cso`
+- L3 任务 → 调用 `gstack:qa`
+- 性能敏感任务 → 调用 `gstack:benchmark`
+- 发布/部署 → 调用 `gstack:ship`
+
+详细路由请参考 [SKILL.md - 技能路由表](../skills/hybrid/gs-hybrid-v3/SKILL.md)。
+
 ---
 
-## 下一步
+## 文档索引
 
-- 查看 [架构设计文档](./architecture.md) 了解系统设计
-- 查看 [技能参考手册](./skills-reference.md) 了解所有技能
-- 查看 [维护更新指南](./maintenance.md) 了解同步策略
+| 文档 | 内容 | 路径 |
+|:-----|:-----|:-----|
+| **主入口** | gs-hybrid-v3 v4.0 完整流程 | [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) |
+| **架构设计** | 三层架构详细设计 | [architecture.md](./architecture.md) |
+| **技能参考** | 所有技能列表（自动生成） | [skills-reference.md](./skills-reference.md) |
+| **维护更新** | 同步策略 | [maintenance.md](./maintenance.md) |
+
+> **文档维护规则**: 本文档为索引层，所有详细内容指向 SKILL.md。禁止在本文档中重复定义与 SKILL.md 冲突的内容。
 

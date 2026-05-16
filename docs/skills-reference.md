@@ -1,7 +1,9 @@
 
 # 技能参考手册
 
-&gt; 完整的技能列表和使用说明。
+&gt; **文档状态**: 自动生成 · **真相源**: [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)
+&gt;
+&gt; 本文档由 SKILL.md 提取生成，禁止手动编辑。如需修改技能信息，请编辑 SKILL.md 后重新生成。
 
 ## 目录
 
@@ -299,30 +301,31 @@ description: "我的自定义技能"
 
 ### 三层职责分配
 
-| 层 | 职责 | 负责 |
-|------|------|------|
-| **Decision Layer** | 想清楚做什么 | GStack + 多角色审议 |
-| **Context Layer** | 固化共识、防遗忘 | Spec契约、ADR、领域边界 |
-| **Execution Layer** | 严格按契约做 | Superpowers + TDD |
-| **Governance** | 决策冻结、状态机控制 | 全局规则 |
+| 层 | 职责 | 负责 | 激活的 Skills |
+|------|------|------|:-------------|
+| **Decision Layer** | 想清楚做什么 | GStack + 多角色审议 | `brainstorming`, `design`, `writing-plans`, `plan-verification`, `gstack:design-review`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
+| **Context Layer** | 固化共识、防遗忘 | Spec契约、ADR、领域边界 | `context-save`, `context-restore`, `learn` |
+| **Execution Layer** | 严格按契约做 | Superpowers + TDD | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `gstack:qa`, `gstack:cso`, `gstack:benchmark`, `gstack:codex` |
+| **Governance** | 决策冻结、状态机控制 | 全局规则 | `gstack:ship`, `gstack:retro`, `gstack:investigate`, `freeze`, `guard`, `careful` |
 
 ### 复杂度响应
 
 #### L1（小修复）
 
 ```
-IDEA → Context Hydration → IMPLEMENTATION → SELF_REVIEW → SHIP_REVIEW
+IDEA → DISCOVERY + REQUIREMENT_LOCK(合并确认) → TASK_DECOMPOSITION + PLAN_CONFIRM(合并确认) → Context Hydration(P0) → IMPLEMENTATION → SHIP_REVIEW
 ```
 
 **使用技能**:
 - `test-driven-development` (IMPLEMENTATION)
-- `requesting-code-review` (SELF_REVIEW)
 - `verification-before-completion` (SHIP_REVIEW)
+
+**简化规则**: 两次确认合并为单次对话；ARCH_REVIEW/SELF_REVIEW/QA/RETRO 跳过
 
 #### L2（新功能/中等重构）
 
 ```
-IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → Context Hydration → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW(2维度) → TASK_DECOMPOSITION → PLAN_CONFIRM → Context Hydration(P0+P1) → IMPLEMENTATION → SELF_REVIEW → SHIP_REVIEW
 ```
 
 **使用技能**:
@@ -330,13 +333,14 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION �
 - `writing-plans` (TASK_DECOMPOSITION)
 - `test-driven-development` (IMPLEMENTATION)
 - `requesting-code-review` (SELF_REVIEW)
-- `/qa` (QA)
 - `verification-before-completion` (SHIP_REVIEW)
+
+**规则**: ARCH_REVIEW 仅 Product + Architect 2 维度；QA 可选
 
 #### L3（跨系统/安全敏感）
 
 ```
-IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW (全5维度) → TASK_DECOMPOSITION → Context Hydration → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW(全5维度) → TASK_DECOMPOSITION → PLAN_CONFIRM → Context Hydration(完整) → IMPLEMENTATION → SELF_REVIEW → QA(gstack:qa) → SHIP_REVIEW → RETRO
 ```
 
 **使用技能**:
@@ -345,9 +349,12 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW (全5维度) → TASK_DE
 - 5维度审议 (ARCH_REVIEW)
 - `test-driven-development` (IMPLEMENTATION)
 - `requesting-code-review` (SELF_REVIEW)
-- `/qa` (QA)
+- `gstack:qa` (QA)
+- `gstack:cso` (安全审查)
 - `verification-before-completion` (SHIP_REVIEW)
-- 复盘记录 (RETRO)
+- `gstack:retro` (RETRO)
+
+**规则**: 全流程无跳过；GStack 技能满足条件时显式调用
 
 ---
 
@@ -387,8 +394,21 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW (全5维度) → TASK_DE
 
 ---
 
+## 文档维护规则
+
+**本文档为自动生成层**，真相源为 [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)。禁止手动编辑本文档。
+
+| 文档 | 角色 | 同步方式 |
+|:-----|:-----|:---------|
+| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | 唯一真相源 | 手动维护 |
+| [README.md](../README.md) | 项目索引 | 链接引用 |
+| [getting-started.md](./getting-started.md) | 快速开始 | 链接引用 |
+| [architecture.md](./architecture.md) | 架构设计 | 链接引用 |
+| **skills-reference.md** | 技能列表 | **自动生成** |
+
 ## 相关文档
 
+- [主入口 SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)
 - [快速开始指南](./getting-started.md)
 - [架构设计文档](./architecture.md)
 - [维护更新指南](./maintenance.md)

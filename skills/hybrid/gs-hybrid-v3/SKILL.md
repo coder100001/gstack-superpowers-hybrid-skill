@@ -361,40 +361,44 @@ concurrency_model: "goroutine"          # 并发模型
 
 ## Skill 路由表（按需加载）
 
-### Superpowers Skills 路由
+### Superpowers Skills 路由（状态机映射）
 
-| 阶段 | Skill | 触发条件 | 用途 |
+| 状态 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
-| **Phase 0.5a** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
-| **Phase 0.5b** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
-| **Phase 1** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
-| **Phase 1.5** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
-| **Phase 2** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
-| **Phase 3** | `requesting-code-review` | L3 任务 | 架构评审 |
-| **Phase 6** | `test-driven-development` | 所有任务 | TDD 编码 |
-| **Phase 7** | `verification-before-completion` | 所有任务 | 验证交付 |
+| **DISCOVERY** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
+| **ARCH_REVIEW** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
+| **TASK_DECOMPOSITION** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
+| **PLAN_CONFIRM** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
+| **SELF_REVIEW** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
+| **IMPLEMENTATION** | `test-driven-development` | 所有任务 | TDD 编码 |
+| **SHIP_REVIEW** | `verification-before-completion` | 所有任务 | 验证交付 |
 
-### GStack Skills 路由
+### GStack Skills 路由（激活条件）
 
-| 阶段 | Skill | 触发条件 | 用途 |
+| 状态 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
-| **Phase 2.5** | `design-review` | 涉及前端 | 前端视觉审查 |
-| **Phase 4** | `qa` | L3 任务 | QA 测试、功能验证 |
-| **Phase 5** | `cso` | L3 任务 | 安全扫描 |
-| **Phase 6.5** | `codex` | L3 任务 | 跨模型审查 |
-| **Phase 7** | `qa` | 所有任务 | 部署验证 |
+| **ARCH_REVIEW** | `gstack:design-review` | 涉及前端 UI/UX | 前端视觉审查 |
+| **ARCH_REVIEW** | `gstack:plan-eng-review` | L2+ 任务 | 工程可行性审查 |
+| **ARCH_REVIEW** | `gstack:plan-devex-review` | L2+ 任务 | 开发者体验审查 |
+| **QA** | `gstack:qa` | L3 任务 | QA 测试、功能验证 |
+| **QA** | `gstack:cso` | 检测到安全相关代码 | 安全扫描 |
+| **QA** | `gstack:benchmark` | L3 + 性能敏感任务 | 性能基准测试 |
+| **SELF_REVIEW** | `gstack:codex` | L3 任务 | 跨模型审查 |
+| **SHIP_REVIEW** | `gstack:ship` | 需要发布/部署 | 发布检查清单 |
+| **RETRO** | `gstack:retro` | L3 任务 | 工程复盘 |
+| **异常处理** | `gstack:investigate` | 调试/根因分析 | 根因调试 |
 
-### 新三层架构路由
+> **激活规则**: GStack 技能不是默认加载，而是在对应状态满足触发条件时显式调用。AI 必须在进入对应状态时检查触发条件，满足则调用，不满足则跳过。
 
-v4.0 引入职责分层架构，映射旧技能到三层职责系统：
+### 三层架构路由
 
-| 层 | 职责 | 核心文件 | 映射的旧技能 |
+| 层 | 职责 | 核心文件 | 激活的 Skills |
 |:---|:-----|:---------|:------------|
-| **Decision Layer** | 多角色审议、方案决策 | [architecture-review](../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `plan-design-review`, `plan-devex-review`, `office-hours`, `brainstorming` |
+| **Decision Layer** | 多角色审议、方案决策 | [architecture-review](../../../decision-layer/reviews/architecture-review.md) | `brainstorming`, `design`, `writing-plans`, `plan-verification`, `gstack:design-review`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
 | **Context Layer** | 上下文持久化、契约强制 | [project-spec](../../../context-layer/specs/project-spec.md), [hydration](../../../context-layer/hydration/hydration.md) | `context-save`, `context-restore`, `learn` |
-| **Execution Layer** | 受约束实现、验证 | [implementation](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
-| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-to-execution](../../../bridges/context-to-execution.md) | 新增职责 |
-| **Governance** | 跨层规则强制 | [decision-freeze](../../../governance/decision-freeze.md) | `freeze`, `guard`, `careful` |
+| **Execution Layer** | 受约束实现、验证 | [implementation](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `gstack:qa`, `gstack:cso`, `gstack:benchmark`, `gstack:codex` |
+| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-to-execution](../../../bridges/context-to-execution.md) | 无（纯协议层） |
+| **Governance** | 跨层规则强制 | [decision-freeze](../../../governance/decision-freeze.md) | `gstack:ship`, `gstack:retro`, `gstack:investigate`, `freeze`, `guard`, `careful` |
 
 ---
 
@@ -499,15 +503,22 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 | **桥接层** | 上下文灌入协议 | [bridges/context-to-execution.md](../../../bridges/context-to-execution.md) |
 | **治理层** | 决策冻结规则 | [governance/decision-freeze.md](../../../governance/decision-freeze.md) |
 
-### 同步更新清单
+### 文档维护规则（单一真相源）
 
-修改本 SKILL.md 时，请同步更新以下文档：
+**原则**: `SKILL.md` 是本技能的唯一真相源。其他文档通过以下方式保持同步：
 
-- [ ] [README.md](../../../README.md) - 项目主文档
-- [ ] [docs/getting-started.md](../../../docs/getting-started.md) - 快速开始
-- [ ] [docs/architecture.md](../../../docs/architecture.md) - 架构设计
-- [ ] [docs/skills-reference.md](../../../docs/skills-reference.md) - 技能参考
-- [ ] [skills/README.md](../../../skills/README.md) - 技能目录
+| 文档 | 同步方式 | 说明 |
+|------|---------|------|
+| [README.md](../../../README.md) | 链接引用 | 仅保留项目概述和指向 SKILL.md 的链接 |
+| [docs/getting-started.md](../../../docs/getting-started.md) | 链接引用 | 快速开始指引，详细内容指向 SKILL.md |
+| [docs/architecture.md](../../../docs/architecture.md) | 链接引用 | 架构概览，详细设计指向各模块文件 |
+| [docs/skills-reference.md](../../../docs/skills-reference.md) | 自动生成 | 由 SKILL.md 提取生成，禁止手动编辑 |
+| [skills/README.md](../../../skills/README.md) | 链接引用 | 技能目录索引，指向各技能 SKILL.md |
+
+**修改流程**:
+1. 所有修改首先在 `SKILL.md` 完成
+2. 其他文档如需更新，仅更新链接或重新自动生成
+3. 禁止在其他文档中重复定义与 SKILL.md 冲突的内容
 
 ---
 

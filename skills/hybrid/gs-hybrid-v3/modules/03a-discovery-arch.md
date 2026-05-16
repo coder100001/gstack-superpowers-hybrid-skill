@@ -25,6 +25,8 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
 
 **触发条件**: L2+ 任务 (L1 可选)
 
+**L1 快速通道**: L1 任务可将 DISCOVERY 与 REQUIREMENT_LOCK 合并为单次确认，不保存独立 spec 文件，直接口述确认后进入 TASK_DECOMPOSITION。
+
 ### 目标
 
 先通过 brainstorming 方法论澄清需求、产出设计方案，然后保存为 spec 文件。
@@ -144,12 +146,14 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
 
 ## REQUIREMENT_LOCK 状态：需求确认
 
-**前置**: DISCOVERY 状态的 spec 文件已保存并获用户批准。
+**前置**: DISCOVERY 状态的 spec 文件已保存并获用户批准（L1 快速通道除外）。
 
 **触发条件**: 所有级别任务 (L1/L2/L3)
 
 <HARD-GATE>
 **这是强制阻断点！** 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW。
+
+**L1 快速通道规则**: L1 任务可将此确认与 DISCOVERY 合并为单次对话完成，不强制保存独立 spec 文件，但必须在对话中明确获得用户确认。
 </HARD-GATE>
 
 ### 目标
@@ -169,7 +173,7 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
    - 不能默认选择
    - 不能跳过
 
-### 确认对话模板
+### 确认对话模板（L2/L3 标准版）
 
 ```
 AI: 基于 DISCOVERY 阶段完成，我整理了以下需求清单，请确认：
@@ -187,12 +191,23 @@ AI: 基于 DISCOVERY 阶段完成，我整理了以下需求清单，请确认�
 [等待用户明确回复]
 ```
 
+### 确认对话模板（L1 快速版）
+
+```
+AI: 确认一下需求：
+- 目标：[一句话]
+- 范围：[边界]
+- 验收：[标准]
+
+如确认无误，我将直接开始任务拆解。请回复"确认"。
+```
+
 ### 阻断规则
 
 - ❌ 用户未回复 → 等待
 - ❌ 用户回复模糊 → 追问澄清
 - ❌ 用户需要修改 → 退回 DISCOVERY 状态
-- ✅ 用户明确确认 → 进入 ARCH_REVIEW 状态
+- ✅ 用户明确确认 → 进入 ARCH_REVIEW 状态（L1 无架构变更时可跳过 ARCH_REVIEW 直接进入 TASK_DECOMPOSITION）
 
 ### 输出要求
 
@@ -200,6 +215,7 @@ AI: 基于 DISCOVERY 阶段完成，我整理了以下需求清单，请确认�
 - 用户确认的需求清单
 - 确认时间
 - 相关修改记录（如有）
+- **L1 快速通道**: 在对话中记录即可，不强制文件化
 
 ---
 
@@ -215,7 +231,15 @@ AI: 基于 DISCOVERY 阶段完成，我整理了以下需求清单，请确认�
 
 参考 [decision-layer/reviews/architecture-review.md](../../../decision-layer/reviews/architecture-review.md)
 
-**5个维度独立审议：
+**审议维度按复杂度分级**：
+
+| 级别 | 启用维度 | 说明 |
+|------|---------|------|
+| L1 | 跳过 | 无架构变更时不触发 ARCH_REVIEW |
+| L2 | Product + Architect | 2 维度审议，聚焦业务价值与技术可行性 |
+| L3 | 全 5 维度 | Product + Architect + Performance + Security + Operations |
+
+**5 个维度定义**（L3 全量，L2 仅用前 2 项）：
 
 | 维度 | 审议重点 |
 |------|---------|

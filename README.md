@@ -244,4 +244,4 @@ hybrid 帮我开发用户认证功能
 
 ---
 
-> **注意**: 本文档与主 SKILL.md 保持同步更新。修改 SKILL.md 时，请同步更新本文档和 docs/ 目录下的相关文档。
+> **文档维护规则**: 本文档为索引层，所有详细内容指向 [SKILL.md](skills/hybrid/gs-hybrid-v3/SKILL.md)。禁止在本文档中重复定义与 SKILL.md 冲突的内容。

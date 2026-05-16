@@ -574,45 +574,46 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 
 ---
 
-## Plan 验证确认
+## Plan 验证确认 (PLAN_CONFIRM 状态)
 
 **触发条件**: TASK_DECOMPOSITION 状态 plan 完成后 | **适用级别**: 🔴 所有级别必须执行
 
 <HARD-GATE>
-**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能进入 EXECUTION_DESIGN 状态。
+**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能进入 Context Hydration 状态。
+
+**L1 快速通道规则**: L1 任务可将此确认与 REQUIREMENT_LOCK 合并为单次确认（在 REQUIREMENT_LOCK 阶段一并确认需求和 Plan），不强制产出独立 plan 文件。
 </HARD-GATE>
 
-### 验证清单
+### 验证清单（按级别分级）
 
-#### 范围验证
+#### L1 快速验证（合并确认）
+- [ ] 变更文件数量符合预期？
+- [ ] 验收标准清晰？
+- [ ] 回滚方案可行？
+
+#### L2 标准验证
+- [ ] 任务清单是否完整覆盖 spec 的所有需求？
+- [ ] 文件清单是否准确（每个 task 的 Files 段）？
+- [ ] 每个 Task 是否使用了正确的模板类型？
+- [ ] 验收标准清晰可测？
+- [ ] 回滚方案可行？
+
+#### L3 完整验证
 - [ ] 任务清单是否完整覆盖 spec 的所有需求？
 - [ ] 文件清单是否准确（每个 task 的 Files 段）？
 - [ ] 是否有遗漏的边界条件？
-- [ ] 功能目标清晰明确？
-- [ ] 是否超出预期范围？
-
-#### 任务拆解验证
 - [ ] 每个 Task 是否使用了正确的模板类型（Feature/Bugfix/Config/Refactor/Integration）？
 - [ ] 每个 Task 是否有明确的 Dependencies / Parallel with 声明？
 - [ ] Task 依赖图中是否有循环依赖或不存在的引用？
-- [ ] 跨切面关注点（共享基础设施/集成测试）是否由明确的 Task 负责？
-
-#### 风险验证
+- [ ] 跨切面关注点是否由明确的 Task 负责？
 - [ ] 所有风险点已识别？
 - [ ] 风险缓解措施有效可行？
 - [ ] 回滚方案完整且可执行？
-
-#### 验收验证
 - [ ] 验收标准具体、可量化？
-- [ ] Task 覆盖了所有验收标准？
-- [ ] 性能指标明确可测量？
-
-#### Plan 质量验证
-- [ ] 是否有 "TBD" / "TODO" / 占位符？（Self-Review 应已清除）
-- [ ] Feature Task 粒度是否在 2-5 分钟/step？
+- [ ] 是否有 "TBD" / "TODO" / 占位符？
 - [ ] 每个 task 是否包含实际代码、命令、预期输出？
 
-### 确认对话模板
+### 确认对话模板（L2/L3 标准版）
 
 ```markdown
 ## ✅ Plan 验证确认
@@ -654,35 +655,37 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - [ ] 回滚方案确认
 
 **确认后请回复**:
-> "Plan 验证通过，请进入 EXECUTION_DESIGN"
+> "Plan 验证通过，请进入 Context Hydration"
 
-**⚠️ 阻断规则**: 未收到用户明确确认前，不得进入 EXECUTION_DESIGN 或 EXECUTION 状态
+**⚠️ 阻断规则**: 未收到用户明确确认前，不得进入 Context Hydration 或 IMPLEMENTATION 状态
 ```
 
-### 简化版清单 (L1 任务)
+### 确认对话模板（L1 快速版）
 
 ```markdown
-## ✅ Plan 验证确认 (简化版)
+## ✅ 需求与 Plan 合并确认
+
+### 变更摘要
+- **涉及文件**: X 个
+- **预估耗时**: X 分钟
+- **验收标准**: [一句话]
 
 ### 快速检查
-- [ ] 变更文件数量符合预期？
-- [ ] Task 模板类型正确（Bugfix/Config/Feature）？
-- [ ] 验收标准清晰？
+- [ ] 变更范围符合预期？
 - [ ] 回滚方案可行？
 
-### 🚨 用户最终确认
-请确认可以进入下一状态。
-
 **确认后请回复**:
-> "Plan 验证通过，请进入 EXECUTION_DESIGN"
+> "确认，开始执行"
+
+**⚠️ 阻断规则**: 未收到用户明确确认前，不得进入 IMPLEMENTATION
 ```
 
 ### 阻断规则
 
 - ❌ 用户未回复 → 等待
 - ❌ 用户要求修改 → 修改后重新验证
-- ❌ 用户放弃 → 回到 CONTEXT_COMPLETE 状态
-- ✅ 用户确认 → 继续 EXECUTION_DESIGN 状态
+- ❌ 用户放弃 → 回到 TASK_DECOMPOSITION 状态
+- ✅ 用户确认 → 继续 Context Hydration 状态
 
 ### 输出要求
 
@@ -691,3 +694,4 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - 确认时的 PLAN 版本
 - 任何修改意见
 - 风险接受声明
+- **L1 快速通道**: 在对话中记录即可，不强制文件化
