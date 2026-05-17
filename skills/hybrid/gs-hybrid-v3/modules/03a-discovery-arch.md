@@ -1,5 +1,7 @@
 # 03a — Decision Layer: IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW
 
+> **Context Load**: 加载 `decision-layer/reviews/product-review.md`, `decision-layer/reviews/risk-review.md`（DISCOVERY 阶段）；`decision-layer/reviews/architecture-review.md`, `decision-layer/reviews/tradeoff-review.md`（ARCH_REVIEW 阶段）。
+
 ## 概述
 
 本模块定义决策层的核心流程：从 IDEA 状态接收任务，经过 DISCOVERY 状态进行需求澄清，然后 REQUIREMENT_LOCK 进行需求确认，最后 ARCH_REVIEW 进行架构审议。

@@ -1,5 +1,7 @@
 # 04b — Execution Layer: SELF_REVIEW → QA
 
+> **Context Load**: 加载 `execution-layer/review.md`, `execution-layer/validation.md`（SELF_REVIEW 阶段）。
+
 ## SELF_REVIEW 状态
 
 **触发条件**: L3 任务 (L1/L2 可选)

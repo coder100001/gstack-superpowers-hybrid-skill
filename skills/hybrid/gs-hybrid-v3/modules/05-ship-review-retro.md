@@ -1,5 +1,7 @@
 # 05 — Execution Layer + Governance: IMPLEMENTATION → SHIP_REVIEW → RETRO
 
+> **Context Load**: 加载 `governance/decision-freeze.md`（SHIP_REVIEW/RETRO 阶段，IMPLEMENTATION 阶段已在 04a 中加载）。
+
 ## 流程概述
 
 本模块定义了三层架构中执行层与治理层的核心工作流：

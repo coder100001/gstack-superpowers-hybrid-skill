@@ -1,5 +1,7 @@
 # 03b — Decision Layer: TASK_DECOMPOSITION
 
+> **Context Load**: 任务拆解阶段，无需额外框架文件。完全委托给 `writing-plans` 技能。
+
 ## TASK_DECOMPOSITION 状态
 
 **触发条件**: CONTEXT_COMPLETE 状态用户确认方案后 | **适用级别**: ✅ 所有级别必须

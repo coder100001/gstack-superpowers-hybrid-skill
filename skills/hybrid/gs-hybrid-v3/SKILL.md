@@ -86,114 +86,25 @@ RETRO:          复盘记录
 | **Hybrid** | `skills/hybrid/` | 1个 | 混合流程技能 |
 | **Custom** | `skills/custom/` | - | 自定义扩展 |
 
-### Superpowers 技能 (14个)
-
-核心方法论技能，来自 Superpowers 官方：
-
-| 技能 | 用途 | 触发方式 |
-|------|------|---------|
-| [brainstorming](../superpowers/brainstorming/) | 需求澄清、方案对比 | 自动触发 |
-| [writing-plans](../superpowers/writing-plans/) | 编写实施计划 | 技能调用 |
-| [executing-plans](../superpowers/executing-plans/) | 批量执行计划 | 技能调用 |
-| [subagent-driven-development](../superpowers/subagent-driven-development/) | 子代理开发 | 技能调用 |
-| [test-driven-development](../superpowers/test-driven-development/) | TDD 编码 | 自动触发 |
-| [systematic-debugging](../superpowers/systematic-debugging/) | 系统调试 | 技能调用 |
-| [requesting-code-review](../superpowers/requesting-code-review/) | 代码审查请求 | 自动触发 |
-| [receiving-code-review](../superpowers/receiving-code-review/) | 响应审查反馈 | 技能调用 |
-| [using-git-worktrees](../superpowers/using-git-worktrees/) | Git worktree | 自动触发 |
-| [finishing-a-development-branch](../superpowers/finishing-a-development-branch/) | 分支收尾 | 自动触发 |
-| [dispatching-parallel-agents](../superpowers/dispatching-parallel-agents/) | 并行代理 | 技能调用 |
-| [verification-before-completion](../superpowers/verification-before-completion/) | 完成前验证 | 自动触发 |
-| [writing-skills](../superpowers/writing-skills/) | 创建新技能 | 技能调用 |
-| [using-superpowers](../superpowers/using-superpowers/) | 系统介绍 | 手动触发 |
+14 个核心方法论技能（来自 [Superpowers](https://github.com/obra/superpowers)），按阶段触发（自动/技能调用/手动）。完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
 
 ### GStack 技能 (47个)
 
-工程工具技能，来自 GStack（按类别分组）：
+47 个工程工具技能（来自 [GStack](https://github.com/gstack)），按类别分组，仅在对应阶段满足条件时触发。类别概览：
 
-**规划与审查 (8个)**:
-| 技能 | 用途 |
-|------|------|
-| [autoplan](../gstack/autoplan/) | 自动审查管线 |
-| [office-hours](../gstack/office-hours/) | 产品定位问诊 |
-| [plan-ceo-review](../gstack/plan-ceo-review/) | CEO 战略审查 |
-| [plan-eng-review](../gstack/plan-eng-review/) | 工程经理审查 |
-| [plan-design-review](../gstack/plan-design-review/) | 设计师审查（规划阶段） |
-| [plan-devex-review](../gstack/plan-devex-review/) | 开发者体验审查 |
-| [plan-tune](../gstack/plan-tune/) | 规划调优 |
-| [review](../gstack/review/) | 代码审查 |
+| 类别 | 数量 | 典型技能 |
+|:-----|:----:|:---------|
+| 规划与审查 | 8 | `autoplan`, `plan-eng-review`, `review` |
+| 设计与前端 | 6 | `design-html`, `design-review`, `design-shotgun` |
+| 质量保证 | 5 | `qa`, `benchmark`, `health` |
+| 安全与防护 | 5 | `cso`, `careful`, `guard` |
+| 部署与发布 | 5 | `ship`, `canary`, `setup-deploy` |
+| 调试与调查 | 2 | `investigate`, `codex` |
+| 文档与记忆 | 5 | `context-save`, `learn`, `document-generate` |
+| 浏览器自动化 | 3 | `gstack-browse`, `open-gstack-browser` |
+| 工具与实用程序 | 9 | `skillify`, `retro`, `pair-agent` |
 
-**设计与前端 (6个)**:
-| 技能 | 用途 |
-|------|------|
-| [design](../gstack/design/) | 设计工具 |
-| [design-consultation](../gstack/design-consultation/) | 设计咨询 |
-| [design-html](../gstack/design-html/) | HTML设计 |
-| [design-review](../gstack/design-review/) | 设计审查 |
-| [design-shotgun](../gstack/design-shotgun/) | 多方案设计 |
-| [devex-review](../gstack/devex-review/) | 开发者体验审查（执行阶段） |
-
-**质量保证与测试 (5个)**:
-| 技能 | 用途 |
-|------|------|
-| [qa](../gstack/qa/) | QA 测试 |
-| [qa-only](../gstack/qa-only/) | 仅 QA 报告 |
-| [benchmark](../gstack/benchmark/) | 性能基准 |
-| [benchmark-models](../gstack/benchmark-models/) | 跨模型基准测试 |
-| [health](../gstack/health/) | 代码质量仪表板 |
-
-**安全与防护 (5个)**:
-| 技能 | 用途 |
-|------|------|
-| [cso](../gstack/cso/) | 首席安全官 |
-| [careful](../gstack/careful/) | 安全护栏 |
-| [freeze](../gstack/freeze/) | 编辑限制 |
-| [guard](../gstack/guard/) | 完全安全模式 |
-| [unfreeze](../gstack/unfreeze/) | 解除编辑限制 |
-
-**部署与发布 (5个)**:
-| 技能 | 用途 |
-|------|------|
-| [ship](../gstack/ship/) | 发布工程师 |
-| [land-and-deploy](../gstack/land-and-deploy/) | 部署工程师 |
-| [canary](../gstack/canary/) | 部署后监控 |
-| [landing-report](../gstack/landing-report/) | 着陆报告 |
-| [setup-deploy](../gstack/setup-deploy/) | 部署配置 |
-
-**调试与调查 (2个)**:
-| 技能 | 用途 |
-|------|------|
-| [investigate](../gstack/investigate/) | 根因调试 |
-| [codex](../gstack/codex/) | 跨模型审查 |
-
-**文档与记忆 (5个)**:
-| 技能 | 用途 |
-|------|------|
-| [document-release](../gstack/document-release/) | 发布文档更新 |
-| [document-generate](../gstack/document-generate/) | 文档生成 |
-| [learn](../gstack/learn/) | 记忆管理 |
-| [context-restore](../gstack/context-restore/) | 上下文恢复 |
-| [context-save](../gstack/context-save/) | 上下文保存 |
-
-**浏览器自动化 (3个)**:
-| 技能 | 用途 |
-|------|------|
-| [gstack-browse](../gstack/gstack-browse/) | 浏览器自动化 |
-| [open-gstack-browser](../gstack/open-gstack-browser/) | 打开 GStack 浏览器 |
-| [setup-browser-cookies](../gstack/setup-browser-cookies/) | Cookie 导入 |
-
-**工具与实用程序 (9个)**:
-| 技能 | 用途 |
-|------|------|
-| [gstack-upgrade](../gstack/gstack-upgrade/) | 自更新工具 |
-| [setup-gbrain](../gstack/setup-gbrain/) | 知识库配置 |
-| [sync-gbrain](../gstack/sync-gbrain/) | 同步知识库 |
-| [make-pdf](../gstack/make-pdf/) | PDF 生成 |
-| [scrape](../gstack/scrape/) | 网页抓取 |
-| [skillify](../gstack/skillify/) | 技能生成 |
-| [retro](../gstack/retro/) | 工程复盘 |
-| [pair-agent](../gstack/pair-agent/) | 配对代理 |
-| [openclaw](../gstack/openclaw/) | OpenClaw 集成 |
+完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
 
 ### Hybrid 技能 (1个)
 
@@ -244,6 +155,23 @@ SHIP_REVIEW/RETRO: 加载 05-ship-review-retro.md (交付、复盘)
 ```
 
 ---
+
+## 框架文件渐进加载
+
+v4.0 框架的 16 个核心文件按阶段渐进加载，避免一次性全部进入上下文。AI 进入对应状态时，加载对应模块**及**其关联的框架文件。
+
+| 阶段 | 模块 | 关联的框架文件 | 加载时机 |
+|:-----|:-----|:--------------|:--------|
+| IDEA / Step 0 | 01-intro.md, 02-complexity.md | — | 初始 + 复杂度评估 |
+| DISCOVERY | 03a-discovery-arch.md | `decision-layer/reviews/product-review.md`, `decision-layer/reviews/risk-review.md` | 需求澄清时 |
+| ARCH_REVIEW | 03a-discovery-arch.md | `decision-layer/reviews/architecture-review.md`, `decision-layer/reviews/tradeoff-review.md` | 架构审议时 |
+| TASK_DECOMPOSITION | 03b-task-decomposition.md | — | 任务拆解时 |
+| Context Hydration | 04a-execution-hydration.md | `context-layer/hydration/hydration.md`, `context-layer/specs/project-spec.md`, `context-layer/specs/architecture-spec.md`, `context-layer/specs/constraints-spec.md`, `context-layer/specs/domain-boundaries.md`, `bridges/decision-to-context.md`, `bridges/context-to-execution.md` | 执行前注水时 |
+| IMPLEMENTATION | 04a-execution-hydration.md | `execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md` | TDD 编码时 |
+| SELF_REVIEW | 04b-self-review.md | `execution-layer/review.md`, `execution-layer/validation.md` | 自审时 |
+| QA / SHIP_REVIEW / RETRO | 04b-self-review.md, 05-ship-review-retro.md | `governance/decision-freeze.md` | 验证/发布/复盘时 |
+
+> **加载规则**: 每个阶段只加载该行指定的模块 + 框架文件。前序阶段加载的文件在进入下一阶段后应释放上下文（仅保留契约摘要）。
 
 ## 流程概览
 
@@ -526,82 +454,11 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
-| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；修复所有悬空引用；Skill 路由表新增三层架构映射 |
-| v3.7 | 2026-05-15 | **GStack 完整集成**：从 8 个扩展到 47 个 GStack 技能（含 cso、ship、office-hours、plan-ceo-review 等核心技能）；修复路由表引用错误（`/cso` → `cso`、`/ship` → `ship`）；GStack 技能按类别分组（规划/设计/QA/安全/部署/调试/文档/浏览器） |
-| v3.6 | 2026-05-15 | **Task 拆解增强**：新增 Spec→Task 分解方法、5 类 Task 模板（Feature/Bugfix/Config/Refactor/Integration）、Task 依赖图（依赖/并行/阻塞）、跨切面处理机制；强化 Phase 0.5a 多子系统检测标准 |
-| v3.5 | 2026-05-15 | **重大更新**：编码前流程完全集成 Superpowers，Phase 1 委托给 writing-plans（TDD五步/No Placeholders/Self-Review/Execution Handoff），保留 gs-hybrid 专属增强（风险评估/边界条件/回滚策略/Plan验证确认硬阻断） |
-| v3.4 | 2026-05-15 | Phase 0.5 拆分为 0.5a(需求澄清/brainstorming) + 0.5b(Design Doc)，新增 Spec 自审查，强化渐进式提问方法 |
-| v3.3 | 2026-05-15 | 模块化拆分，分类维护，按需加载 |
-| v3.2 | 2026-05-14 | 强化方案审核确认环节 |
-| v3.1 | 2026-05-13 | 增加 Plan验证确认环节 |
-| v3.0 | 2026-05-12 | 初始版本，结合 Superpowers + GStack |
+| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；修复所有悬空引用；Skill 路由表新增三层架构映射；**v4.1** 渐进式加载优化：SKILL.md 精简 42%，新增框架文件按阶段加载机制 |
 
 ---
 
-## 使用示例
-
-### 示例 1: 完整开发流程
-
-```
-用户: hybrid 帮我开发用户认证功能
-
-AI: 收到。我将按照 Superpowers + GStack Hybrid 流程执行：
-
-Step 0: 评估任务复杂度...
-[加载 02-complexity.md]
-→ 评估结果: L2 (中等任务)
-
-Phase 0.5a: 需求澄清 (brainstorming)...
-[加载 03a-phase-0-06.md]
-→ Announce: "使用 brainstorming 进行需求澄清"
-→ 探索项目上下文
-→ 渐进式提问 (目的 → 用户 → 约束 → 成功标准)
-→ 方案探索 (提出 2-3 个方案)
-→ 用户确认设计 → 保存 spec 文件
-
-Phase 0.5b: Design Doc 编写...
-→ Spec 自审查 + 方案调研 + 详细设计
-→ 产出: docs/design-docs/001-auth.md
-
-Phase 0.6: 方案审核确认...
-→ 用户确认方案选择
-
-Phase 1: 详细 Plan (writing-plans)...
-[加载 03b-phase-1.md]
-→ Scope Check + File Structure
-→ Bite-Sized Tasks (2-5min/TDD五步)
-→ Self-Review (spec coverage/placeholder/type consistency)
-→ 产出: specs/plans/2026-05-15-auth.md
-
-Phase 1.5: Plan验证确认...
-→ 等待用户确认...
-
-用户: 确认执行
-
-Phase 2-3: 工程规范 + 架构评审...
-[加载 04a-phase-2-3.md]
-→ 评审通过
-
-Phase 6-7: TDD 编码 + 验证交付...
-[加载 05-phase-6-7.md]
-→ 编码完成
-→ 测试通过
-→ 交付成功
-```
-
-### 示例 2: 使用专用指令
-
-```
-用户: /plan 开发支付模块
-
-AI: 启动规划流程...
-[加载 02-complexity.md + 03a-phase-0-06.md + 03b-phase-1.md]
-→ 完成规划，产出 Design Doc 和 PLAN.md
-```
-
----
-
-**版本**: v4.0 (三层架构正式版 · AI Engineering Governance System)
+**版本**: v4.1 (渐进式加载优化)
 **最后更新**: 2026-05-16
 
 **详细文档请参考各模块文件。**

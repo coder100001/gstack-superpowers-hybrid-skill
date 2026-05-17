@@ -1,5 +1,7 @@
 # 04a — Context Layer → Execution Layer: Context Hydration
 
+> **Context Load**: 加载 `context-layer/hydration/hydration.md`, `context-layer/specs/project-spec.md`, `context-layer/specs/architecture-spec.md`, `context-layer/specs/constraints-spec.md`, `context-layer/specs/domain-boundaries.md`, `bridges/decision-to-context.md`, `bridges/context-to-execution.md`（Context Hydration 阶段）；`execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md`（IMPLEMENTATION 阶段）。
+
 ## 核心概念
 
 Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer 启动前所有必要的 Spec 契约、架构规范和历史决策已完整加载，为后续执行提供完整的上下文支撑。
