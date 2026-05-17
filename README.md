@@ -52,7 +52,7 @@
 本项目整合了两个顶级开源技能包，并在此基础上构建了三层治理系统：
 
 - **[Superpowers](https://github.com/obra/superpowers)** (14个技能) — 成熟的软件开发方法论，提供工程纪律与结构化拆解
-- **[GStack](https://github.com/gstack)** (50+技能) — 强大的工程工具集，提供多角色决策审议能力
+- **[GStack](https://github.com/gstack)** (47个技能) — 强大的工程工具集，提供多角色决策审议能力
 
 三层架构将这两种能力按职责重新组织：
 - **Superpowers** → Execution Layer（执行纪律）+ Decision Layer（需求发散辅助）
@@ -63,25 +63,7 @@
 
 ## 状态机
 
-工作流严格按以下 9 状态迁移，不可跳步：
-
-```
-IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
-    → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
-```
-
-| 状态 | 层归属 | 产出物 |
-|:-----|:-------|:-------|
-| DISCOVERY | Decision Layer | 需求文档（功能/非功能/边界） |
-| REQUIREMENT_LOCK | Decision Layer | 确认的需求清单 |
-| ARCH_REVIEW | Decision Layer | 架构设计文档 + ADR |
-| TASK_DECOMPOSITION | Decision Layer | 任务清单（含验收标准） |
-| IMPLEMENTATION | Execution Layer | 通过测试的代码 |
-| SELF_REVIEW | Execution Layer | 自审报告（对照契约） |
-| QA | Execution Layer | 回归测试报告 |
-| SHIP_REVIEW | Governance | 发布检查清单 |
-| RETRO | Governance | 复盘记录 |
-
+完整的状态机设计请参考 [docs/architecture.md](./docs/architecture.md#状态机设计)。
 ---
 
 ## 核心特性
@@ -166,7 +148,7 @@ hybrid 帮我开发用户认证功能
 │
 ├── skills/                      ← 旧技能目录（向后兼容）
 │   ├── superpowers/             (14个)
-│   ├── gstack/                  (50+个)
+│   ├── gstack/                  (47个)
 │   ├── hybrid/
 │   │   └── gs-hybrid-v3/
 │   │       ├── SKILL.md         ← 主入口（v4.0）

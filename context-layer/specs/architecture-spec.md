@@ -56,7 +56,7 @@
 
 ### 文档模块分类
 - **Design Docs**: `docs/design-docs/` - 设计文档
-- **Plans**: `docs/plans/` - 实现计划
+- **Plans**: `specs/plans/` - 实现计划
 - **Specs**: `context-layer/specs/` - 契约规范
 
 ---

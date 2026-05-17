@@ -82,7 +82,7 @@ RETRO:          复盘记录
 | 分类 | 路径 | 技能数量 | 说明 |
 |------|------|---------|------|
 | **Superpowers** | `skills/superpowers/` | 14个 | 核心方法论技能 |
-| **GStack** | `skills/gstack/` | 48+个 | 工程工具技能 |
+| **GStack** | `skills/gstack/` | 47个 | 工程工具技能 |
 | **Hybrid** | `skills/hybrid/` | 1个 | 混合流程技能 |
 | **Custom** | `skills/custom/` | - | 自定义扩展 |
 
@@ -107,7 +107,7 @@ RETRO:          复盘记录
 | [writing-skills](../superpowers/writing-skills/) | 创建新技能 | 技能调用 |
 | [using-superpowers](../superpowers/using-superpowers/) | 系统介绍 | 手动触发 |
 
-### GStack 技能 (48个)
+### GStack 技能 (47个)
 
 工程工具技能，来自 GStack（按类别分组）：
 
@@ -527,7 +527,7 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
 | **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；修复所有悬空引用；Skill 路由表新增三层架构映射 |
-| v3.7 | 2026-05-15 | **GStack 完整集成**：从 8 个扩展到 48 个 GStack 技能（含 cso、ship、office-hours、plan-ceo-review 等核心技能）；修复路由表引用错误（`/cso` → `cso`、`/ship` → `ship`）；GStack 技能按类别分组（规划/设计/QA/安全/部署/调试/文档/浏览器） |
+| v3.7 | 2026-05-15 | **GStack 完整集成**：从 8 个扩展到 47 个 GStack 技能（含 cso、ship、office-hours、plan-ceo-review 等核心技能）；修复路由表引用错误（`/cso` → `cso`、`/ship` → `ship`）；GStack 技能按类别分组（规划/设计/QA/安全/部署/调试/文档/浏览器） |
 | v3.6 | 2026-05-15 | **Task 拆解增强**：新增 Spec→Task 分解方法、5 类 Task 模板（Feature/Bugfix/Config/Refactor/Integration）、Task 依赖图（依赖/并行/阻塞）、跨切面处理机制；强化 Phase 0.5a 多子系统检测标准 |
 | v3.5 | 2026-05-15 | **重大更新**：编码前流程完全集成 Superpowers，Phase 1 委托给 writing-plans（TDD五步/No Placeholders/Self-Review/Execution Handoff），保留 gs-hybrid 专属增强（风险评估/边界条件/回滚策略/Plan验证确认硬阻断） |
 | v3.4 | 2026-05-15 | Phase 0.5 拆分为 0.5a(需求澄清/brainstorming) + 0.5b(Design Doc)，新增 Spec 自审查，强化渐进式提问方法 |
