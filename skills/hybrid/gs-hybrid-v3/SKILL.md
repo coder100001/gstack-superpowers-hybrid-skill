@@ -52,14 +52,7 @@ RETRO:          复盘记录
 
 ### 专用指令
 
-| 指令 | 功能 | 说明 |
-|------|------|------|
-| `/plan` | 规划流程 | 新功能开发前的完整规划 |
-| `/review` | 代码审查 | 代码完成后的质量审查 |
-| `/test` | 测试驱动 | TDD 开发流程 |
-| `/qa` | 质量保证 | 功能完成后的验证 |
-| `/debug` | 调试助手 | 问题诊断与修复 |
-| `/refactor` | 重构建议 | 代码改进与优化 |
+快捷指令列表请参考 [commands/README.md](../../../commands/README.md)。
 
 ---
 
@@ -114,62 +107,24 @@ RETRO:          复盘记录
 
 ---
 
-## 模块化按需加载
+## 加载策略速查表
 
-> **核心理念**: 不同阶段加载不同的模块，避免一次性加载所有内容消耗上下文。
+> 不同阶段加载不同模块 + 框架文件，避免一次性占用上下文。本表为模块→框架文件映射的唯一真相源。
 
-### 本技能模块索引（向后兼容）
+| 阶段 | 模块 | 关联的框架文件 |
+|:-----|:-----|:--------------|
+| IDEA / Step 0 | [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md) | — |
+| DISCOVERY | [03a-discovery-arch.md](./modules/03a-discovery-arch.md) | `reviews/product-review.md`, `reviews/risk-review.md` |
+| ARCH_REVIEW | 03a-discovery-arch.md | `reviews/architecture-review.md`, `reviews/tradeoff-review.md` |
+| TASK_DECOMPOSITION | [03b-task-decomposition.md](./modules/03b-task-decomposition.md) | — |
+| Context Hydration | [04a-execution-hydration.md](./modules/04a-execution-hydration.md) | `hydration/hydration.md`, `specs/*` (4个), `bridges/*` (2个) |
+| IMPLEMENTATION | 04a-execution-hydration.md | `execution-layer/implementation.md`, `testing.md`, `governance/decision-freeze.md` |
+| SELF_REVIEW | [04b-self-review.md](./modules/04b-self-review.md) | `execution-layer/review.md`, `validation.md` |
+| QA / SHIP_REVIEW / RETRO | 04b-self-review.md, [05-ship-review-retro.md](./modules/05-ship-review-retro.md) | `governance/decision-freeze.md` |
+| 指令触发 | [06-workflows.md](./modules/06-workflows.md) | — |
+| 异常/变更 | [07-handling.md](./modules/07-handling.md) | `governance/decision-freeze.md`（按需）|
 
-| 模块 | 内容 | 加载时机 |
-|------|------|---------|
-| [01-intro.md](./modules/01-intro.md) | 三层架构核心概念、项目配置、核心原则 | 初始加载 |
-| [02-complexity.md](./modules/02-complexity.md) | 复杂度分级、适用矩阵 | Step 0 |
-| [03a-discovery-arch.md](./modules/03a-discovery-arch.md) | IDEA→DISCOVERY→ARCH_REVIEW | 决策层阶段 |
-| [03b-task-decomposition.md](./modules/03b-task-decomposition.md) | TASK_DECOMPOSITION | 任务拆解 |
-| [04a-execution-hydration.md](./modules/04a-execution-hydration.md) | 上下文注水、TDD | 执行层前置 |
-| [04b-self-review.md](./modules/04b-self-review.md) | 自审、QA | 执行层阶段 |
-| [05-ship-review-retro.md](./modules/05-ship-review-retro.md) | SHIP_REVIEW、RETRO | 交付与复盘 |
-| [06-workflows.md](./modules/06-workflows.md) | 专用流程指令 | 指令触发 |
-| [07-handling.md](./modules/07-handling.md) | 异常处理、变更流程 | 异常/变更 |
-
-### 加载策略
-
-```
-初始: 加载 01-intro.md (三层架构、核心原则
-      ↓
-Step 0: 加载 02-complexity.md (复杂度评估 → L1/L2/L3)
-      ↓
-Decision Layer: 加载 03a-discovery-arch.md (需求发散、架构审议)
-      ↓
-TASK_DECOMPOSITION: 加载 03b-task-decomposition.md (任务拆解)
-      ↓
-Execution Layer: 加载 04a-execution-hydration.md (上下文注水)
-      ↓
-SELF_REVIEW/QA: 加载 04b-self-review.md (自审、QA)
-      ↓
-SHIP_REVIEW/RETRO: 加载 05-ship-review-retro.md (交付、复盘)
-      ↓
-异常/变更: 加载 07-handling.md (异常处理)
-```
-
----
-
-## 框架文件渐进加载
-
-v4.0 框架的 16 个核心文件按阶段渐进加载，避免一次性全部进入上下文。AI 进入对应状态时，加载对应模块**及**其关联的框架文件。
-
-| 阶段 | 模块 | 关联的框架文件 | 加载时机 |
-|:-----|:-----|:--------------|:--------|
-| IDEA / Step 0 | 01-intro.md, 02-complexity.md | — | 初始 + 复杂度评估 |
-| DISCOVERY | 03a-discovery-arch.md | `decision-layer/reviews/product-review.md`, `decision-layer/reviews/risk-review.md` | 需求澄清时 |
-| ARCH_REVIEW | 03a-discovery-arch.md | `decision-layer/reviews/architecture-review.md`, `decision-layer/reviews/tradeoff-review.md` | 架构审议时 |
-| TASK_DECOMPOSITION | 03b-task-decomposition.md | — | 任务拆解时 |
-| Context Hydration | 04a-execution-hydration.md | `context-layer/hydration/hydration.md`, `context-layer/specs/project-spec.md`, `context-layer/specs/architecture-spec.md`, `context-layer/specs/constraints-spec.md`, `context-layer/specs/domain-boundaries.md`, `bridges/decision-to-context.md`, `bridges/context-to-execution.md` | 执行前注水时 |
-| IMPLEMENTATION | 04a-execution-hydration.md | `execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md` | TDD 编码时 |
-| SELF_REVIEW | 04b-self-review.md | `execution-layer/review.md`, `execution-layer/validation.md` | 自审时 |
-| QA / SHIP_REVIEW / RETRO | 04b-self-review.md, 05-ship-review-retro.md | `governance/decision-freeze.md` | 验证/发布/复盘时 |
-
-> **加载规则**: 每个阶段只加载该行指定的模块 + 框架文件。前序阶段加载的文件在进入下一阶段后应释放上下文（仅保留契约摘要）。
+> **加载规则**: 每阶段只加载该行指定的模块 + 框架文件；前序文件进入下一阶段后释放上下文（仅保留契约摘要）。各模块文件头部声明了精确的文件路径，以此为准。
 
 ## 流程概览
 
