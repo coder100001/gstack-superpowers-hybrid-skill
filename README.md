@@ -1,8 +1,8 @@
-# AI Engineering Governance System v4.0
+# AI Engineering Governance System v4.1
 
 > **三层架构正式版** — Decision Layer → Context Layer → Execution Layer，思考与实现严格分离
 
-[![Version](https://img.shields.io/badge/version-4.0-blue.svg)](./.upstream-versions.json)
+[![Version](https://img.shields.io/badge/version-4.1-blue.svg)](./.upstream-versions.json)
 [![Architecture](https://img.shields.io/badge/architecture-three--layer-green.svg)](./docs/design-docs/002-ai-engineering-governance-system.md)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
 
@@ -52,7 +52,7 @@
 本项目整合了两个顶级开源技能包，并在此基础上构建了三层治理系统：
 
 - **[Superpowers](https://github.com/obra/superpowers)** (14个技能) — 成熟的软件开发方法论，提供工程纪律与结构化拆解
-- **[GStack](https://github.com/gstack)** (47个技能) — 强大的工程工具集，提供多角色决策审议能力
+- **[GStack](https://github.com/gstack)** (16个技能) — 强大的工程工具集，提供多角色决策审议能力
 
 三层架构将这两种能力按职责重新组织：
 - **Superpowers** → Execution Layer（执行纪律）+ Decision Layer（需求发散辅助）
@@ -148,10 +148,10 @@ hybrid 帮我开发用户认证功能
 │
 ├── skills/                      ← 旧技能目录（向后兼容）
 │   ├── superpowers/             (14个)
-│   ├── gstack/                  (47个)
+│   ├── gstack/                  (16个)
 │   ├── hybrid/
 │   │   └── gs-hybrid-v3/
-│   │       ├── SKILL.md         ← 主入口（v4.0）
+│   │       ├── SKILL.md         ← 主入口（v4.1）
 │   │       └── modules/         (9个模块)
 │   └── custom/
 │
@@ -175,11 +175,7 @@ hybrid 帮我开发用户认证功能
 
 ## 三层架构核心原则
 
-1. **思考与实现严格分离** — Decision Layer 负责决策，Execution Layer 负责执行，互不越界
-2. **所有决策必须有记录和理由** — 每个 ADR 记录方案、否决理由、风险、回滚策略
-3. **上下文契约是唯一真相来源** — Context Layer 的 spec 是执行的唯一依据
-4. **执行时不允许偏离契约** — Execution Layer 必须在约束范围内工作
-5. **变更必须走正式流程** — 冻结项变更需退回 Decision Layer 重新审议
+核心原则请参考 [SKILL.md](./skills/hybrid/gs-hybrid-v3/SKILL.md#三层架构核心原则)。
 
 ---
 
@@ -188,7 +184,7 @@ hybrid 帮我开发用户认证功能
 | 文档 | 内容 | 路径 |
 |:-----|:-----|:-----|
 | **三层架构设计** | AI Engineering Governance System 完整设计 | [docs/design-docs/002-ai-engineering-governance-system.md](./docs/design-docs/002-ai-engineering-governance-system.md) |
-| **主入口 SKILL.md** | gs-hybrid-v3 v4.0 | [skills/hybrid/gs-hybrid-v3/SKILL.md](./skills/hybrid/gs-hybrid-v3/SKILL.md) |
+| **主入口 SKILL.md** | gs-hybrid-v3 v4.1 | [skills/hybrid/gs-hybrid-v3/SKILL.md](./skills/hybrid/gs-hybrid-v3/SKILL.md) |
 | **决策层** | 多角色架构审议协议 | [decision-layer/reviews/architecture-review.md](./decision-layer/reviews/architecture-review.md) |
 | **上下文层** | 项目约束运行时契约 | [context-layer/specs/project-spec.md](./context-layer/specs/project-spec.md) |
 | **桥接层** | 上下文灌入协议 | [bridges/context-to-execution.md](./bridges/context-to-execution.md) |
@@ -203,11 +199,7 @@ hybrid 帮我开发用户认证功能
 
 | 版本 | 日期 | 变更 |
 |:-----|:-----|:-----|
-| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机；多角色审议；上下文注水；决策冻结 |
-| v3.3 | 2026-05-15 | 模块化拆分，分类维护，按需加载 |
-| v3.2 | 2026-05-14 | 强化方案审核确认环节 |
-| v3.1 | 2026-05-13 | 增加 Plan验证确认环节 |
-| v3.0 | 2026-05-12 | 初始版本，结合 Superpowers + GStack |
+| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水；**v4.1** 渐进式加载 + SKILL.md 精简 |
 
 ---
 
