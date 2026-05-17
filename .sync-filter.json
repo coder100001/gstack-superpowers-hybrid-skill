@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "description": "GStack 技能同步过滤配置。routed_skills 列表与 SKILL.md 路由表保持同步。",
+  "gstack": {
+    "mode": "routed",
+    "routed_skills": [
+      "benchmark",
+      "careful",
+      "codex",
+      "context-restore",
+      "context-save",
+      "cso",
+      "design-review",
+      "freeze",
+      "guard",
+      "investigate",
+      "learn",
+      "plan-devex-review",
+      "plan-eng-review",
+      "qa",
+      "retro",
+      "ship"
+    ]
+  }
+}

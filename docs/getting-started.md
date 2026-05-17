@@ -43,7 +43,7 @@ chmod +x scripts/*.sh
 
 # 验证安装
 ls skills/superpowers/  # 应该看到 14 个技能
-ls skills/gstack/       # 应该看到 7 个技能
+ls skills/gstack/       # 应该看到 16 个技能
 ls skills/hybrid/       # 应该看到 gs-hybrid-v3
 ```
 

@@ -82,27 +82,25 @@ RETRO:          复盘记录
 | 分类 | 路径 | 技能数量 | 说明 |
 |------|------|---------|------|
 | **Superpowers** | `skills/superpowers/` | 14个 | 核心方法论技能 |
-| **GStack** | `skills/gstack/` | 47个 | 工程工具技能 |
+| **GStack** | `skills/gstack/` | 16个 | 工程工具技能 |
 | **Hybrid** | `skills/hybrid/` | 1个 | 混合流程技能 |
 | **Custom** | `skills/custom/` | - | 自定义扩展 |
 
 14 个核心方法论技能（来自 [Superpowers](https://github.com/obra/superpowers)），按阶段触发（自动/技能调用/手动）。完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
 
-### GStack 技能 (47个)
+### GStack 技能 (16个)
 
-47 个工程工具技能（来自 [GStack](https://github.com/gstack)），按类别分组，仅在对应阶段满足条件时触发。类别概览：
+16 个工程工具技能（来自 [GStack](https://github.com/gstack)），按类别分组，仅在对应阶段满足条件时触发。类别概览：
 
 | 类别 | 数量 | 典型技能 |
 |:-----|:----:|:---------|
-| 规划与审查 | 8 | `autoplan`, `plan-eng-review`, `review` |
-| 设计与前端 | 6 | `design-html`, `design-review`, `design-shotgun` |
-| 质量保证 | 5 | `qa`, `benchmark`, `health` |
-| 安全与防护 | 5 | `cso`, `careful`, `guard` |
-| 部署与发布 | 5 | `ship`, `canary`, `setup-deploy` |
+| 规划与审查 | 3 | `plan-eng-review`, `plan-devex-review`, `design-review` |
+| 质量保证 | 2 | `qa`, `benchmark` |
+| 安全与防护 | 3 | `cso`, `careful`, `guard` |
+| 部署与发布 | 1 | `ship` |
 | 调试与调查 | 2 | `investigate`, `codex` |
-| 文档与记忆 | 5 | `context-save`, `learn`, `document-generate` |
-| 浏览器自动化 | 3 | `gstack-browse`, `open-gstack-browser` |
-| 工具与实用程序 | 9 | `skillify`, `retro`, `pair-agent` |
+| 文档与记忆 | 3 | `context-save`, `context-restore`, `learn` |
+| 工具与实用程序 | 2 | `retro`, `freeze` |
 
 完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
 

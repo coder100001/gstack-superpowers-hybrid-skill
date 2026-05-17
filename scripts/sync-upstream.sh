@@ -4,6 +4,7 @@
 # 用法: ./scripts/sync-upstream.sh [选项]
 #   --superpowers    仅同步 superpowers
 #   --gstack         仅同步 gstack
+#   --gstack-all      同步全部 gstack 技能（忽略过滤配置）
 #   --check          检查更新但不执行
 #   --dry-run        显示将要执行的操作
 #   --backup         同步前备份
@@ -31,6 +32,7 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # 解析参数
 SYNC_SUPERPOWERS=false
 SYNC_GSTACK=false
+GSTACK_ALL=false
 CHECK_ONLY=false
 DRY_RUN=false
 BACKUP=false
@@ -40,6 +42,7 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --superpowers) SYNC_SUPERPOWERS=true; shift ;;
         --gstack) SYNC_GSTACK=true; shift ;;
+        --gstack-all) SYNC_GSTACK=true; GSTACK_ALL=true; shift ;;
         --check) CHECK_ONLY=true; shift ;;
         --dry-run) DRY_RUN=true; shift ;;
         --backup) BACKUP=true; shift ;;
@@ -197,12 +200,64 @@ sync_superpowers() {
         cp -r "$SUPERPOWERS_PATH/hooks" "$PROJECT_ROOT/" 2>/dev/null || true
     fi
     
-    # 同步配置文件
+    # 同步配置文件（仅保留必需的）
     cp "$SUPERPOWERS_PATH/CLAUDE.md" "$PROJECT_ROOT/" 2>/dev/null || true
-    cp "$SUPERPOWERS_PATH/GEMINI.md" "$PROJECT_ROOT/" 2>/dev/null || true
-    cp "$SUPERPOWERS_PATH/package.json" "$PROJECT_ROOT/" 2>/dev/null || true
     
     log_success "Superpowers 同步完成 (同步到 skills/superpowers/)"
+}
+
+# 读取同步过滤配置
+load_sync_filter() {
+    local filter_file="$PROJECT_ROOT/.sync-filter.json"
+    if [[ ! -f "$filter_file" ]]; then
+        log_warn "过滤配置文件不存在: $filter_file"
+        log_info "将同步所有 gstack 技能"
+        GSTACK_ALL=true
+        return
+    fi
+    
+    local mode=$(grep -o '"mode"[[:space:]]*:[[:space:]]*"[^"]*"' "$filter_file" | cut -d'"' -f4)
+    if [[ "$mode" != "routed" ]]; then
+        log_info "过滤模式: all（同步所有技能）"
+        GSTACK_ALL=true
+        return
+    fi
+    
+    log_info "过滤模式: routed（仅同步路由表引用的技能）"
+    
+    # 解析 routed_skills 列表
+    ROUTED_SKILLS=()
+    local in_list=false
+    while IFS= read -r line; do
+        if echo "$line" | grep -q '"routed_skills"'; then
+            in_list=true
+            continue
+        fi
+        if [[ "$in_list" == "true" ]]; then
+            if echo "$line" | grep -q '"'; then
+                local skill=$(echo "$line" | grep -o '"[^"]*"' | head -1 | tr -d '"')
+                if [[ -n "$skill" && "$skill" != "routed_skills" ]]; then
+                    ROUTED_SKILLS+=("$skill")
+                fi
+            fi
+            if echo "$line" | grep -q ']'; then
+                break
+            fi
+        fi
+    done < "$filter_file"
+    
+    log_info "白名单技能数: ${#ROUTED_SKILLS[@]}"
+}
+
+# 检查技能是否在白名单中
+is_skill_routed() {
+    local skill_name="$1"
+    for routed in "${ROUTED_SKILLS[@]}"; do
+        if [[ "$routed" == "$skill_name" ]]; then
+            return 0
+        fi
+    done
+    return 1
 }
 
 # 同步 gstack
@@ -217,9 +272,15 @@ sync_gstack() {
         return 1
     fi
     
+    # 加载过滤配置
+    load_sync_filter
+    
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] 将从 $GSTACK_PATH 复制以下内容到 skills/gstack/:"
-        ls -la "$GSTACK_PATH/" 2>/dev/null | head -20
+        if [[ "$GSTACK_ALL" == "true" ]]; then
+            log_info "[DRY-RUN] 将同步所有 gstack 技能"
+        else
+            log_info "[DRY-RUN] 将仅同步 ${#ROUTED_SKILLS[@]} 个路由技能"
+        fi
         return 0
     fi
     
@@ -233,6 +294,9 @@ sync_gstack() {
         log_info "上游 gstack 技能数量: $gs_count"
         local local_count=$(find "$PROJECT_ROOT/skills/gstack" -name "SKILL.md" 2>/dev/null | wc -l)
         log_info "本地 gstack 技能数量: $local_count"
+        if [[ "$GSTACK_ALL" == "false" ]]; then
+            log_info "过滤模式: 仅同步 ${#ROUTED_SKILLS[@]} 个路由技能"
+        fi
         return 0
     fi
     
@@ -240,25 +304,52 @@ sync_gstack() {
     mkdir -p "$PROJECT_ROOT/skills/gstack"
     
     # 自动检测所有包含 SKILL.md 的技能目录
-    log_info "自动检测并复制 gstack 技能到 skills/gstack/..."
+    log_info "检测并复制 gstack 技能到 skills/gstack/..."
     
     # 获取上游所有包含 SKILL.md 的目录
-    local skills=()
-    while IFS= read -r -d '' dir; do
-        skill=$(basename "$dir")
-        skills+=("$skill")
-    done < <(find "$GSTACK_PATH" -maxdepth 1 -type d -name "*" ! -name ".*" -print0)
-    
-    # 手动检测（更可靠的方法）
     cd "$GSTACK_PATH"
+    local synced=0
+    local skipped=0
     for skill in */; do
-        skill=${skill%/}  # 移除末尾的 /
-        if [[ -f "$GSTACK_PATH/$skill/SKILL.md" ]]; then
-            log_info "  同步技能: $skill"
-            rm -rf "$PROJECT_ROOT/skills/gstack/$skill"
-            cp -r "$GSTACK_PATH/$skill" "$PROJECT_ROOT/skills/gstack/" 2>/dev/null || true
+        skill=${skill%/}
+        if [[ ! -f "$GSTACK_PATH/$skill/SKILL.md" ]]; then
+            continue
         fi
+        
+        # 过滤检查
+        if [[ "$GSTACK_ALL" == "false" ]]; then
+            if ! is_skill_routed "$skill"; then
+                log_info "  跳过（未路由）: $skill"
+                skipped=$((skipped + 1))
+                continue
+            fi
+        fi
+        
+        log_info "  同步技能: $skill"
+        rm -rf "$PROJECT_ROOT/skills/gstack/$skill"
+        cp -r "$GSTACK_PATH/$skill" "$PROJECT_ROOT/skills/gstack/" 2>/dev/null || true
+        synced=$((synced + 1))
     done
+    
+    # 清理未在白名单中的本地技能
+    if [[ "$GSTACK_ALL" == "false" ]]; then
+        log_info "清理未引用的本地 gstack 技能..."
+        cd "$PROJECT_ROOT/skills/gstack"
+        local cleaned=0
+        for local_skill in */; do
+            local_skill=${local_skill%/}
+            if [[ -d "$local_skill" ]]; then
+                if ! is_skill_routed "$local_skill"; then
+                    log_info "  删除: $local_skill"
+                    rm -rf "$local_skill"
+                    cleaned=$((cleaned + 1))
+                fi
+            fi
+        done
+        if [[ $cleaned -gt 0 ]]; then
+            log_info "已清理 $cleaned 个未引用的技能"
+        fi
+    fi
     
     # 特殊处理：browse 重命名为 gstack-browse
     if [[ -d "$PROJECT_ROOT/skills/gstack/browse" ]]; then
@@ -278,7 +369,11 @@ sync_gstack() {
     
     # 统计同步的技能数量
     local synced_count=$(find "$PROJECT_ROOT/skills/gstack" -name "SKILL.md" 2>/dev/null | wc -l)
-    log_success "GStack 同步完成 (同步 $synced_count 个技能到 skills/gstack/)"
+    if [[ "$GSTACK_ALL" == "true" ]]; then
+        log_success "GStack 同步完成 (同步 $synced_count 个技能到 skills/gstack/)"
+    else
+        log_success "GStack 同步完成 (同步 $synced 个技能，跳过 $skipped 个未路由技能)"
+    fi
 }
 
 # 更新版本文件
@@ -291,8 +386,8 @@ update_version_file() {
     local sp_version="unknown"
     local gs_version="unknown"
     
-    if [[ -f "$PROJECT_ROOT/package.json" ]]; then
-        sp_version=$(grep -o '"version": *"[^"]*"' "$PROJECT_ROOT/package.json" | head -1 | cut -d'"' -f4)
+    if [[ -f "$PROJECT_ROOT/skills/superpowers/brainstorming/SKILL.md" ]]; then
+        sp_version=$(grep -m1 "^# " "$PROJECT_ROOT/skills/superpowers/brainstorming/SKILL.md" | grep -oP 'v?\d+\.\d+\.\d+' || echo "synced")
     fi
     
     if [[ -f "$PROJECT_ROOT/gstack-skills/VERSION" ]]; then
@@ -339,6 +434,10 @@ EOF
 
 # 显示目录结构
 show_structure() {
+    local sp_count=$(ls -1 "$PROJECT_ROOT/skills/superpowers/" 2>/dev/null | wc -l)
+    local gs_count=$(find "$PROJECT_ROOT/skills/gstack" -name "SKILL.md" 2>/dev/null | wc -l)
+    local hybrid_count=$(find "$PROJECT_ROOT/skills/hybrid" -name "SKILL.md" 2>/dev/null | wc -l)
+    
     log_info "当前技能目录结构:"
     echo ""
     echo "skills/"

@@ -11,8 +11,9 @@
     "path": "~/.claude/skills/gstack",
     "version": "1.39.0.0",
     "last_sync": "2026-05-16",
-    "skill_count":        47,
-    "skill_path": "skills/gstack/"
+    "skill_count":        16,
+    "skill_path": "skills/gstack/",
+    "filter_mode": "routed"
   },
   "hybrid": {
     "description": "AI Engineering Governance System - 三层架构 (Decision/Context/Execution)",

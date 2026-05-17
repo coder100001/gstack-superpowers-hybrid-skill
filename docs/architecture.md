@@ -633,7 +633,7 @@ specs/plans/PLAN-XXX.md (TASK_DECOMPOSITION)
 |------|------|:---------|
 | **v4.1** | **2026-05-16** | **规则化重构**: L1 快速通道（合并确认点）；ARCH_REVIEW 分级审议（L2→2维度，L3→5维度）；Context Hydration 分级（P0/P1/P2）；GStack 技能显式激活规则；安全审查委托 gstack:cso；项目配置自动发现；文档单一真相源 |
 | **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 完全重写，从 5 层架构升级为 3 层（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；与 SKILL.md 和 design-doc-002 完全一致 |
-| v3.7 | 2026-05-15 | GStack 完整集成：从 8 个扩展到 48 个 GStack 技能 |
+| v3.7 | 2026-05-15 | GStack 完整集成：从 8 个扩展到 47 个 GStack 技能 |
 | v3.0 | 2026-05-12 | 初始版本，结合 Superpowers + GStack |
 
 ---
