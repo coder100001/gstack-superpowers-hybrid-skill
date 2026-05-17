@@ -28,7 +28,8 @@ Required Loading Order:
 3. current ADR history      ← 活跃的架构决策记录
 4. active constraints       ← 当前活跃的约束清单
 5. domain-boundaries.md     ← 领域边界定义
-6. current workflow state   ← 当前工作流位置与产出物
+6. coding-standards/index.md ← 编码规则定义
+7. current workflow state   ← 当前工作流位置与产出物
 ```
 
 ### 加载验证
@@ -59,6 +60,7 @@ Required Loading Order:
   - ADR history: [N 条活跃记录]
   - active constraints: [N 条活跃约束]
   - domain-boundaries.md: [版本/哈希]
+  - coding-standards/index.md: [版本/规则数量]
   - workflow state: [当前状态]
 
 理解确认：

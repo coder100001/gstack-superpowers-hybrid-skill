@@ -15,6 +15,7 @@
 | 架构约束 | `context-layer/specs/architecture-spec.md` | P0 | 决策更新时 | 每次重新加载 |
 | 约束清单 | `context-layer/specs/constraints-spec.md` | P0 | 决策更新时 | 每次重新加载 |
 | 领域边界 | `context-layer/specs/domain-boundaries.md` | P0 | 决策更新时 | 每次重新加载 |
+| 编码标准 | `context-layer/specs/coding-standards/index.md` | P0 | 规则变更时 | 每次重新加载 |
 | ADR 历史 | `context-layer/adr/` 目录 | P0 | 决策更新时 | 仅加载活跃 ADR |
 | 任务清单 | `specs/plans/tasks.md` | P1 | 任务分解时 | 每次重新加载 |
 | 工作流状态 | `artifacts/workflow-state.md` | P1 | 状态变更时 | 每次重新加载 |
@@ -93,4 +94,4 @@ hydration:
 
 ---
 
-**关联文件**: [context-hydration protocol](../bridges/context-to-execution.md) · [project-spec](./specs/project-spec.md)
+**关联文件**: [context-hydration protocol](../bridges/context-to-execution.md) · [project-spec](../specs/project-spec.md)

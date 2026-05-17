@@ -1,0 +1,31 @@
+# Project Configuration
+# This file is loaded during Context Hydration (P2 asset)
+
+## Project Identity
+project_name: "gstack-superpowers-hybrid-skill"
+version: "4.0.0"
+description: "AI Engineering Governance System — 三层架构"
+
+## Runtime
+runtime:
+  primary: "node"
+  min_version: "18"
+  shell: "bash/zsh"
+
+## Paths
+paths:
+  skills_root: "skills/"
+  context_specs: "context-layer/specs/"
+  adr_dir: "docs/design-docs/"
+  tools_dir: "gstack-skills/bin/"
+  tests_dir: "tests/"
+
+## Hydration Settings
+hydration:
+  required_assets:
+    - project-spec
+    - architecture-spec
+    - constraints-spec
+    - domain-boundaries
+    - coding-standards
+  default_priority: "P0"
