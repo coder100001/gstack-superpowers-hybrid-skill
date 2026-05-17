@@ -328,29 +328,6 @@ concurrency_model: "goroutine"          # 并发模型
 
 ---
 
-## 状态机与流程映射
-
-v4.0 引入严格的状态机，确保流程不可跳步：
-
-```
-IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
-    → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
-```
-
-| 旧 Phase | 新状态 | 层归属 | 产出物 |
-|:---------|:-------|:-------|:-------|
-| Phase 0.5a | DISCOVERY | Decision Layer | 需求文档（功能/非功能/边界） |
-| Phase 0.5b | ARCH_REVIEW | Decision Layer | 架构设计文档 + ADR |
-| Phase 0.6 | REQUIREMENT_LOCK | Decision Layer | 确认的需求清单 |
-| Phase 1 | TASK_DECOMPOSITION | Decision Layer | 任务清单（含验收标准） |
-| Phase 6 | IMPLEMENTATION | Execution Layer | 通过测试的代码 |
-| Phase 7 (自审) | SELF_REVIEW | Execution Layer | 自审报告（对照契约） |
-| Phase 4 | QA | Execution Layer | 回归测试报告 |
-| Phase 7 (发布) | SHIP_REVIEW | Governance | 发布检查清单 |
-| 新增 | RETRO | Governance | 复盘记录 |
-
----
-
 ## 三层架构核心原则
 
 1. **思考与实现严格分离**: Decision Layer 负责决策，Execution Layer 负责执行，互不越界
@@ -385,18 +362,6 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 ---
 
-## 三层架构文件索引
-
-| 路径 | 内容 |
-|:-----|:-----|
-| [decision-layer/reviews/](../../../decision-layer/reviews/) | 多角色审议协议 |
-| [context-layer/specs/](../../../context-layer/specs/) | 上下文约束契约 |
-| [context-layer/hydration/](../../../context-layer/hydration/) | 注水规范 |
-| [execution-layer/](../../../execution-layer/) | 执行规则 |
-| [bridges/](../../../bridges/) | 层间桥接协议 |
-| [governance/](../../../governance/) | 治理规则 |
-| [docs/design-docs/](../../../docs/design-docs/) | 设计文档 |
-
 ---
 
 ## 异常处理
@@ -411,23 +376,6 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 ---
 
 ## 文档索引
-
-> **重要**: 本文档与 README.md 和 docs/ 目录下的文档保持同步更新。
-
-| 文档 | 内容 | 路径 |
-|------|------|------|
-| **项目 README** | 项目概述、快速开始 | [README.md](../../../README.md) |
-| **快速开始** | 安装配置、基础使用 | [docs/getting-started.md](../../../docs/getting-started.md) |
-| **架构设计** | 系统设计、流程说明 | [docs/architecture.md](../../../docs/architecture.md) |
-| **技能参考** | 所有技能详细说明 | [docs/skills-reference.md](../../../docs/skills-reference.md) |
-| **维护更新** | 同步策略、扩展方法 | [docs/maintenance.md](../../../docs/maintenance.md) |
-| **技能目录** | 技能分类说明 | [skills/README.md](../../../skills/README.md) |
-| **完整分析** | 三项目对比分析 | [COMPLETE_ANALYSIS.md](../../../COMPLETE_ANALYSIS.md) |
-| **三层架构设计** | AI Engineering Governance System 设计 | [docs/design-docs/002-ai-engineering-governance-system.md](../../../docs/design-docs/002-ai-engineering-governance-system.md) |
-| **决策层** | 多角色架构审议协议 | [decision-layer/reviews/architecture-review.md](../../../decision-layer/reviews/architecture-review.md) |
-| **上下文层** | 项目约束运行时契约 | [context-layer/specs/project-spec.md](../../../context-layer/specs/project-spec.md) |
-| **桥接层** | 上下文灌入协议 | [bridges/context-to-execution.md](../../../bridges/context-to-execution.md) |
-| **治理层** | 决策冻结规则 | [governance/decision-freeze.md](../../../governance/decision-freeze.md) |
 
 ### 文档维护规则（单一真相源）
 
@@ -452,11 +400,10 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
-| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统（Decision/Context/Execution Layer + Bridges + Governance）；新增状态机（9 状态严格迁移）；新增多角色架构审议协议；新增上下文注水机制；新增决策冻结规则；修复所有悬空引用；Skill 路由表新增三层架构映射；**v4.1** 渐进式加载优化：SKILL.md 精简 42%，新增框架文件按阶段加载机制 |
+| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水；**v4.1** 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载 |
 
 ---
 
-**版本**: v4.1 (渐进式加载优化)
-**最后更新**: 2026-05-16
+**版本**: v4.1 | **最后更新**: 2026-05-16
 
 **详细文档请参考各模块文件。**
