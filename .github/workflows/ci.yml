@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell syntax check
+        run: |
+          find scripts/ -name "*.sh" -exec bash -n {} \;
+          echo "All shell scripts syntax OK"
+
+      - name: Shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck scripts/sync-upstream.sh
+          echo "Shellcheck passed"
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skill front-matter validation
+        run: |
+          errors=0
+          while IFS= read -r skill; do
+            if ! head -1 "$skill" | grep -q '^---$'; then
+              echo "MISSING front-matter: $skill"
+              errors=$((errors + 1))
+            fi
+            name=$(sed -n '/^---$/,/^---$/p' "$skill" | grep '^name:' | head -1)
+            desc=$(sed -n '/^---$/,/^---$/p' "$skill" | grep '^description:' | head -1)
+            if [[ -z "$name" ]]; then
+              echo "MISSING name in front-matter: $skill"
+              errors=$((errors + 1))
+            fi
+            if [[ -z "$desc" ]]; then
+              echo "MISSING description in front-matter: $skill"
+              errors=$((errors + 1))
+            fi
+          done < <(find skills/ -name "SKILL.md")
+          if [[ $errors -gt 0 ]]; then
+            echo "FAILED: $errors front-matter issues found"
+            exit 1
+          fi
+          echo "All SKILL.md front-matters valid ($(find skills/ -name "SKILL.md" | wc -l) files)"
+
+      - name: Markdown link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >
+            --no-progress
+            --exclude 'http://localhost'
+            --exclude 'https://github.com/coder100001'
+            --exclude 'https://github.com/obra'
+            --exclude 'https://github.com/gstack'
+            --exclude 'https://opencode.ai'
+            --exclude 'mailto:'
+            -- './**/*.md'
+          format: markdown
+          fail: true
+          jobSummary: true
+
+      - name: Project integrity validation
+        run: |
+          bash scripts/validate-project.sh
