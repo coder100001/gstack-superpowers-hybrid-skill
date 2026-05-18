@@ -231,7 +231,7 @@ AI: 确认一下需求：
 
 ### 架构审议维度
 
-参考 [decision-layer/reviews/architecture-review.md](../../../decision-layer/reviews/architecture-review.md)
+参考 [decision-layer/reviews/architecture-review.md](../../../../decision-layer/reviews/architecture-review.md)
 
 **审议维度按复杂度分级**：
 
@@ -423,5 +423,5 @@ AI: 基于需求分析，我提出了以下方案：
 ## 相关文档
 
 - [SKILL.md](../SKILL.md) - 主技能文档
-- [ADR-001.md](../../../decision-layer/adr/ADR-001-initial-architecture-framework.md) - 三层架构设计文档
-- [architecture-review.md](../../../decision-layer/reviews/architecture-review.md) - 架构审议协议
+- [ADR-001.md](../../../../decision-layer/adr/ADR-001-initial-architecture-framework.md) - 三层架构设计文档
+- [architecture-review.md](../../../../decision-layer/reviews/architecture-review.md) - 架构审议协议

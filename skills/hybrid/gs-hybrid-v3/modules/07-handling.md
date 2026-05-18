@@ -314,4 +314,4 @@
 
 ---
 
-**关联文件**: [decision-freeze](../../governance/decision-freeze.md) · [architecture-review](../../decision-layer/reviews/architecture-review.md) · [context-hydration](../../bridges/context-to-execution.md)
+**关联文件**: [decision-freeze](../../../../governance/decision-freeze.md) · [architecture-review](../../../../decision-layer/reviews/architecture-review.md) · [context-hydration](../../../../bridges/context-to-execution.md)

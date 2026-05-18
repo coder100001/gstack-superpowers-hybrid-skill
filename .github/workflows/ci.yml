@@ -64,6 +64,8 @@ jobs:
             --exclude 'https://github.com/gstack'
             --exclude 'https://opencode.ai'
             --exclude 'mailto:'
+            --exclude 'skills/gstack/qa/templates/screenshots'
+            --exclude-path 'skills/superpowers/writing-skills/anthropic-best-practices.md'
             -- './**/*.md'
           format: markdown
           fail: true

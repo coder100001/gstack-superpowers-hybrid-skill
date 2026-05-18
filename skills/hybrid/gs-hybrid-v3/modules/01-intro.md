@@ -112,11 +112,11 @@ concurrency:
 
 | 层 | 核心文件 | 映射的原技能 |
 |----|---------|-------------|
-| Decision Layer | [architecture-review.md](../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `brainstorming`, `design` |
-| Context Layer | [context-to-execution.md](../../../bridges/context-to-execution.md), [project-spec.md](../../../context-layer/specs/project-spec.md) | `context-save`, `context-restore` |
-| Execution Layer | [implementation.md](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
-| Bridges | [decision-to-context.md](../../../bridges/decision-to-context.md) | 新增职责 |
-| Governance | [decision-freeze.md](../../../governance/decision-freeze.md) | 新增职责 |
+| Decision Layer | [architecture-review.md](../../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `brainstorming`, `design` |
+| Context Layer | [context-to-execution.md](../../../../bridges/context-to-execution.md), [project-spec.md](../../../../context-layer/specs/project-spec.md) | `context-save`, `context-restore` |
+| Execution Layer | [implementation.md](../../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
+| Bridges | [decision-to-context.md](../../../../bridges/decision-to-context.md) | 新增职责 |
+| Governance | [decision-freeze.md](../../../../governance/decision-freeze.md) | 新增职责 |
 
 ### 原技能保留参考
 
