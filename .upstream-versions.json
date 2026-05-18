@@ -1,26 +1,54 @@
 {
   "superpowers": {
-    "repo": "https://github.com/obra/superpowers",
-    "version": "synced",
-    "last_sync": "2026-05-17",
-    "skill_count":       19,
-    "path": "skills/superpowers/"
+    "version": "2.3.1",
+    "last_sync": "2026-05-16",
+    "skills_count": 14,
+    "skills": [
+      "brainstorming",
+      "custom",
+      "dispatching-parallel-agents",
+      "executing-plans",
+      "finishing-a-development-branch",
+      "receiving-code-review",
+      "requesting-code-review",
+      "subagent-driven-development",
+      "systematic-debugging",
+      "test-driven-development",
+      "using-git-worktrees",
+      "using-superpowers",
+      "verification-before-completion",
+      "writing-plans",
+      "writing-skills"
+    ]
   },
   "gstack": {
-    "path": "~/.claude/skills/gstack",
-    "version": "1.39.0.0",
-    "last_sync": "2026-05-17",
-    "skill_count":       16,
-    "skill_path": "skills/gstack/"
+    "version": "0.12.0",
+    "last_sync": "2026-05-16",
+    "scripts_count": 61,
+    "skills_count": 16,
+    "skills": [
+      "benchmark",
+      "careful",
+      "codex",
+      "context-restore",
+      "context-save",
+      "cso",
+      "design-review",
+      "freeze",
+      "guard",
+      "investigate",
+      "learn",
+      "plan-devex-review",
+      "plan-eng-review",
+      "qa",
+      "retro",
+      "ship"
+    ]
   },
   "hybrid": {
-    "description": "Superpowers + GStack 混合流程",
-    "skill_count":        1,
-    "path": "skills/hybrid/"
-  },
-  "custom": {
-    "description": "自定义扩展技能",
-    "path": "skills/custom/"
-  },
-  "last_sync": "2026-05-17"
+    "version": "4.1",
+    "last_sync": "2026-05-16",
+    "architecture": "three-layer (decision/context/execution)",
+    "states_count": 9
+  }
 }

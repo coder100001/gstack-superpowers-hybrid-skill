@@ -25,7 +25,7 @@ Required Loading Order:
 
 1. project-spec.md          ← 项目全局约束（最高优先级）
 2. architecture-spec.md     ← 架构决策约束
-3. current ADR history      ← 活跃的架构决策记录
+3. ADR history (decision-layer/adr/) ← 活跃的架构决策记录
 4. active constraints       ← 当前活跃的约束清单
 5. domain-boundaries.md     ← 领域边界定义
 6. coding-standards/index.md ← 编码规则定义

@@ -274,7 +274,7 @@ L1 任务（文件<3, 代码<100行）适用以下简化：
 | architecture-spec | `context-layer/specs/architecture-spec.md` | P0 | 每次重新加载 |
 | constraints-spec | `context-layer/specs/constraints-spec.md` | P0 | 每次重新加载 |
 | domain-boundaries | `context-layer/specs/domain-boundaries.md` | P0 | 每次重新加载 |
-| ADR 历史 | `context-layer/adr/` | P0 | 仅加载活跃 ADR |
+| ADR 历史 | `decision-layer/adr/` | P0 | 仅加载活跃 ADR |
 | 任务清单 | `specs/plans/tasks.md` | P1 | 每次重新加载 |
 | 工作流状态 | `artifacts/workflow-state.md` | P1 | 每次重新加载 |
 | 项目配置 | `project-config.yml` | P2 | 首次加载后缓存 |
@@ -554,7 +554,7 @@ Execution Layer:
 decision-layer/adr/ADR-NNN-title.md (ARCH_REVIEW)
     │
     ▼
-context-layer/adr/ADR-NNN.md (决策记录)
+decision-layer/adr/ADR-NNN.md (决策记录)
     │
     ▼
 context-layer/specs/*.md (Spec 契约)

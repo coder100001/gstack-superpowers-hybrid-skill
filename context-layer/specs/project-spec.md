@@ -1,3 +1,11 @@
+---
+hydration:
+  asset: "project-spec"
+  version: "1.2.0"
+  updated: "2026-05-16"
+  adr_ref: "ADR-001, ADR-003"
+---
+
 # Project Constraints
 
 > **层**: Context Layer · **职责**: 项目约束运行时契约
@@ -22,7 +30,7 @@
 - **运行时**: Node.js >= 18 / Deno >= 1.30
 - **测试框架**: Jest / Playwright / Mocha
 - **构建工具**: 按需选择，无强制要求
-- **配置格式**: JSON / YAML / YAML
+- **配置格式**: JSON / YAML
 - **文档格式**: Markdown
 
 ### 允许引入的条件
@@ -32,7 +40,7 @@
 - 禁止引入已有替代的内部实现
 
 ### 依赖管理规则
-- 依赖版本必须锁骤（lockfile）
+- 依赖版本必须锁定（lockfile）
 - 定期安全扫描（依赖漏洞）
 - 重大版本升级视为 L2+ 变更
 
@@ -94,7 +102,7 @@ Tools Domain:       gstack-skills/bin/, scripts/ — 底层工具
 - **竞态防护**: 无共享可变状态
 
 ### 限制
-- 共待任务串行执行
+- 普通任务串行执行
 - 后台任务无并行
 - 工具调用并发按具体工具限制
 
@@ -109,7 +117,7 @@ Tools Domain:       gstack-skills/bin/, scripts/ — 底层工具
 - **变量命名**: camelCase
 
 ### 资源
-- **技能路径**: `skills/<category>/<skill-name>/<skill-name>/SKILL.md`
+- **技能路径**: `skills/<category>/<skill-name>/SKILL.md`
 - **配置键**: kebab-case
 - **ADR 路径**: `decision-layer/adr/ADR-NNN-title.md`
 

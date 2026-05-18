@@ -4,7 +4,7 @@
 
 ## TASK_DECOMPOSITION 状态
 
-**触发条件**: CONTEXT_COMPLETE 状态用户确认方案后 | **适用级别**: ✅ 所有级别必须
+**触发条件**: ARCH_REVIEW 状态用户确认方案后 | **适用级别**: ✅ 所有级别必须
 
 **调用 Skill**: `writing-plans`
 
@@ -16,7 +16,7 @@
 ### TASK_DECOMPOSITION 执行流程
 
 ```
-CONTEXT_COMPLETE 方案确认
+ARCH_REVIEW 方案确认
   │
   ▼
 ┌──────────────────────────────────────────────────────────────┐
@@ -48,7 +48,7 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 │  范围/风险/验收/回滚 验证 → 用户硬阻断确认                     │
 └──────────────────────────────────────────────────────────────┘
   │
-  ▼ EXECUTION_DESIGN 状态 → Context Hydration → IMPLEMENTATION
+  ▼ Context Hydration → IMPLEMENTATION
     → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
@@ -58,13 +58,13 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 
 ### 1. Scope Check (最终防线)
 
-CONTEXT_COMPLETE 状态已用结构化标准做过多子系统检测。这里作为**最后防线**：
+ARCH_REVIEW 状态已用结构化标准做过多子系统检测。这里作为**最后防线**：
 
 - 如果 spec 仍覆盖多个独立子系统 → **在此提出拆**，不继续
 - 一个 plan 只产出可独立运行、可测试的软件
-- 一旦此阶段仍检测到多子系统，回退到 CONTEXT_COMPLETE 状态重新拆解
+- 一旦此阶段仍检测到多子系统，回退到 ARCH_REVIEW 状态重新拆解
 
-**参考判定标准** (与 CONTEXT_COMPLETE 一致):
+**参考判定标准** (与 ARCH_REVIEW 一致):
 - 独立数据模型 / 独立用户界面 / 独立部署单元 / 独立用户角色 / 独立外部依赖
 - 满足任意 2 项 → 独立子系统
 

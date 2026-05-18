@@ -17,7 +17,7 @@
 | 约束清单 | `context-layer/specs/constraints-spec.md` | P0 | 决策更新时 | 每次重新加载 |
 | 领域边界 | `context-layer/specs/domain-boundaries.md` | P0 | 决策更新时 | 每次重新加载 |
 | 编码标准 | `context-layer/specs/coding-standards/index.md` | P0 | 规则变更时 | 每次重新加载 |
-| ADR 历史 | `context-layer/adr/` 目录 | P0 | 决策更新时 | 仅加载活跃 ADR |
+| ADR 历史 | `decision-layer/adr/` 目录 | P0 | 决策更新时 | 仅加载活跃 ADR |
 | 任务清单 | `specs/plans/tasks.md` | P1 | 任务分解时 | 每次重新加载 |
 | 工作流状态 | `artifacts/workflow-state.md` | P1 | 状态变更时 | 每次重新加载 |
 | 项目配置 | `project-config.yml` | P2 | 项目级 | 首次加载后缓存 |
@@ -85,7 +85,7 @@ hydration:
 
 ```
 1. 检查 context-layer/specs/ 目录
-2. 检查 context-layer/adr/ 目录
+2. 检查 decision-layer/adr/ 目录
 3. 检查 artifacts/ 目录
 4. 检查 specs/plans/ 目录
 5. 检查 project-config.yml（根目录）

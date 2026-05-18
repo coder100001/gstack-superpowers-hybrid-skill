@@ -1,3 +1,11 @@
+---
+hydration:
+  asset: "architecture-spec"
+  version: "1.1.0"
+  updated: "2026-05-16"
+  adr_ref: "ADR-001"
+---
+
 # Architecture Constraints
 
 > **层**: Context Layer · **职责**: 架构约束运行时契约

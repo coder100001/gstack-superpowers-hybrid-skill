@@ -1,3 +1,11 @@
+---
+hydration:
+  asset: "constraints-spec"
+  version: "1.1.0"
+  updated: "2026-05-16"
+  adr_ref: "ADR-007"
+---
+
 # General Constraints
 
 > **层**: Context Layer · **职责**: 通用约束运行时契约
@@ -24,7 +32,7 @@
 - **风险**: 上游技能更新可能破坏兼容性
   - **约束**: 所有更新必须经过测试验证
   - **缓解**: 版本锁定，按需同步
-  - **监控**: `.upstream-versions.json` 跟踪版本
+  - **监控**: 建议创建 `.upstream-versions.json` 跟踪版本
 
 - **风险**: 上下文 token 超限
   - **约束**: 模块按需加载，单模块 < 10KB
@@ -49,10 +57,10 @@
 
 ### 响应时间
 - **复杂度评估 (Step 0)**: < 2s
-- **方案对比 (Phase 0.5)**: < 10s
-- **计划编写 (Phase 1)**: < 15s
-- **代码实现 (Phase 6)**: 无硬性限制，保持流畅
-- **验证交付 (Phase 7)**: < 20s
+- **需求澄清 (DISCOVERY)**: < 10s
+- **计划编写 (TASK_DECOMPOSITION)**: < 15s
+- **代码实现 (IMPLEMENTATION)**: 无硬性限制，保持流畅
+- **验证交付 (SHIP_REVIEW)**: < 20s
 
 ### 资源消耗
 - **初始上下文加载**: < 20KB token

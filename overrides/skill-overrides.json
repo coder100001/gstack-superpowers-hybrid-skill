@@ -1,12 +1,16 @@
 {
   "replacements": {},
-  "extensions": {
-    "gs-hybrid-v3": {
-      "additional_phases": [],
-      "custom_rules": [],
-      "modified_checks": {}
+  "additional_phases": [],
+  "custom_rules": [
+    {
+      "id": "hybrid-v3-primary",
+      "description": "gs-hybrid-v3 is the primary entry point; all workflow requests should route through it",
+      "applies_to": ["hybrid"]
     }
-  },
+  ],
   "disabled_skills": [],
-  "skill_aliases": {}
+  "skill_aliases": {
+    "hybrid": "gs-hybrid-v3",
+    "h": "gs-hybrid-v3"
+  }
 }
