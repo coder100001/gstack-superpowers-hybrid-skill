@@ -22,7 +22,7 @@
 | GO-N001 | **Use `camelCase` for unexported, `PascalCase` for exported** | `error` | `func getUser()`, `type User struct{}` |
 | GO-N002 | **Acronyms are all-uppercase** | `error` | `HTTP`, `URL`, `API`, `ID` |
 | GO-N003 | **Single-letter variable names only for short scopes (< 5 lines)** | `info` | `for i := 0; ...` |
-| GOGO-N004 | **Package names are lowercase, single word, no underscores** | `error` | `package model` not `package user_model` |
+| GO-N004 | **Package names are lowercase, single word, no underscores** | `error` | `package model` not `package user_model` |
 | GO-N005 | **File names are `snake_case.go`** | `error` | `user_service.go` |
 | GO-N006 | **Receiver names are 1-3 letter abbreviation of type** | `info` | `func (u *User) GetName() string` |
 

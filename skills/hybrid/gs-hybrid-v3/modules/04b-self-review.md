@@ -10,6 +10,18 @@
 
 在 Execution Layer 内进行自审，确保代码质量、测试策略完善、边界条件覆盖充分，并符合 Governance 层的安全规则。
 
+### 代码规则审查
+
+代码规则审查委托给 [execution-layer/review.md](../../../execution-layer/review.md)，按规则驱动审查流程执行：
+1. 加载编码标准（coding-standards/index.md）
+2. 按严重级别扫描 changed files（error → 必须修复 / warning → 建议修复 / info → 记录）
+3. AI 行为红线检查（AI-R001 ~ AI-R008）
+4. 语言特定规则检查（TS-* / GO-*）
+5. 通用规则检查（SEC-* / DOC-* / ORG-*）
+6. 生成规则检查摘要 → 如果有 error 违规则审查不通过
+
+**此处不再重复编码规则清单，以 review.md 为准。**
+
 ### 1. 测试策略自审
 
 #### 1.1 单元测试

@@ -128,7 +128,7 @@
 
 **触发条件**: IMPLEMENTATION 完成后
 
-**调用 Skill**: `/code-review`
+**调用 Skill**: `requesting-code-review`
 
 ### 目标
 

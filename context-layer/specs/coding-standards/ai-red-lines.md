@@ -12,7 +12,6 @@
 | AI-R001 | **Do not redesign architecture during implementation.** If you discover a better approach, freeze work and return to Decision Layer. | `error` | Decision freezing is a core governance principle |
 | AI-R002 | **Do not add "nice-to-have" features.** Only implement what is specified in the task decomposition. | `error` | Scope creep undermines the contract |
 | AI-R003 | **Do not skip tests.** Every implementation must have corresponding tests before being considered complete. | `error` | TDD is the mandated workflow |
-| AI-R003 | **Do not skip tests.** Every implementation must have corresponding tests before being considered complete. | `error` | TDD is the mandated workflow |
 | AI-R004 | **Do not introduce new dependencies without approval.** If a dependency would help, flag it and stop. | `error` | Dependency decisions belong in Decision Layer |
 | AI-R005 | **Do not refactor unrelated code.** Change only the files that are part of the current task. | `error` | Side-effect refactoring introduces risk |
 | AI-R006 | **Do not leave TODO/FIXME/HACK comments in committed code.** Either implement it now or create a task for it. | `warning` | Incomplete code is a quality debt |

@@ -213,7 +213,7 @@ RETRO:          复盘记录
 
 <HARD-GATE>
 1. **REQUIREMENT_LOCK 需求确认**: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
-2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration
+2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration（L1 可通过对话确认，不强制产出独立 plan 文件；L2/L3 必须产出 plan 文件）
 3. **Context Hydration**: 执行层编码前必须完成上下文注水，否则禁止进入 IMPLEMENTATION
 4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
 5. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
@@ -359,6 +359,6 @@ concurrency_model: "goroutine"          # 并发模型
 
 ---
 
-**版本**: v4.1 | **最后更新**: 2026-05-16
+**版本**: v4.0 | **最后更新**: 2026-05-16
 
 **详细文档请参考各模块文件。**

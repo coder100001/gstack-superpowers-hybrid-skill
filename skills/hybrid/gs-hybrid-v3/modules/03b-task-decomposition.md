@@ -48,7 +48,8 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 │  范围/风险/验收/回滚 验证 → 用户硬阻断确认                     │
 └──────────────────────────────────────────────────────────────┘
   │
-  ▼ EXECUTION_DESIGN 状态 (工程规范设计)
+  ▼ EXECUTION_DESIGN 状态 → Context Hydration → IMPLEMENTATION
+    → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
 ---
@@ -395,6 +396,7 @@ Task 1: Config (无依赖, 可并行)
   │     └─→ (Task 2-7 共享基础设施)
   ├─→ Task 6: Validation (依赖 Task 2, 并行于 Task 4 + Task 5)
   └─→ Task 8: Integration Test (依赖 Task 1-7 全部)
+  └─→ Task 9: SELF_REVIEW (依赖 Task 1-8 全部)
 ```
 
 **执行顺序** (由依赖图自动推导):
@@ -583,7 +585,7 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 <HARD-GATE>
 **这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能进入 Context Hydration 状态。
 
-**L1 快速通道规则**: L1 任务可将此确认与 REQUIREMENT_LOCK 合并为单次确认（在 REQUIREMENT_LOCK 阶段一并确认需求和 Plan），不强制产出独立 plan 文件。
+**L1 快速通道规则**: L1 任务通过对话确认即可，不强制产出独立 plan 文件。AI 必须在对话中向用户展示变更摘要（涉及文件、预估耗时、验收标准），获得用户明确回复后方可继续。
 </HARD-GATE>
 
 ### 验证清单（按级别分级）
