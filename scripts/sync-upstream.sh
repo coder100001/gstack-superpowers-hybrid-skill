@@ -156,34 +156,94 @@ sync_superpowers() {
     log_info "同步 superpowers..."
     
     local SUPERPOWERS_PATH="$HOME/.trae-cn/superpowers"
-    
+    local SP_SKILLS_PATH="$SUPERPOWERS_PATH/skills/superpowers"
+
     if [[ ! -d "$SUPERPOWERS_PATH" ]]; then
         log_error "Superpowers 目录不存在: $SUPERPOWERS_PATH"
         log_info "请先安装 superpowers 或检查路径"
         return 1
     fi
-    
+
+    if [[ ! -d "$SP_SKILLS_PATH" ]]; then
+        log_error "Superpowers 技能目录不存在: $SP_SKILLS_PATH"
+        log_info "上游结构异常，请检查 superpowers 安装"
+        return 1
+    fi
+
+    # 加载过滤配置
+    local sp_all=false
+    load_sync_filter "superpowers" || sp_all=true
+
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] 将从 $SUPERPOWERS_PATH 复制以下内容到 skills/superpowers/:"
-        ls -la "$SUPERPOWERS_PATH/skills/" 2>/dev/null || true
+        if [[ "$sp_all" == "true" ]]; then
+            log_info "[DRY-RUN] 将同步所有 superpowers 技能"
+        else
+            log_info "[DRY-RUN] 将仅同步 ${#ROUTED_SKILLS[@]} 个路由技能"
+        fi
         return 0
     fi
-    
+
     if [[ "$CHECK_ONLY" == "true" ]]; then
         log_info "检查 superpowers 更新..."
-        local sp_count=$(ls -1 "$SUPERPOWERS_PATH/skills/" 2>/dev/null | wc -l)
+        local sp_count=$(ls -1 "$SP_SKILLS_PATH" 2>/dev/null | wc -l)
         log_info "上游 superpowers 技能数量: $sp_count"
         local local_count=$(ls -1 "$PROJECT_ROOT/skills/superpowers/" 2>/dev/null | wc -l)
         log_info "本地 superpowers 技能数量: $local_count"
+        if [[ "$sp_all" == "false" ]]; then
+            log_info "过滤模式: 仅同步 ${#ROUTED_SKILLS[@]} 个路由技能"
+        fi
         return 0
     fi
-    
+
     # 创建目录
     mkdir -p "$PROJECT_ROOT/skills/superpowers"
+
+    # 仅同步被路由引用的技能
+    log_info "检测并复制 superpowers 技能到 skills/superpowers/..."
+
+    local synced=0
+    local skipped=0
+    cd "$SP_SKILLS_PATH"
+    for skill in */; do
+        skill=${skill%/}
+        if [[ ! -f "$SP_SKILLS_PATH/$skill/SKILL.md" ]]; then
+            continue
+        fi
+
+        # 过滤检查
+        if [[ "$sp_all" == "false" ]]; then
+            if ! is_skill_routed "$skill"; then
+                log_info "  跳过（未路由）: $skill"
+                skipped=$((skipped + 1))
+                continue
+            fi
+        fi
+
+        log_info "  同步技能: $skill"
+        rm -rf "$PROJECT_ROOT/skills/superpowers/$skill"
+        cp -r "$SP_SKILLS_PATH/$skill" "$PROJECT_ROOT/skills/superpowers/" 2>/dev/null || true
+        synced=$((synced + 1))
+    done
     
-    # 同步核心文件
-    log_info "复制 superpowers 技能到 skills/superpowers/..."
-    cp -r "$SUPERPOWERS_PATH/skills/"* "$PROJECT_ROOT/skills/superpowers/" 2>/dev/null || true
+    # 清理未在白名单中的本地技能
+    if [[ "$sp_all" == "false" ]]; then
+        log_info "清理未引用的本地 superpowers 技能..."
+        cd "$PROJECT_ROOT/skills/superpowers"
+        local cleaned=0
+        for local_skill in */; do
+            local_skill=${local_skill%/}
+            if [[ -d "$local_skill" ]]; then
+                if ! is_skill_routed "$local_skill"; then
+                    log_info "  删除: $local_skill"
+                    rm -rf "$local_skill"
+                    cleaned=$((cleaned + 1))
+                fi
+            fi
+        done
+        if [[ $cleaned -gt 0 ]]; then
+            log_info "已清理 $cleaned 个未引用的技能"
+        fi
+    fi
     
     # 同步 agents
     if [[ -d "$SUPERPOWERS_PATH/agents" ]]; then
@@ -200,53 +260,61 @@ sync_superpowers() {
         cp -r "$SUPERPOWERS_PATH/hooks" "$PROJECT_ROOT/" 2>/dev/null || true
     fi
     
-    # 同步配置文件（仅保留必需的）
+    # 同步配置文件
     cp "$SUPERPOWERS_PATH/CLAUDE.md" "$PROJECT_ROOT/" 2>/dev/null || true
     
-    log_success "Superpowers 同步完成 (同步到 skills/superpowers/)"
+    log_success "Superpowers 同步完成 (同步 $synced 个技能，跳过 $skipped 个未路由技能)"
 }
 
 # 读取同步过滤配置
 load_sync_filter() {
+    local section="$1"
     local filter_file="$PROJECT_ROOT/.sync-filter.json"
+    
     if [[ ! -f "$filter_file" ]]; then
         log_warn "过滤配置文件不存在: $filter_file"
-        log_info "将同步所有 gstack 技能"
-        GSTACK_ALL=true
-        return
+        log_info "将同步所有技能"
+        return 1
     fi
     
-    local mode=$(grep -o '"mode"[[:space:]]*:[[:space:]]*"[^"]*"' "$filter_file" | cut -d'"' -f4)
+    local flat=$(tr -d '\n' < "$filter_file")
+    local mode=$(echo "$flat" | grep -o '"'"$section"'"\s*:\s*{[^}]*"mode"\s*:\s*"[^"]*"' | grep -o '"mode"\s*:\s*"[^"]*"' | cut -d'"' -f4)
+    
     if [[ "$mode" != "routed" ]]; then
-        log_info "过滤模式: all（同步所有技能）"
-        GSTACK_ALL=true
-        return
+        log_info "[$section] 过滤模式: all（同步所有技能）"
+        return 1
     fi
     
-    log_info "过滤模式: routed（仅同步路由表引用的技能）"
+    log_info "[$section] 过滤模式: routed（仅同步路由表引用的技能）"
     
     # 解析 routed_skills 列表
     ROUTED_SKILLS=()
+    local in_section=false
     local in_list=false
     while IFS= read -r line; do
-        if echo "$line" | grep -q '"routed_skills"'; then
-            in_list=true
+        if echo "$line" | grep -q '"'"$section"'"'; then
+            in_section=true
             continue
         fi
-        if [[ "$in_list" == "true" ]]; then
-            if echo "$line" | grep -q '"'; then
+        if [[ "$in_section" == "true" ]]; then
+            if echo "$line" | grep -q '"routed_skills"'; then
+                in_list=true
+                continue
+            fi
+            if [[ "$in_list" == "true" ]]; then
                 local skill=$(echo "$line" | grep -o '"[^"]*"' | head -1 | tr -d '"')
                 if [[ -n "$skill" && "$skill" != "routed_skills" ]]; then
                     ROUTED_SKILLS+=("$skill")
                 fi
-            fi
-            if echo "$line" | grep -q ']'; then
-                break
+                if echo "$line" | grep -q ']'; then
+                    break
+                fi
             fi
         fi
     done < "$filter_file"
     
-    log_info "白名单技能数: ${#ROUTED_SKILLS[@]}"
+    log_info "[$section] 白名单技能数: ${#ROUTED_SKILLS[@]}"
+    return 0
 }
 
 # 检查技能是否在白名单中
@@ -273,7 +341,7 @@ sync_gstack() {
     fi
     
     # 加载过滤配置
-    load_sync_filter
+    load_sync_filter "gstack"
     
     if [[ "$DRY_RUN" == "true" ]]; then
         if [[ "$GSTACK_ALL" == "true" ]]; then
@@ -387,7 +455,7 @@ update_version_file() {
     local gs_version="unknown"
     
     if [[ -f "$PROJECT_ROOT/skills/superpowers/brainstorming/SKILL.md" ]]; then
-        sp_version=$(grep -m1 "^# " "$PROJECT_ROOT/skills/superpowers/brainstorming/SKILL.md" | grep -oP 'v?\d+\.\d+\.\d+' || echo "synced")
+        sp_version=$(grep -m1 "^# " "$PROJECT_ROOT/skills/superpowers/brainstorming/SKILL.md" | grep -oE 'v?[0-9]+\.[0-9]+\.[0-9]+' || echo "synced")
     fi
     
     if [[ -f "$PROJECT_ROOT/gstack-skills/VERSION" ]]; then

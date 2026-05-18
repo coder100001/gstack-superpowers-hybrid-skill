@@ -19,6 +19,7 @@ paths:
   adr_dir: "decision-layer/adr/"
   tools_dir: "gstack-skills/bin/"
   tests_dir: "tests/"
+  plans_dir: "specs/plans/"
 
 ## Hydration Settings
 hydration:

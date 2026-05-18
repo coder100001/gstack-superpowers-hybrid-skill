@@ -154,7 +154,7 @@ AI: 我直接开始编码...
 - **Superpowers TDD**: 执行层首步骤（红）前必须完成注水
 - **Superpowers verification-before-completion**: 交付前检查注水是否被执行
 - **GStack context-restore/context-save**: 作为契约的持久化/加载后端
-- **gs-hybrid-v3 Phase 1.5**: Plan 确认检查注水是否列为前置条件
+- **gs-hybrid-v3 TASK_DECOMPOSITION**: Plan 确认检查注水是否列为前置条件
 
 ---
 
