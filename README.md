@@ -1,6 +1,6 @@
 # AI Engineering Governance System
 
-> 一个实验性的三层架构治理系统 — Decision Layer → Context Layer → Execution Layer
+> 一个实验性的三层架构治理系统 — v4.0 — Decision Layer → Context Layer → Execution Layer
 
 [![Version](https://img.shields.io/badge/version-4.0-blue.svg)](./.upstream-versions.json)
 [![Architecture](https://img.shields.io/badge/architecture-three--layer-green.svg)](./decision-layer/adr/ADR-001-initial-architecture-framework.md)
