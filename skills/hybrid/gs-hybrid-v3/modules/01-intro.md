@@ -100,7 +100,7 @@ concurrency:
 | **Execution Layer (执行层)** | 负责受约束实现：TDD 编码、自审、验证，**不能做设计决策** |
 | **Context Hydration (上下文注水)** | 进入执行层前必须加载所有 Spec，确保执行是在约束内完成 |
 | **Decision Freeze (决策冻结)** | 执行期间架构/需求/契约不可自行更改，必须走 Decision Layer 变更流程 |
-| **ADR (Architecture Decision Record)** | 架构决策记录，存储在 `docs/design-docs/` 目录 |
+| **ADR (Architecture Decision Record)** | 架构决策记录，存储在 `decision-layer/adr/` 目录 |
 | **Spec Contract (Spec 契约)** | 上下文层的项目/架构/约束/边界文档，是执行的唯一真相来源 |
 | **5 个决策维度** | 产品、架构、性能、安全、运维，多角色审议的独立视角 |
 

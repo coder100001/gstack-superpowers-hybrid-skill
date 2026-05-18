@@ -147,4 +147,4 @@ Step 4: 决策表决
 
 ---
 
-**关联文件**: [architecture-review](./architecture-review.md) · [project-spec](../context-layer/specs/project-spec.md) · [design-doc-002](../docs/design-docs/002-ai-engineering-governance-system.md)
+**关联文件**: [architecture-review](./architecture-review.md) · [project-spec](../../context-layer/specs/project-spec.md) · [ADR-001](../../decision-layer/adr/ADR-001-initial-architecture-framework.md)

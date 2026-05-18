@@ -1,9 +1,9 @@
-# Design Docs
+# Design Docs (DEPRECATED)
 
-> 本目录记录项目的重大设计决策，类似 DB Migrations。
-> 每份文档记录一次设计思考的完整过程：调研 → 方案对比 → 决策。
+> **⚠️ 已迁移**: 架构决策记录已移至 `decision-layer/adr/`。
+> 此目录仅保留历史存档，新 ADR 请创建在 `decision-layer/adr/ADR-NNN-title.md`。
 
-## Index
+## Index (historical)
 
 | ID | Title | Status | Date | Related |
 |:---|------|:------|:-----|---------|

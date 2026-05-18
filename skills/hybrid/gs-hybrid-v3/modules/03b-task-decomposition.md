@@ -481,7 +481,7 @@ Step 7: Commit                       ← 1min
 
 **Tech Stack:** [关键技术/库]
 
-**Design Doc:** `docs/design-docs/NNN-title.md` (if applicable)
+**ADR:** `decision-layer/adr/ADR-NNN-title.md` (if applicable)
 **Complexity:** L1 / L2 / L3
 
 ---

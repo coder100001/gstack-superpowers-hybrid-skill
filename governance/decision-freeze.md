@@ -163,4 +163,4 @@ Layer          Layer          Layer
 
 ---
 
-**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-to-execution.md) · [design-doc-002](../docs/design-docs/002-ai-engineering-governance-system.md)
+**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-to-execution.md) · [ADR-001](../decision-layer/adr/ADR-001-initial-architecture-framework.md)

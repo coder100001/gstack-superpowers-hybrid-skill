@@ -551,7 +551,7 @@ Execution Layer:
 需求输入
     │
     ▼
-docs/design-docs/NNN-title.md (ARCH_REVIEW)
+decision-layer/adr/ADR-NNN-title.md (ARCH_REVIEW)
     │
     ▼
 context-layer/adr/ADR-NNN.md (决策记录)
@@ -622,7 +622,7 @@ specs/plans/PLAN-XXX.md (TASK_DECOMPOSITION)
 | [execution-layer/](../execution-layer/) | 执行规则 |
 | [bridges/](../bridges/) | 层间桥接协议 |
 | [governance/](../governance/) | 治理规则 |
-| [docs/design-docs/002-ai-engineering-governance-system.md](./design-docs/002-ai-engineering-governance-system.md) | 设计文档 |
+| [decision-layer/adr/ADR-001-initial-architecture-framework.md](../decision-layer/adr/ADR-001-initial-architecture-framework.md) | 架构决策记录 |
 | [skills/hybrid/gs-hybrid-v3/SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | 主技能 |
 
 ---

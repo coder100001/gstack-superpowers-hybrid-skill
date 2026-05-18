@@ -347,7 +347,7 @@ GStack 技能不是默认加载，而是满足条件时显式调用：
 | **主入口** | gs-hybrid-v3 v4.0 完整流程 | [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) |
 | **架构设计** | 三层架构详细设计 | [architecture.md](./architecture.md) |
 | **技能参考** | 所有技能列表（自动生成） | [skills-reference.md](./skills-reference.md) |
-| **维护更新** | 同步策略 | [maintenance.md](./maintenance.md) |
+| **维护更新** | 同步策略 | [MAINTENANCE.md](../MAINTENANCE.md) |
 
 > **文档维护规则**: 本文档为索引层，所有详细内容指向 SKILL.md。禁止在本文档中重复定义与 SKILL.md 冲突的内容。
 

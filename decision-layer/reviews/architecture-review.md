@@ -135,4 +135,4 @@ Step 4: 决策表决
 
 ---
 
-**关联文件**: [design-doc-002](../docs/design-docs/002-ai-engineering-governance-system.md) · [project-spec](../context-layer/specs/project-spec.md) · [context-hydration](../bridges/context-to-execution.md)
+**关联文件**: [ADR-001](../../decision-layer/adr/ADR-001-initial-architecture-framework.md) · [project-spec](../../context-layer/specs/project-spec.md) · [context-hydration](../../bridges/context-to-execution.md)

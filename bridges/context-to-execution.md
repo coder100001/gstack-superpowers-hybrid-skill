@@ -158,4 +158,6 @@ AI: 我直接开始编码...
 
 ---
 
-**关联文件**: [decision-to-context](../bridges/decision-to-context.md) · [hydration spec](../context-layer/hydration/hydration.md) · [governance](../governance/decision-freeze.md)
+**关联文件**: [decision-to-context](../bridges/decision-to-context.md) · [hydration spec](../context-layer/hydration/hydration.md) · [governance](../governance/decision-freeze.md) · [execution-to-decision](../bridges/execution-to-decision.md)
+
+> 注：注水资产的具体清单和优先级见 [hydration spec](../context-layer/hydration/hydration.md)，本协议仅规定注水的执行流程和强制规则。

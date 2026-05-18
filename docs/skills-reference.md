@@ -411,6 +411,6 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW(全5维度) → TASK_DEC
 - [主入口 SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)
 - [快速开始指南](./getting-started.md)
 - [架构设计文档](./architecture.md)
-- [维护更新指南](./maintenance.md)
+- [维护更新指南](../MAINTENANCE.md)
 - [技能目录说明](../skills/README.md)
 

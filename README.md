@@ -1,9 +1,9 @@
-# AI Engineering Governance System v4.1
+# AI Engineering Governance System v4.0
 
 > **三层架构正式版** — Decision Layer → Context Layer → Execution Layer，思考与实现严格分离
 
-[![Version](https://img.shields.io/badge/version-4.1-blue.svg)](./.upstream-versions.json)
-[![Architecture](https://img.shields.io/badge/architecture-three--layer-green.svg)](./docs/design-docs/002-ai-engineering-governance-system.md)
+[![Version](https://img.shields.io/badge/version-4.0-blue.svg)](./.upstream-versions.json)
+[![Architecture](https://img.shields.io/badge/architecture-three--layer-green.svg)](./decision-layer/adr/ADR-001-initial-architecture-framework.md)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
 
 ---
@@ -183,14 +183,14 @@ hybrid 帮我开发用户认证功能
 
 | 文档 | 内容 | 路径 |
 |:-----|:-----|:-----|
-| **三层架构设计** | AI Engineering Governance System 完整设计 | [docs/design-docs/002-ai-engineering-governance-system.md](./docs/design-docs/002-ai-engineering-governance-system.md) |
+| **三层架构设计** | AI Engineering Governance System 完整设计 | [decision-layer/adr/ADR-001-initial-architecture-framework.md](./decision-layer/adr/ADR-001-initial-architecture-framework.md) |
 | **主入口 SKILL.md** | gs-hybrid-v3 v4.1 | [skills/hybrid/gs-hybrid-v3/SKILL.md](./skills/hybrid/gs-hybrid-v3/SKILL.md) |
 | **决策层** | 多角色架构审议协议 | [decision-layer/reviews/architecture-review.md](./decision-layer/reviews/architecture-review.md) |
 | **上下文层** | 项目约束运行时契约 | [context-layer/specs/project-spec.md](./context-layer/specs/project-spec.md) |
 | **桥接层** | 上下文灌入协议 | [bridges/context-to-execution.md](./bridges/context-to-execution.md) |
 | **治理层** | 决策冻结规则 | [governance/decision-freeze.md](./governance/decision-freeze.md) |
 | **架构设计** | 系统整体架构 | [docs/architecture.md](./docs/architecture.md) |
-| **完整分析** | 三项目对比分析 | [COMPLETE_ANALYSIS.md](./COMPLETE_ANALYSIS.md) |
+| **完整分析** | 三项目对比分析 | [docs/architecture.md](./docs/architecture.md) |
 | **快速开始** | 安装配置、基础使用 | [docs/getting-started.md](./docs/getting-started.md) |
 
 ---

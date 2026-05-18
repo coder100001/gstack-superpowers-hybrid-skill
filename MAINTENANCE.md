@@ -326,10 +326,10 @@ git commit -m "chore: sync upstream updates + v4.0 maintenance"
 
 当需要升级三层架构版本时：
 
-1. 创建设计文档：`docs/design-docs/v4.1-xxx.md`
+1. 创建设计文档：`decision-layer/adr/ADR-NNN-title.md`
 2. 更新 `skills/hybrid/gs-hybrid-v3/SKILL.md`
 3. 更新相关模块文件
-4. 更新文档（README, INSTALL, MAINTENANCE）
+4. 更新文档（README, MAINTENANCE）
 5. 更新 `.upstream-versions.json` 中的 hybrid 版本
 6. 完整测试所有复杂度级别（L1/L2/L3）
 
@@ -350,5 +350,5 @@ git commit -m "chore: sync upstream updates + v4.0 maintenance"
 
 - **Superpowers 文档**: https://github.com/obra/superpowers
 - **GStack 文档**: 查看本地 `docs/` 目录
-- **v4.0 设计文档**: 查看 `docs/design-docs/002-ai-engineering-governance-system.md`
+- **v4.0 设计文档**: 查看 `decision-layer/adr/ADR-001-initial-architecture-framework.md`
 - **问题反馈**: 在项目中创建 Issue

@@ -300,7 +300,7 @@ AI: 确认一下需求：
 # 架构设计文档: [功能名称]
 
 ## 编号
-`docs/design-docs/00X-feature-name.md
+`decision-layer/adr/ADR-00X-feature-name.md
 
 ## 背景与问题
 [描述要解决什么问题]
@@ -423,5 +423,5 @@ AI: 基于需求分析，我提出了以下方案：
 ## 相关文档
 
 - [SKILL.md](../SKILL.md) - 主技能文档
-- [design-doc-002.md](../../../docs/design-docs/002-ai-engineering-governance-system.md) - 三层架构设计文档
+- [ADR-001.md](../../../decision-layer/adr/ADR-001-initial-architecture-framework.md) - 三层架构设计文档
 - [architecture-review.md](../../../decision-layer/reviews/architecture-review.md) - 架构审议协议

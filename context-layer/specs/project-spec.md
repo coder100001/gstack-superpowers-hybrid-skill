@@ -111,7 +111,7 @@ Tools Domain:       gstack-skills/bin/, scripts/ — 底层工具
 ### 资源
 - **技能路径**: `skills/<category>/<skill-name>/<skill-name>/SKILL.md`
 - **配置键**: kebab-case
-- **ADR 路径**: `docs/design-docs/NNN-title.md`
+- **ADR 路径**: `decision-layer/adr/ADR-NNN-title.md`
 
 ---
 

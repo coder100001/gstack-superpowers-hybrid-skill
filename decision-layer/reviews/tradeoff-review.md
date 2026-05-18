@@ -174,4 +174,4 @@ Step 5: 决策表决
 
 ---
 
-**关联文件**: [architecture-review](./architecture-review.md) · [risk-review](./risk-review.md) · [project-spec](../context-layer/specs/project-spec.md)
+**关联文件**: [architecture-review](./architecture-review.md) · [risk-review](./risk-review.md) · [project-spec](../../context-layer/specs/project-spec.md)

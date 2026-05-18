@@ -2,6 +2,7 @@
 
 > **层**: Context Layer · **职责**: 定义可注水的上下文资产及加载方式
 > **生命周期**: 项目级别，与 Context Layer 契约同步更新
+> **与 Bridge 的关系**: 本文件定义"哪些资产可注水"；[context-hydration protocol](../../bridges/context-to-execution.md) 定义"如何执行注水"。两者配合使用，本文件作为 Bridge 的资产索引。
 
 ---
 
@@ -94,4 +95,4 @@ hydration:
 
 ---
 
-**关联文件**: [context-hydration protocol](../bridges/context-to-execution.md) · [project-spec](../specs/project-spec.md)
+**关联文件**: [context-hydration protocol](../../bridges/context-to-execution.md) · [project-spec](../specs/project-spec.md)

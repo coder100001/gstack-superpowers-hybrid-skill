@@ -1,7 +1,10 @@
-# AI Engineering Governance System
+# AI Engineering Governance System (DEPRECATED)
+
+> **⚠️ 已迁移至 `decision-layer/adr/ADR-001-initial-architecture-framework.md`**
+> 此文档为历史存档，内容已重构为标准 ADR 格式。新读者请参考 ADR-001。
 
 > **设计文档编号**: 002
-> **状态**: 已批准 (2026-05-16)
+> **状态**: 已替代 (2026-05-18)
 > **复杂度**: L2
 > **设计者**: Human + AI
 

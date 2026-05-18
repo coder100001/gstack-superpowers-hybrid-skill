@@ -16,7 +16,7 @@ runtime:
 paths:
   skills_root: "skills/"
   context_specs: "context-layer/specs/"
-  adr_dir: "docs/design-docs/"
+  adr_dir: "decision-layer/adr/"
   tools_dir: "gstack-skills/bin/"
   tests_dir: "tests/"
 

@@ -192,7 +192,7 @@ Execution (代码实现)
 ```
 
 ### 数据契约
-- **设计文档**: `docs/design-docs/NNN-title.md`
+- **ADR**: `decision-layer/adr/ADR-NNN-title.md`
 - **实现计划**: `specs/plans/PLAN-XXX.md`
 - **中间状态**: 临时文件（规范位置）
 - **最终输出**: 项目文件 + 报告

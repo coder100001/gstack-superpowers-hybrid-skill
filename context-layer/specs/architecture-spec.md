@@ -55,7 +55,7 @@
 - **Hooks**: `hooks/` - 事件钩子
 
 ### 文档模块分类
-- **Design Docs**: `docs/design-docs/` - 设计文档
+- **ADR**: `decision-layer/adr/` - 架构决策记录
 - **Plans**: `specs/plans/` - 实现计划
 - **Specs**: `context-layer/specs/` - 契约规范
 
