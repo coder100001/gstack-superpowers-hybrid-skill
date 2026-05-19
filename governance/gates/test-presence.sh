@@ -12,10 +12,28 @@ if ! git -C "$PROJECT_ROOT" rev-parse --git-dir &>/dev/null; then
   exit 0
 fi
 
-src_files=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM HEAD~1 -- \
-  '*.py' '*.js' '*.ts' '*.go' '*.rs' '*.sh' 2>/dev/null || true)
+MERGE_BASE=$(git -C "$PROJECT_ROOT" merge-base HEAD "origin/main" 2>/dev/null || echo "")
+if [[ -z "$MERGE_BASE" ]]; then
+  MERGE_BASE=$(git -C "$PROJECT_ROOT" merge-base HEAD "main" 2>/dev/null || echo "")
+fi
+if [[ -z "$MERGE_BASE" ]]; then
+  src_files=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM HEAD~1 -- \
+    '*.py' '*.js' '*.ts' '*.go' '*.rs' '*.sh' 2>/dev/null || true)
+  changed_test=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=A HEAD~1 -- \
+    '*_test*' '*.test.*' 2>/dev/null || true)
+else
+  src_files=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM HEAD..."$MERGE_BASE" -- \
+    '*.py' '*.js' '*.ts' '*.go' '*.rs' '*.sh' 2>/dev/null || true)
+  changed_test=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=A HEAD..."$MERGE_BASE" -- \
+    '*_test*' '*.test.*' 2>/dev/null || true)
+fi
 
 if [[ -z "$src_files" ]]; then
+  exit 0
+fi
+
+# First check if test files were committed alongside source
+if [[ -n "${changed_test:-}" ]]; then
   exit 0
 fi
 
@@ -25,6 +43,7 @@ while IFS= read -r src; do
   base="${src%.*}"
   test_found=false
 
+  # Pattern 1: src_test.ext or src.test.ext (same dir)
   for test_ext in py js ts go rs sh; do
     if ls "$PROJECT_ROOT/${base}_test.$test_ext" "$PROJECT_ROOT/${base}.test.$test_ext" 2>/dev/null | grep -q .; then
       test_found=true
@@ -32,13 +51,25 @@ while IFS= read -r src; do
     fi
   done
 
-  test_path="$PROJECT_ROOT/tests/$src"
-  for test_ext in py js ts go rs sh; do
-    if ls "${test_path%.*}_test.$test_ext" "${test_path%.*}.test.$test_ext" 2>/dev/null | grep -q .; then
+  # Pattern 2: test_src.ext (same dir, prefix)
+  if [[ "$test_found" == false ]]; then
+    base_name=$(basename "$src" | sed 's/\.[^.]*$//')
+    dir_name=$(dirname "$PROJECT_ROOT/$src")
+    if ls "$dir_name/test_$base_name"* 2>/dev/null | grep -q .; then
       test_found=true
-      break
     fi
-  done
+  fi
+
+  # Pattern 3: tests/path/to/test_src.ext
+  if [[ "$test_found" == false ]]; then
+    test_path="$PROJECT_ROOT/tests/$src"
+    for test_ext in py js ts go rs sh; do
+      if ls "${test_path%.*}_test.$test_ext" "${test_path%.*}.test.$test_ext" "$PROJECT_ROOT/tests/test_${base_name}.${test_ext}" 2>/dev/null | grep -q .; then
+        test_found=true
+        break
+      fi
+    done
+  fi
 
   if [[ "$test_found" == false ]]; then
     missing+=("$src")
