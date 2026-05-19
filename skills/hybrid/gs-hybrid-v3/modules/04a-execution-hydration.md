@@ -55,16 +55,12 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 
 ### 加载验证规则
 
-**重要**: 加载 Spec 时必须遵循 [context-to-execution.md](../../../../bridges/context-to-execution.md) 中的**强制引述规则**：
+**重要**: 加载 Spec 时的强制引述规则以 [context-to-execution.md §2](../../../../bridges/context-to-execution.md) 为唯一真相源，包括引述格式、条数要求、Token 预算机制。本文件不再重复定义。
 
-```
-✅ 已加载 project-spec.md：
-  - 架构风格: "Layered Architecture + Hybrid Integration Pattern"
-  - 依赖方向: "外层依赖内层，领域层独立，实现依赖抽象"
-  - 禁止模式: "禁止使用 any / interface{} 作为公开 API 参数类型"
-```
-
-**禁止仅声明"已加载"而不引述具体约束条款。**
+核心要求摘要：
+- 必须原文引述具体约束条款，禁止仅声明"已加载"
+- L1 每项至少 2 条，L2/L3 每项至少 2-3 条
+- Token 预算：L1 ~1,500 / L2 ~3,000 / L3 ~5,000
 
 ---
 
