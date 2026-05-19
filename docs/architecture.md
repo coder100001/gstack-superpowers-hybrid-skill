@@ -98,7 +98,7 @@ v4.0 解决了以下关键问题：
 | **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 → 边界隔离 | [project-spec](../context-layer/specs/project-spec.md) · [hydration](../context-layer/hydration/hydration.md) |
 | **Execution Layer** | `execution-layer/` | 受约束 TDD → 自审 → QA → 交付 | [implementation](../execution-layer/implementation.md) |
 | **Bridges** | `bridges/` | Decision→Context 转化 + Context→Execution 注水 | [decision-to-context](../bridges/decision-to-context.md) · [context-to-execution](../bridges/context-to-execution.md) |
-| **Governance** | `governance/` | 决策冻结 + 状态验证 + 变更流程 | [decision-freeze](../governance/decision-freeze.md) |
+| **Governance** | `governance/` | 状态机 Gate 校验 + 决策冻结 + CI 强制闸 | [machine.json](../governance/machine.json) · [gates.json](../governance/gates.json) · [transition.sh](../governance/transition.sh) |
 
 ### Decision Layer (决策层)
 
@@ -194,11 +194,74 @@ v4.0 解决了以下关键问题：
 
 ### Governance (治理层)
 
-**核心职责**:
-- 决策冻结规则强制执行
-- 状态机迁移验证
-- 变更流程管理
-- 违规检测与处理
+**职责**: 硬约束执行、状态机校验、Gate 准入判定、流程合规审计
+
+Governance 层是所有跨层约束的强制执行者，与三层+Bridges 并列构成 v4.0 的完整架构。它不参与任何业务决策或代码产出，只做一件事：**如果流程违规，阻断它**。
+
+**执行模型（双轨制）**:
+
+Governance 的约束分两个执行轨道：
+
+| 轨道 | 工具 | 执行时机 | 可绕过 | 后果 |
+|------|------|----------|:------:|------|
+| **会话内（咨询轨）** | `transition.sh` + gate scripts | session 中手动调用 | 是（开发者信任） | 输出警告，不阻止操作 |
+| **CI（强制轨）** | `guard-decision-freeze.sh` + `guard-test-presence.sh` | PR 提交时 | 否（仓门关闭） | 直接 exit 1 阻断 PR |
+
+**核心组件**:
+
+| 组件 | 路径 | 职责 |
+|------|------|------|
+| **状态机** | `governance/machine.json` | 12 个状态、12 条合法跃迁、entry_gate 绑定 |
+| **Gate 定义** | `governance/gates.json` | 4 个 Gate 的 applies_to 和 fail_message |
+| **跃迁入口** | `governance/transition.sh` | 接收 from/to/level/reason → 验证 → 执行 Gate → 写 Journal |
+| **Requirement Lock Gate** | `governance/gates/requirement-lock.sh` | 检查 spec 文件包含 `## 确认` 或 `## Approval` 标记 |
+| **Context Hydration Gate** | `governance/gates/context-hydration.sh` | 检查 4 个 P0 spec 文件全部存在 |
+| **Decision Freeze Gate** | `governance/gates/decision-freeze.sh` | 检查 ADR/specs 未在 IMPLEMENTATION 阶段被修改 |
+| **Test Presence Gate** | `governance/gates/test-presence.sh` | 检查新代码有对应测试文件（merge-base 范围） |
+| **CI 硬闸** | `scripts/guard-decision-freeze.sh` | 同一 PR 修改 ADR/specs + 实现代码 → exit 1 |
+| **CI 软检** | `scripts/guard-test-presence.sh` | 实现文件无对应测试 → 不阻断但警告 |
+| **聚合查询** | `scripts/aggregate-journal.sh` | 读取 `state-journal/*.json` 输出全时间线 |
+| **验证脚本** | `scripts/validate-skills.sh` | 检查 skill front-matter、schema、路由表一致性 |
+
+**状态机拓扑（12 状态）**:
+
+```
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
+    → [Context Hydration] → IMPLEMENTATION → SELF_REVIEW → QA
+    → SHIP_REVIEW → RETRO
+    ↕                                          ↕
+  ABORTED ← 任意状态                           ABORTED ← 任意状态
+```
+
+**Gate 绑定策略**:
+
+| Gate | 绑定跃迁 | 会话内行为 | CI 行为 |
+|------|----------|-----------|---------|
+| `requirement-lock` | DISCOVERY → REQUIREMENT_LOCK | 无 spec 标记 → 拒绝跃迁 | — |
+| `context-hydration` | TASK_DECOMPOSITION → Context Hydration | P0 缺失 → 拒绝跃迁 | — |
+| `decision-freeze` | Context Hydration → IMPLEMENTATION | 决策后被改 → 拒绝跃迁 | guard-decision-freeze.sh exit 1 |
+| `test-presence` | IMPLEMENTATION → SELF_REVIEW | 代码无测试 → 拒绝跃迁 | guard-test-presence.sh 警告 |
+
+**为什么 CI 才是真正的强制**:
+
+- 会话内的 `transition.sh` 依赖开发者主动调用，是**建议性**的
+- CI guard 在 PR 合并前自动执行，是**非绕过性**的
+- 设计原则：团队靠 CI 兜底，个人靠 gate 自检
+
+**使用示例**:
+
+```bash
+# 会话内跃迁（带 Gate 校验）
+governance/transition.sh IMPLEMENTATION SELF_REVIEW --level L3 --reason "impl_done"
+
+# CI 硬闸（GitHub Actions）
+scripts/guard-decision-freeze.sh origin/main HEAD
+
+# 查看全流程时间线
+bash scripts/aggregate-journal.sh
+```
+
+详细 Gate 实现规范请参考 [2026-05-19-agent-enforcement-spec.md](../context-layer/specs/2026-05-19-agent-enforcement-spec.md)
 
 ---
 

@@ -50,13 +50,19 @@ agent 在任何状态下调用 transition.sh <from> <to>
 
 ### 状态机拓扑
 
-9 个状态 + ABORTED/回退：
+12 个状态：9 个主流程状态 + ABORTED + IDEA（回退目标）+ 通配状态
 
 ```
 IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW
   → TASK_DECOMPOSITION → CONTEXT_HYDRATION → IMPLEMENTATION
   → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
+
+**通配跃迁规则**（`machine.json` 中 `from: "*"` 的规则）：
+- `* → ABORTED`: 任意状态可跃迁至 ABORTED（用于异常终止流程）
+- `* → IDEA`: 任意状态可回退至 IDEA（用于决策冻结回滚，需 `reason: decision_freeze_rollback`）
+
+这两条通配规则不计入主流程的 10 条顺序跃迁，用于处理异常和回退场景。
 
 绑定 gate 的关键跃迁点：
 - → CONTEXT_HYDRATION: gate=context-hydration

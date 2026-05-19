@@ -41,3 +41,6 @@ coverage/
 *.dll
 *.so
 *.dylib
+
+# Governance state journal (session logs)
+governance/state-journal/*.json
