@@ -44,3 +44,7 @@ coverage/
 
 # Governance state journal (session logs)
 governance/state-journal/*.json
+
+# Runtime artifacts (auto-generated state files)
+artifacts/workflow-state.md
+artifacts/hydration-state.md

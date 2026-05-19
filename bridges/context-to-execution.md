@@ -51,7 +51,7 @@ Required Loading Order:
 
 ### 加载验证（强制引述）
 
-> **单一真相源**: 引述规则的定义以本节为准。[04a-execution-hydration.md](/skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md) 中的引述规则引用本协议。
+> **单一真相源**: 引述规则的定义以本节为准。[04a-execution-hydration.md](../skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md) 中的引述规则引用本协议。
 
 每加载一项后，AI **必须引述具体约束条款作为证明**，而非仅声明"已加载"：
 
@@ -198,6 +198,6 @@ AI: 我直接开始编码...
 
 ---
 
-**关联文件**: [decision-to-context](/bridges/decision-to-context.md) · [hydration spec](/context-layer/hydration/hydration.md) · [governance](/governance/decision-freeze.md) · [execution-to-decision](/bridges/execution-to-decision.md)
+**关联文件**: [decision-to-context](decision-to-context.md) · [hydration spec](../context-layer/hydration/hydration.md) · [governance](../governance/decision-freeze.md) · [execution-to-decision](execution-to-decision.md)
 
-> 注：注水资产的具体清单和优先级见 [hydration spec](/context-layer/hydration/hydration.md)，本协议仅规定注水的执行流程和强制规则。
+> 注：注水资产的具体清单和优先级见 [hydration spec](../context-layer/hydration/hydration.md)，本协议仅规定注水的执行流程和强制规则。

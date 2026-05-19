@@ -5,6 +5,7 @@ IFS=$'\n\t'
 # context-hydration.sh — 检查 CONTEXT_HYDRATION 是否已通过
 # 验证条件：所有 P0 上下文契约文件存在
 # 记录注水状态到 artifacts/hydration-state.md
+# 幂等性：如果已注水且契约文件未变更，跳过重复写入
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -35,6 +36,39 @@ if [[ ${#missing[@]} -gt 0 ]]; then
   echo "  2. 如果是新项目，运行 /brainstorm 生成初始 spec"
   echo "  3. 检查 context-layer/hydration/hydration.md 了解注水流程"
   exit 1
+fi
+
+# 幂等性检查：如果已注水且所有契约文件未变更，跳过重复写入
+if [[ -f "$HYDRATION_STATE" ]]; then
+  need_rewrite=false
+
+  # 检查是否有新增的 required 资产未在 state 中记录
+  for asset in "${required[@]}"; do
+    if ! grep -q "$asset" "$HYDRATION_STATE" 2>/dev/null; then
+      need_rewrite=true
+      break
+    fi
+  done
+
+  # 检查契约文件是否有比 state 文件更新的修改
+  if [[ "$need_rewrite" == false ]]; then
+    state_mtime=$(stat -f "%m" "$HYDRATION_STATE" 2>/dev/null || stat -c "%Y" "$HYDRATION_STATE" 2>/dev/null || echo "0")
+    for asset in "${required[@]}"; do
+      spec_file="$PROJECT_ROOT/context-layer/specs/$asset.md"
+      file_mtime=$(stat -f "%m" "$spec_file" 2>/dev/null || stat -c "%Y" "$spec_file" 2>/dev/null || echo "0")
+      if [[ "$file_mtime" -gt "$state_mtime" ]]; then
+        need_rewrite=true
+        break
+      fi
+    done
+  fi
+
+  if [[ "$need_rewrite" == false ]]; then
+    echo "✓ CONTEXT_HYDRATION 通过（幂等：契约未变更，跳过重复写入）"
+    echo "  已加载 ${#required[@]} 个契约文件"
+    echo "  状态记录: $HYDRATION_STATE"
+    exit 0
+  fi
 fi
 
 # 记录注水状态

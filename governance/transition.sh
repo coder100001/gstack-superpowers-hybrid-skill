@@ -28,11 +28,15 @@ json_get() {
     jq -r "$query" "$file" 2>/dev/null || echo ""
   elif $has_python3; then
     python3 -c "
-import json, re
-with open('$file') as f:
+import json, sys, re
+
+file_path = sys.argv[1]
+query = sys.argv[2]
+
+with open(file_path) as f:
     d = json.load(f)
 result = d
-parts = re.split(r'\.|\[|\]', '$query')
+parts = re.split(r'\.|\[|\]', query)
 for part in parts:
     if not part:
         continue
@@ -49,7 +53,7 @@ elif isinstance(result, (list, dict)):
     print(json.dumps(result))
 else:
     print(result)
-" 2>/dev/null || echo ""
+" "$file" "$query" 2>/dev/null || echo ""
   else
     echo ""
   fi

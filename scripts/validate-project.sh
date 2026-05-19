@@ -43,10 +43,10 @@ check_version_consistency() {
     echo "  [FAIL] README.md missing v4.0"; e=$((e + 1))
   fi
 
-  if grep -q "version:.*4\\.0\\.0" "$PROJECT_ROOT/project-config.yml"; then
-    echo "  [OK] project-config.yml version is 4.0.0"
+  if grep -q "version:.*4\\.1\\.0" "$PROJECT_ROOT/project-config.yml"; then
+    echo "  [OK] project-config.yml version is 4.1.0"
   else
-    echo "  [FAIL] project-config.yml missing 4.0.0"; e=$((e + 1))
+    echo "  [FAIL] project-config.yml missing 4.1.0"; e=$((e + 1))
   fi
 
   if grep -q "v4\\.0" "$PROJECT_ROOT/docs/architecture.md"; then

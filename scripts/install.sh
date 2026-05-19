@@ -38,7 +38,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-VERSION="4.0.0"
+VERSION="4.1.0"
 
 # 默认目标目录
 DEFAULT_TARGET="$HOME/.trae-cn/superpowers"
