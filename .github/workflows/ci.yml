@@ -50,6 +50,14 @@ jobs:
           fail: true
           jobSummary: true
 
+      - name: Decision freeze guard
+        run: |
+          bash scripts/guard-decision-freeze.sh
+
+      - name: Test presence check
+        run: |
+          bash scripts/guard-test-presence.sh
+
       - name: Project integrity validation
         run: |
           bash scripts/validate-project.sh
