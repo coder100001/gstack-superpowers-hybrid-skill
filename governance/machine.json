@@ -1,0 +1,31 @@
+{
+  "version": "4.0",
+  "states": {
+    "IDEA": { "entry_gate": null },
+    "DISCOVERY": { "entry_gate": null },
+    "REQUIREMENT_LOCK": { "entry_gate": "requirement-lock" },
+    "ARCH_REVIEW": { "entry_gate": null },
+    "TASK_DECOMPOSITION": { "entry_gate": null },
+    "CONTEXT_HYDRATION": { "entry_gate": "context-hydration" },
+    "IMPLEMENTATION": { "entry_gate": "decision-freeze" },
+    "SELF_REVIEW": { "entry_gate": "test-presence" },
+    "QA": { "entry_gate": null },
+    "SHIP_REVIEW": { "entry_gate": null },
+    "RETRO": { "entry_gate": null },
+    "ABORTED": { "entry_gate": null }
+  },
+  "transitions": [
+    { "from": "IDEA", "to": "DISCOVERY" },
+    { "from": "DISCOVERY", "to": "REQUIREMENT_LOCK" },
+    { "from": "REQUIREMENT_LOCK", "to": "ARCH_REVIEW" },
+    { "from": "ARCH_REVIEW", "to": "TASK_DECOMPOSITION" },
+    { "from": "TASK_DECOMPOSITION", "to": "CONTEXT_HYDRATION" },
+    { "from": "CONTEXT_HYDRATION", "to": "IMPLEMENTATION" },
+    { "from": "IMPLEMENTATION", "to": "SELF_REVIEW" },
+    { "from": "SELF_REVIEW", "to": "QA" },
+    { "from": "QA", "to": "SHIP_REVIEW" },
+    { "from": "SHIP_REVIEW", "to": "RETRO" },
+    { "from": "*", "to": "ABORTED" },
+    { "from": "*", "to": "IDEA", "reason": "decision_freeze_rollback" }
+  ]
+}

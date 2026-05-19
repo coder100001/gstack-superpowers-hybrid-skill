@@ -1,0 +1,33 @@
+{
+  "version": "4.1",
+  "gates": [
+    {
+      "name": "requirement-lock",
+      "script": "governance/gates/requirement-lock.sh",
+      "applies_to": ["REQUIREMENT_LOCK"],
+      "check": "用户是否明确确认了需求清单",
+      "fail_message": "REQUIREMENT_LOCK 未通过：用户未确认需求"
+    },
+    {
+      "name": "context-hydration",
+      "script": "governance/gates/context-hydration.sh",
+      "applies_to": ["CONTEXT_HYDRATION"],
+      "check": "所有 P0 Spec 文件是否存在",
+      "fail_message": "CONTEXT_HYDRATION 未通过：缺少上下文契约文件"
+    },
+    {
+      "name": "decision-freeze",
+      "script": "governance/gates/decision-freeze.sh",
+      "applies_to": ["IMPLEMENTATION"],
+      "check": "自上次 ARCH_REVIEW 后 ADR/specs 是否未被修改",
+      "fail_message": "决策冻结违规：IMPLEMENTATION 期间不得修改 ADR 或 Specs"
+    },
+    {
+      "name": "test-presence",
+      "script": "governance/gates/test-presence.sh",
+      "applies_to": ["SELF_REVIEW"],
+      "check": "本次变更是否包含对应测试文件",
+      "fail_message": "没有对应测试的代码不能进入 SELF_REVIEW"
+    }
+  ]
+}
