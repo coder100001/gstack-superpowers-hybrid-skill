@@ -1,0 +1,129 @@
+# Skills Route Table
+# Machine-readable routing map: maps stage -> skill name -> trigger condition
+# Validated by scripts/validate-skills.sh against actual SKILL.md on disk
+
+routes:
+
+  # ==== Superpowers Skills ====
+  superpowers:
+    DISCOVERY:
+      - name: brainstorming
+        trigger: "creative tasks, new features"
+        purpose: "needs exploration, progressive questioning, spec generation"
+      - name: "using-superpowers"
+        trigger: "session start"
+        purpose: "establish skill invocation pattern"
+
+    TASK_DECOMPOSITION:
+      - name: "writing-plans"
+        trigger: "all tasks"
+        purpose: "structured Plan (Spec -> Task decomposition)"
+
+    IMPLEMENTATION:
+      - name: "test-driven-development"
+        trigger: "all tasks"
+        purpose: "TDD before implementation code"
+      - name: "dispatching-parallel-agents"
+        trigger: "2+ independent subtasks"
+        purpose: "parallel agent dispatch"
+      - name: "executing-plans"
+        trigger: "plan available"
+        purpose: "execute written plan in separate session"
+      - name: "subagent-driven-development"
+        trigger: "plan with independent tasks"
+        purpose: "subagent execution within session"
+      - name: "using-git-worktrees"
+        trigger: "new feature needing isolation"
+        purpose: "create isolated worktree"
+
+    SELF_REVIEW:
+      - name: "requesting-code-review"
+        trigger: "L2+ tasks, before merge"
+        purpose: "verify work meets requirements"
+      - name: "receiving-code-review"
+        trigger: "review feedback received"
+        purpose: "technical rigor before implementing suggestions"
+
+    ARCH_REVIEW:
+      - name: "writing-skills"
+        trigger: "creating/editing SKILL.md files"
+        purpose: "skill authoring with verification"
+
+    EXCEPTION:
+      - name: "systematic-debugging"
+        trigger: "bugs, test failures, unexpected behavior"
+        purpose: "root cause analysis before fixing"
+
+    SHIP_REVIEW:
+      - name: "verification-before-completion"
+        trigger: "all tasks"
+        purpose: "verify before claiming done"
+      - name: "finishing-a-development-branch"
+        trigger: "implementation complete"
+        purpose: "decide merge/PR/cleanup strategy"
+
+  # ==== GStack Skills ====
+  gstack:
+    ARCH_REVIEW:
+      - name: "gstack:design-review"
+        trigger: "frontend UI/UX changes"
+        purpose: "visual consistency audit"
+      - name: "gstack:plan-eng-review"
+        trigger: "L2+ tasks"
+        purpose: "engineering feasibility review"
+      - name: "gstack:plan-devex-review"
+        trigger: "L2+ tasks"
+        purpose: "developer experience review"
+
+    QA:
+      - name: "gstack:qa"
+        trigger: "L3 tasks"
+        purpose: "QA testing, functional verification"
+      - name: "gstack:cso"
+        trigger: "security-sensitive code"
+        purpose: "security audit"
+      - name: "gstack:benchmark"
+        trigger: "L3 + performance-sensitive tasks"
+        purpose: "performance baseline testing"
+
+    SELF_REVIEW:
+      - name: "gstack:codex"
+        trigger: "L3 tasks"
+        purpose: "cross-model code review"
+
+    SAFETY:
+      - name: "gstack:careful"
+        trigger: "destructive commands, prod access"
+        purpose: "warn before rm -rf, DROP TABLE, force-push"
+      - name: "gstack:freeze"
+        trigger: "debugging sessions"
+        purpose: "restrict edits to specific directory"
+      - name: "gstack:guard"
+        trigger: "maximum safety needed"
+        purpose: "careful + freeze combined"
+
+    SHIP_REVIEW:
+      - name: "gstack:ship"
+        trigger: "ready to deploy"
+        purpose: "release checklist, PR creation"
+
+    DISCOVERY:
+      - name: "gstack:context-restore"
+        trigger: "session resume"
+        purpose: "restore previous working context"
+      - name: "gstack:context-save"
+        trigger: "session pause"
+        purpose: "save working context for later"
+      - name: "gstack:learn"
+        trigger: "repeated patterns, past fixes"
+        purpose: "manage project learnings across sessions"
+
+    RETRO:
+      - name: "gstack:retro"
+        trigger: "L3 tasks, weekly"
+        purpose: "engineering retrospective"
+
+    EXCEPTION:
+      - name: "gstack:investigate"
+        trigger: "debugging, root cause analysis"
+        purpose: "systematic debugging with RCA"

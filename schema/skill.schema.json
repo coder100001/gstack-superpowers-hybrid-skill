@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/coder100001/gstack-superpowers-hybrid-skill/schema/skill.schema.json",
+  "title": "Superpowers/GStack Skill Schema",
+  "description": "Validates SKILL.md YAML front-matter for all skills in this repository",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Skill name matching the directory name",
+      "pattern": "^[a-z][a-z0-9_-]+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the skill's purpose and trigger conditions"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the skill",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "preamble-tier": {
+      "type": "integer",
+      "description": "Preamble loading priority (1=always, 4=rarely)",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "interactive": {
+      "type": "boolean",
+      "description": "Whether the skill requires interactive user input"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "name": { "pattern": "^(gstack|plan-|benchmark|careful|codex|cso|design-review|freeze|guard|investigate|learn|qa|retro|ship|context-)" }
+        }
+      },
+      "then": {
+        "required": ["version", "description"],
+        "properties": {
+          "version": { "description": "GStack skills require version" },
+          "description": { "description": "GStack skills require description" }
+        }
+      }
+    }
+  ]
+}

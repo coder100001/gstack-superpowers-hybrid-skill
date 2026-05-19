@@ -28,30 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Skill front-matter validation
+      - name: Skill schema + route validation
         run: |
-          errors=0
-          while IFS= read -r skill; do
-            if ! head -1 "$skill" | grep -q '^---$'; then
-              echo "MISSING front-matter: $skill"
-              errors=$((errors + 1))
-            fi
-            name=$(sed -n '/^---$/,/^---$/p' "$skill" | grep '^name:' | head -1)
-            desc=$(sed -n '/^---$/,/^---$/p' "$skill" | grep '^description:' | head -1)
-            if [[ -z "$name" ]]; then
-              echo "MISSING name in front-matter: $skill"
-              errors=$((errors + 1))
-            fi
-            if [[ -z "$desc" ]]; then
-              echo "MISSING description in front-matter: $skill"
-              errors=$((errors + 1))
-            fi
-          done < <(find skills/ -name "SKILL.md")
-          if [[ $errors -gt 0 ]]; then
-            echo "FAILED: $errors front-matter issues found"
-            exit 1
-          fi
-          echo "All SKILL.md front-matters valid ($(find skills/ -name "SKILL.md" | wc -l) files)"
+          bash scripts/validate-skills.sh
 
       - name: Markdown link check
         uses: lycheeverse/lychee-action@v2
