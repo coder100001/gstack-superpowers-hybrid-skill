@@ -66,6 +66,9 @@ hybrid 帮我开发用户认证功能
 ```
 /
 ├── decision-layer/              ← 决策层
+│   ├── adr/                     ← 架构决策记录
+│   │   ├── ADR-001-*.md         (8个ADR)
+│   │   └── README.md
 │   └── reviews/                 ← 多角色审议协议
 │       ├── architecture-review.md  架构审议
 │       ├── product-review.md       产品审议
@@ -77,7 +80,14 @@ hybrid 帮我开发用户认证功能
 │   │   ├── project-spec.md      项目约束
 │   │   ├── architecture-spec.md 架构约束
 │   │   ├── constraints-spec.md  约束清单
-│   │   └── domain-boundaries.md 领域边界
+│   │   ├── domain-boundaries.md 领域边界
+│   │   └── coding-standards/    ← 编码标准
+│   │       ├── index.md
+│   │       ├── common.md
+│   │       ├── go.md
+│   │       ├── typescript.md
+│   │       ├── ai-red-lines.md
+│   │       └── extension-guide.md
 │   └── hydration/               ← 注水规范
 │       └── hydration.md
 │
@@ -89,10 +99,20 @@ hybrid 帮我开发用户认证功能
 │
 ├── bridges/                     ← 层间桥接
 │   ├── decision-to-context.md   决策→上下文转化
-│   └── context-to-execution.md  上下文→执行注水
+│   ├── context-to-execution.md  上下文→执行注水
+│   └── execution-to-decision.md 执行→决策回退
 │
 ├── governance/                  ← 治理规则
-│   └── decision-freeze.md       决策冻结协议
+│   ├── decision-freeze.md       决策冻结协议
+│   ├── machine.json             状态机定义(12状态)
+│   ├── gates.json               Gate规则定义(4个)
+│   ├── transition.sh            跃迁入口脚本
+│   ├── gates/                   ← Gate脚本
+│   │   ├── requirement-lock.sh
+│   │   ├── context-hydration.sh
+│   │   ├── decision-freeze.sh
+│   │   └── test-presence.sh
+│   └── state-journal/           ← 审计日志
 │
 ├── skills/                      ← 技能目录
 │   ├── superpowers/             (14个)
@@ -108,7 +128,7 @@ hybrid 帮我开发用户认证功能
 │   ├── design-docs/
 │   │   ├── 001-gstack-outer-loop-integration.md
 │   │   └── 002-ai-engineering-governance-system.md
-│   ├── architecture.md
+│   ├── architecture.md          ← 详细架构设计
 │   ├── getting-started.md
 │   └── skills-reference.md
 │
@@ -116,6 +136,8 @@ hybrid 帮我开发用户认证功能
 ├── scripts/                     ← 维护脚本
 └── README.md                    ← 本文件
 ```
+
+> **详细架构**: 完整的三层架构设计请参考 [architecture.md](docs/architecture.md)。
 
 ---
 

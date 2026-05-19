@@ -8,7 +8,9 @@ IFS=$'\n\t'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+# 非 git 环境警告但不阻断
 if ! git -C "$PROJECT_ROOT" rev-parse --git-dir &>/dev/null; then
+  echo "警告: 非 git 环境，跳过测试存在检查"
   exit 0
 fi
 
@@ -29,11 +31,14 @@ else
 fi
 
 if [[ -z "$src_files" ]]; then
+  echo "✓ TEST_PRESENCE 通过（无源文件变更）"
   exit 0
 fi
 
 # First check if test files were committed alongside source
 if [[ -n "${changed_test:-}" ]]; then
+  echo "✓ TEST_PRESENCE 通过"
+  echo "  已添加测试文件: $(echo "$changed_test" | head -1)"
   exit 0
 fi
 
@@ -77,9 +82,24 @@ while IFS= read -r src; do
 done < <(echo "$src_files")
 
 if [[ ${#missing[@]} -gt 0 ]]; then
-  echo "test-presence 未通过：以下文件缺少测试："
+  echo ""
+  echo "✗ TEST_PRESENCE 未通过：以下文件缺少测试："
   printf '  - %s\n' "${missing[@]}"
+  echo ""
+  echo "修复步骤:"
+  echo "  1. 为每个源文件创建对应的测试文件"
+  echo ""
+  echo "测试文件命名规范:"
+  echo "  - Python: tests/test_module.py 或 module_test.py"
+  echo "  - JavaScript/TypeScript: module.test.ts 或 module.test.js"
+  echo "  - Go: module_test.go"
+  echo "  - Rust: module_test.rs"
+  echo ""
+  echo "  2. 检查 project-config.yml 中的 test_command 配置"
+  echo "  3. 运行测试确保通过: \$(test_command)"
   exit 1
 fi
 
+echo "✓ TEST_PRESENCE 通过"
+echo "  所有源文件都有对应测试"
 exit 0
