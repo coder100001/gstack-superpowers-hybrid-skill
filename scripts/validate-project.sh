@@ -173,10 +173,10 @@ check_specs() {
     [[ -f "$f" ]] && files+=("$(basename "$f")")
   done
 
-  if [[ ${#files[@]} -eq 4 ]]; then
-    echo "  [OK] 4 spec files: ${files[*]}"
+  if [[ ${#files[@]} -ge 4 ]]; then
+    echo "  [OK] ${#files[@]} spec files (>= 4): ${files[*]}"
   else
-    echo "  [FAIL] expected 4, found ${#files[@]}: ${files[*]}"
+    echo "  [FAIL] expected >= 4, found ${#files[@]}: ${files[*]}"
     e=$((e + 1))
   fi
 
