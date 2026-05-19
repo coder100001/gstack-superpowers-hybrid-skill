@@ -3,11 +3,11 @@ name: "gs-hybrid-v3"
 description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1 渐进式加载优化：从技能分类升级为职责分层系统，新增状态机、决策冻结、上下文注水机制。"
 ---
 
-# AI Engineering Governance System v4.0 (三层架构正式版)
+# AI Engineering Governance System v4.1 (三层架构正式版)
 
 > **核心理念**: 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
 > 本系统将 Superpowers 的工程纪律 + GStack 的多角色审议 + Context Layer 的契约驱动，统一为可执行的三层职责系统
-> **v4.1 升级**: 从技能分类升级为职责分层系统 | 12 状态状态机(含 ABORTED) | L0-L4 复杂度分级 | 决策冻结 | 上下文注水
+> **v4.1 升级**: 从技能分类升级为职责分层系统 | 12 状态状态机(含 ABORTED) | L0-L3 复杂度分级 | 决策冻结 | 上下文注水
 
 ---
 
@@ -18,7 +18,7 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 ```
 用户: hybrid 帮我开发用户认证功能
 
-AI: 收到。我将按照 AI Engineering Governance System (v4.0) 三层架构执行：
+AI: 收到。我将按照 AI Engineering Governance System (v4.1) 三层架构执行：
 
 Step 0:     评估任务复杂度 (L0/L1/L2/L3)
 
@@ -130,7 +130,7 @@ RETRO:          复盘记录
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│         AI Engineering Governance System v4.0 — 三层职责分层 (三层架构)                       │
+│         AI Engineering Governance System v4.1 — 三层职责分层 (三层架构)                       │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                         │
 │   需求输入                                                                               │
@@ -217,7 +217,7 @@ RETRO:          复盘记录
 <HARD-GATE>
 1. **REQUIREMENT_LOCK 需求确认** [gate: requirement-lock]: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
 2. **ARCH_REVIEW 架构审议** [gate: arch-review-lock]: L2+ 任务必须有 ADR 记录且包含决策状态，L1 自动豁免
-3. **TASK_DECOMPOSITION 任务确认** [gate: task-decomposition-lock]: plan 文件存在且不含占位符，用户已确认
+3. **TASK_DECOMPOSITION 任务确认** [gate: task-decomposition-lock]: plan 文件存在且不含占位符，用户已确认（L1 可通过对话确认，不强制产出独立 plan 文件；L2/L3 必须产出 plan 文件）
 4. **Context Hydration 上下文注水** [gate: context-hydration]: 所有 P0 Spec 文件必须存在
 5. **决策冻结** [gate: decision-freeze]: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
 6. **测试存在** [gate: test-presence]: 变更必须包含对应测试文件，否则不能进入 SELF_REVIEW
