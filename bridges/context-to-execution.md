@@ -32,15 +32,34 @@ Required Loading Order:
 7. current workflow state   ← 当前工作流位置与产出物
 ```
 
-### 加载验证
+### 加载验证（强制引述）
 
-每加载一项后，AI 必须确认理解：
+每加载一项后，AI **必须引述具体约束条款作为证明**，而非仅声明"已加载"：
 
 ```
-"已加载 [project-spec.md]：
-  - 架构风格: [确认内容]
-  - 依赖方向: [确认内容]
-  - 禁止模式: [确认内容]"
+✅ 已加载 project-spec.md：
+  - 架构风格: "Layered Architecture + Hybrid Integration Pattern"
+  - 依赖方向: "外层依赖内层，领域层独立，实现依赖抽象"
+  - 禁止模式: "禁止使用 any / interface{} 作为公开 API 参数类型"
+```
+
+**引述规则**：
+1. 必须使用**原文引述**（用引号包裹），而非概括性描述
+2. 每个加载项至少引述 **2-3 条具体约束**
+3. 引述内容必须来自实际文件，禁止编造
+
+**错误示例**（不可接受）：
+```
+❌ 已加载 project-spec.md：理解了项目约束
+❌ 已加载 project-spec.md：架构风格正确，依赖方向清晰
+```
+
+**正确示例**（必须遵循）：
+```
+✅ 已加载 project-spec.md：
+  - 架构风格: "Layered Architecture + Hybrid Integration Pattern"
+  - 模块组织: "按功能域（Domain-oriented）组织"
+  - 禁止模式: "禁止基础设施层依赖业务层"
 ```
 
 如果有任何一项加载失败（文件不存在、路径错误），必须暂停并报告。

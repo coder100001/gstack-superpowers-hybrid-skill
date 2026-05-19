@@ -53,6 +53,19 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 开始 → 按级别加载对应优先级 Spec → 验证就绪 → 进入 Execution Layer
 ```
 
+### 加载验证规则
+
+**重要**: 加载 Spec 时必须遵循 [context-to-execution.md](../../../bridges/context-to-execution.md) 中的**强制引述规则**：
+
+```
+✅ 已加载 project-spec.md：
+  - 架构风格: "Layered Architecture + Hybrid Integration Pattern"
+  - 依赖方向: "外层依赖内层，领域层独立，实现依赖抽象"
+  - 禁止模式: "禁止使用 any / interface{} 作为公开 API 参数类型"
+```
+
+**禁止仅声明"已加载"而不引述具体约束条款。**
+
 ---
 
 ## Hydration 检查清单（分级制）

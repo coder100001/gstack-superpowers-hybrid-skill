@@ -20,7 +20,9 @@
 ```
 用户: "hybrid 帮我开发用户认证功能"
 
-AI: 收到。我将按照 AI Engineering Governance System v4.0 执行：
+AI: [状态: Step 0 | 进度: 复杂度评估 | 冻结项: 无]
+
+收到。我将按照 AI Engineering Governance System v4.0 执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
 
@@ -35,6 +37,8 @@ Context Hydration (强制) — 加载所有 Spec 契约
 IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 TDD编码      自审对照    QA验证     发布检查    复盘记录
 ```
+
+> **注意**: 每次响应必须以状态栏开头。详见 SKILL.md 中的 `<STATUS-BAR>` 规则。
 
 <HARD-GATE>
 在用户确认需求、确认执行计划、完成上下文注水之前，不要进入下一阶段。这适用于 L2/L3 所有任务。

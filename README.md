@@ -37,6 +37,17 @@
 
 ## 快速开始
 
+### 1分钟体验（推荐）
+
+```bash
+# 克隆项目后，打开 TRY_ME_NOW.md
+# 将内容粘贴到 AI 对话中，即可启动最小化治理流程
+```
+
+👉 **[TRY_ME_NOW.md](./TRY_ME_NOW.md)** — 无需配置，立即体验三层治理
+
+### 完整安装
+
 ```bash
 git clone <repo-url>
 cd gstack--superpowers--hybrid-skill

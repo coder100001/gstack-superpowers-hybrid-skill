@@ -96,7 +96,7 @@ Rejected Alternatives (from Architecture Deliberation [date]):
 ```
 Architecture Deliberation [2026-05-16] - User Auth Module
 ├── 状态: Conditional Approved
-├── 条件: 解决 Security Reviewer 提出的 token 刷新风险
+├── 条件: 解决 Security 维度提出的 token 刷新风险
 
 转化结果:
 ├── 新增 ADR-010: JWT + Refresh Token 双 Token 方案

@@ -245,11 +245,13 @@ AI: 确认一下需求：
 
 | 维度 | 审议重点 |
 |------|---------|
-| Product Reviewer | 业务价值、用户影响、范围合理性、ROI |
-| System Architect | 模块划分、依赖方向、技术选型 |
-| Performance Reviewer | 吞吐、延迟、缓存、瓶颈 |
-| Security Reviewer | 信任边界、数据暴露、权限 |
-| Operations Reviewer | 部署、回滚、监控、迁移成本 |
+| Product 维度 | 业务价值、用户影响、范围合理性、ROI |
+| Architect 维度 | 模块划分、依赖方向、技术选型 |
+| Performance 维度 | 吞吐、延迟、缓存、瓶颈 |
+| Security 维度 | 信任边界、数据暴露、权限 |
+| Operations 维度 | 部署、回滚、监控、迁移成本 |
+
+> **注意**: AI 是分析引擎，按维度输出事实和风险评估，禁止生成角色扮演内容。
 
 ### 架构设计文档编写
 
