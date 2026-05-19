@@ -29,7 +29,7 @@
 本项目整合了两个开源技能包，并在此基础上构建了一层治理系统：
 
 - **[Superpowers](https://github.com/obra/superpowers)** (14个技能) — 软件开发方法论，提供工程纪律与结构化拆解
-- **[GStack](https://github.com/gstack)** (16个技能) — 工程工具集，提供多角色决策审议能力
+- **[GStack](https://github.com/garrytan/gstack)** (16个技能) — 工程工具集，提供多角色决策审议能力
 
 三层架构是在这两个包的基础上重新组织的尝试。
 
@@ -163,7 +163,7 @@ hybrid 帮我开发用户认证功能
 ## 致谢
 
 - **[Superpowers](https://github.com/obra/superpowers)**: 由 Jesse Vincent 和 Prime Radiant 团队开发
-- **[GStack](https://github.com/gstack)**: 增强开发工具集
+- **[GStack](https://github.com/garrytan/gstack)**: 增强开发工具集
 
 ---
 

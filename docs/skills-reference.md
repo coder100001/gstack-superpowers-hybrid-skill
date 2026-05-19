@@ -53,7 +53,7 @@
 
 **定位**: 多角色决策审议
 
-**来源**: [GStack](https://github.com/gstack)
+**来源**: [GStack](https://github.com/garrytan/gstack)
 
 ### 技能列表
 
