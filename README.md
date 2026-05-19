@@ -92,6 +92,8 @@ hybrid 帮我开发用户认证功能
 │   │   ├── architecture-spec.md 架构约束
 │   │   ├── constraints-spec.md  约束清单
 │   │   ├── domain-boundaries.md 领域边界
+│   │   ├── api-spec.md          API 契约
+│   │   ├── test-spec.md         测试契约
 │   │   └── coding-standards/    ← 编码标准
 │   │       ├── index.md
 │   │       ├── common.md
@@ -116,10 +118,12 @@ hybrid 帮我开发用户认证功能
 ├── governance/                  ← 治理规则
 │   ├── decision-freeze.md       决策冻结协议
 │   ├── machine.json             状态机定义(12状态)
-│   ├── gates.json               Gate规则定义(4个)
+│   ├── gates.json               Gate规则定义(6个)
 │   ├── transition.sh            跃迁入口脚本
 │   ├── gates/                   ← Gate脚本
 │   │   ├── requirement-lock.sh
+│   │   ├── arch-review-lock.sh
+│   │   ├── task-decomposition-lock.sh
 │   │   ├── context-hydration.sh
 │   │   ├── decision-freeze.sh
 │   │   └── test-presence.sh

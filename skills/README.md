@@ -7,7 +7,7 @@
 ```
 skills/
 ├── superpowers/          # Superpowers 官方技能 (14个)
-├── gstack/               # GStack 工程技能 (47个)
+├── gstack/               # GStack 工程技能 (16个)
 ├── hybrid/               # 混合流程技能 (1个)
 └── custom/               # 自定义扩展技能
 ```
@@ -43,7 +43,7 @@ skills/
 
 来自 GStack 的工程工具技能，提供丰富的开发和审查工具。
 
-**包含技能 (47个)**: 涵盖规划审查、设计、QA、安全、部署、调试、文档、浏览器自动化、工具等类别。完整列表请参考 [skills-reference.md](../docs/skills-reference.md)。
+**包含技能 (16个)**: 涵盖规划审查、设计、QA、安全、部署、调试、文档、工具等类别。完整列表请参考 [skills-reference.md](../docs/skills-reference.md)。
 
 **更新方式**:
 ```bash
@@ -154,7 +154,7 @@ custom/
   "gstack": {
     "version": "x.x.x.x",
     "last_sync": "2026-05-15",
-    "skill_count": 47,
+    "skill_count": 16,
     "skill_path": "skills/gstack/"
   },
   "hybrid": {

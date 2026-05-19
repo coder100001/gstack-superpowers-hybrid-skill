@@ -7,13 +7,14 @@
 ## 目录结构
 
 ```
-docs/superpowers/
-├── plans/           # 历史计划文档
+docs/superpowers/          # 仅保留 README.md
+docs/archive/
+├── plans/                 # 归档的历史计划文档
 │   ├── 2026-01-22-document-review-system.md
 │   ├── 2026-02-19-visual-brainstorming-refactor.md
 │   ├── 2026-03-11-zero-dep-brainstorm-server.md
 │   └── 2026-03-23-codex-app-compatibility.md
-└── specs/           # 历史设计文档
+└── specs/                 # 归档的历史设计文档
     ├── 2026-01-22-document-review-system-design.md
     ├── 2026-02-19-visual-brainstorming-refactor-design.md
     ├── 2026-03-11-zero-dep-brainstorm-server-design.md

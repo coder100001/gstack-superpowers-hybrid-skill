@@ -92,6 +92,10 @@ Tests skill content and requirements (~2 minutes):
 - Review loops documented
 - Task context provision documented
 
+#### test-document-review-system.sh
+Tests the document review system skill:
+- Document review skill loading and behavior
+
 ### Integration Tests (use --integration flag)
 
 #### test-subagent-driven-development-integration.sh
@@ -114,6 +118,11 @@ Full workflow execution test (~10-30 minutes):
 - Our improvements are actually applied
 - Subagents follow the skill correctly
 - Final code is functional and tested
+
+### Utilities
+
+#### analyze-token-usage.py
+Token usage analysis tool for Claude Code sessions.
 
 ## Adding New Tests
 

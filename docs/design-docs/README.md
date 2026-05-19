@@ -8,6 +8,7 @@
 | ID | Title | Status | Date | Related |
 |:---|------|:------|:-----|---------|
 | 001 | gstack 外循环深度集成方案 | draft | 2026-05-15 | — |
+| 002 | AI Engineering Governance System | draft | 2026-05-16 | ADR-001~008 |
 
 ## Status
 
