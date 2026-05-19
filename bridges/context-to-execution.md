@@ -25,11 +25,13 @@ Required Loading Order:
 
 1. project-spec.md          ← 项目全局约束（最高优先级）
 2. architecture-spec.md     ← 架构决策约束
-3. ADR history (decision-layer/adr/) ← 活跃的架构决策记录
-4. active constraints       ← 当前活跃的约束清单
-5. domain-boundaries.md     ← 领域边界定义
-6. coding-standards/index.md ← 编码规则定义
-7. current workflow state   ← 当前工作流位置与产出物
+3. api-spec.md              ← API 契约约束（路由/Schema/错误码/认证/版本）
+4. test-spec.md             ← 测试约束（覆盖率指标/命名/Mock策略/CI命令）
+5. ADR history (decision-layer/adr/) ← 活跃的架构决策记录
+6. active constraints       ← 当前活跃的约束清单
+7. domain-boundaries.md     ← 领域边界定义
+8. coding-standards/index.md ← 编码规则定义
+9. current workflow state   ← 当前工作流位置与产出物
 ```
 
 ### Token 预算机制
@@ -91,11 +93,13 @@ Required Loading Order:
 ✅ Context Hydration Complete
 
 已加载：
-  - project-spec.md: [版本/哈希]
-  - architecture-spec.md: [版本/哈希]
+  - project-spec.md: [版本号，必填]
+  - architecture-spec.md: [版本号，必填]
+  - api-spec.md: [版本号，必填]
+  - test-spec.md: [版本号，必填]
   - ADR history: [N 条活跃记录]
   - active constraints: [N 条活跃约束]
-  - domain-boundaries.md: [版本/哈希]
+  - domain-boundaries.md: [版本号，必填]
   - coding-standards/index.md: [版本/规则数量]
   - workflow state: [当前状态]
 
@@ -119,7 +123,7 @@ Required Loading Order:
 | Decision Layer 产出新 ADR | 上下文契约变更 | 增量注水（仅加载变更项） |
 | Context Layer 契约更新 | 约束条件变化 | 增量注水 |
 | 切换到不同子系统 | 领域上下文不同 | 完整注水（加载新域契约） |
-| 超过 10 条消息未引用契约 | 上下文漂移风险 | 检查并增量注水 |
+| 超过 15 条消息未引用契约 | 上下文漂移风险 | 检查并增量注水 |
 
 ---
 

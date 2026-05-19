@@ -1,11 +1,11 @@
 {
-  "version": "4.0",
+  "version": "4.1",
   "states": {
     "IDEA": { "entry_gate": null },
     "DISCOVERY": { "entry_gate": null },
     "REQUIREMENT_LOCK": { "entry_gate": "requirement-lock" },
-    "ARCH_REVIEW": { "entry_gate": null },
-    "TASK_DECOMPOSITION": { "entry_gate": null },
+    "ARCH_REVIEW": { "entry_gate": "arch-review-lock" },
+    "TASK_DECOMPOSITION": { "entry_gate": "task-decomposition-lock" },
     "CONTEXT_HYDRATION": { "entry_gate": "context-hydration" },
     "IMPLEMENTATION": { "entry_gate": "decision-freeze" },
     "SELF_REVIEW": { "entry_gate": "test-presence" },

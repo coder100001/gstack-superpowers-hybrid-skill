@@ -1,5 +1,5 @@
 {
-  "version": "4.1",
+  "version": "4.2",
   "gates": [
     {
       "name": "requirement-lock",
@@ -7,6 +7,20 @@
       "applies_to": ["REQUIREMENT_LOCK"],
       "check": "用户是否明确确认了需求清单",
       "fail_message": "REQUIREMENT_LOCK 未通过：用户未确认需求"
+    },
+    {
+      "name": "arch-review-lock",
+      "script": "governance/gates/arch-review-lock.sh",
+      "applies_to": ["ARCH_REVIEW"],
+      "check": "L2+ 任务是否有 ADR 记录且包含决策状态",
+      "fail_message": "ARCH_REVIEW 未通过：缺少 ADR 或 ADR 未包含决策状态"
+    },
+    {
+      "name": "task-decomposition-lock",
+      "script": "governance/gates/task-decomposition-lock.sh",
+      "applies_to": ["TASK_DECOMPOSITION"],
+      "check": "plan 文件存在且不含 TBD/TODO/PLACEHOLDER，用户已确认",
+      "fail_message": "TASK_DECOMPOSITION 未通过：plan 缺失、含占位符或未确认"
     },
     {
       "name": "context-hydration",

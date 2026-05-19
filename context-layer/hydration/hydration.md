@@ -14,6 +14,8 @@
 |:-----|:-----|:-------|:---------|:---------|
 | 项目约束 | `context-layer/specs/project-spec.md` | P0 | 项目级 | 首次加载后缓存 |
 | 架构约束 | `context-layer/specs/architecture-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| API 约束 | `context-layer/specs/api-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| 测试约束 | `context-layer/specs/test-spec.md` | P0 | 决策更新时 | 每次重新加载 |
 | 约束清单 | `context-layer/specs/constraints-spec.md` | P0 | 决策更新时 | 每次重新加载 |
 | 领域边界 | `context-layer/specs/domain-boundaries.md` | P0 | 决策更新时 | 每次重新加载 |
 | 编码标准 | `context-layer/specs/coding-standards/index.md` | P0 | 规则变更时 | 每次重新加载 |

@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HYDRATION_STATE="$PROJECT_ROOT/artifacts/hydration-state.md"
 
-required=("project-spec" "architecture-spec" "constraints-spec" "domain-boundaries")
+required=("project-spec" "architecture-spec" "api-spec" "test-spec" "constraints-spec" "domain-boundaries")
 missing=()
 
 for asset in "${required[@]}"; do
@@ -28,6 +28,8 @@ if [[ ${#missing[@]} -gt 0 ]]; then
   echo "  1. 确保以下文件存在:"
   echo "     - context-layer/specs/project-spec.md"
   echo "     - context-layer/specs/architecture-spec.md"
+  echo "     - context-layer/specs/api-spec.md"
+  echo "     - context-layer/specs/test-spec.md"
   echo "     - context-layer/specs/constraints-spec.md"
   echo "     - context-layer/specs/domain-boundaries.md"
   echo "  2. 如果是新项目，运行 /brainstorm 生成初始 spec"
@@ -50,6 +52,8 @@ cat > "$HYDRATION_STATE" << EOF
 |-------|------|--------|
 | project-spec | context-layer/specs/project-spec.md | ✓ |
 | architecture-spec | context-layer/specs/architecture-spec.md | ✓ |
+| api-spec | context-layer/specs/api-spec.md | ✓ |
+| test-spec | context-layer/specs/test-spec.md | ✓ |
 | constraints-spec | context-layer/specs/constraints-spec.md | ✓ |
 | domain-boundaries | context-layer/specs/domain-boundaries.md | ✓ |
 
