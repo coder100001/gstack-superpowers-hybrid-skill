@@ -17,43 +17,57 @@ FROZEN_PATTERNS="^decision-layer/adr/|^context-layer/specs/"
 if ! git -C "$PROJECT_ROOT" rev-parse --git-dir &>/dev/null; then
   echo "⚠ 非 git 环境，使用降级模式检查决策冻结"
 
-  # 降级模式：检查 workflow-state.md 是否存在且包含 IMPLEMENTATION 状态
+  # 降级模式：从 workflow-state.md 解析 IMPLEMENTATION 进入时间戳
   if [[ -f "$STATE_FILE" ]]; then
-    # 检查最近一次 IMPLEMENTATION 进入时间
-    impl_ts=$(grep -i "IMPLEMENTATION\|implementation" "$STATE_FILE" 2>/dev/null | head -1 || true)
-    if [[ -n "$impl_ts" ]]; then
-      # 检查 ADR/specs 目录下文件的修改时间是否晚于 IMPLEMENTATION 进入时间
-      state_mtime=$(stat -f "%m" "$STATE_FILE" 2>/dev/null || stat -c "%Y" "$STATE_FILE" 2>/dev/null || echo "0")
-
-      # 检查冻结目录中的文件是否有比状态文件更新的修改
-      frozen_dirs=("$ADR_DIR" "$PROJECT_ROOT/context-layer/specs")
-      violations=()
-
-      for dir in "${frozen_dirs[@]}"; do
-        if [[ -d "$dir" ]]; then
-          while IFS= read -r file; do
-            file_mtime=$(stat -f "%m" "$file" 2>/dev/null || stat -c "%Y" "$file" 2>/dev/null || echo "0")
-            if [[ "$file_mtime" -gt "$state_mtime" ]]; then
-              violations+=("$file")
-            fi
-          done < <(find "$dir" -name "*.md" -type f 2>/dev/null)
-        fi
-      done
-
-      if [[ ${#violations[@]} -gt 0 ]]; then
-        echo ""
-        echo "✗ 决策冻结违规（降级模式）：以下文件在 IMPLEMENTATION 后被修改："
-        printf '  - %s\n' "${violations[@]}"
-        echo ""
-        echo "修复步骤:"
-        echo "  1. 如果需要修改冻结项，请先回退到 Decision Layer"
-        echo "  2. 或创建新的 ADR 记录变更决策"
-        exit 1
+    # 提取 IMPLEMENTATION 相关的时间戳
+    impl_timestamp=$(grep -i "^- Timestamp:" "$STATE_FILE" 2>/dev/null | tail -1 | sed 's/.*:[[:space:]]*//' || true)
+    if [[ -z "$impl_timestamp" ]]; then
+      # 回退：检查文件中是否包含 IMPLEMENTATION 状态记录
+      if ! grep -qi "IMPLEMENTATION" "$STATE_FILE" 2>/dev/null; then
+        echo "⚠ 非 git 环境，workflow-state.md 中无 IMPLEMENTATION 记录，放行"
+        exit 0
       fi
-
-      echo "✓ 决策冻结检查通过（降级模式：基于文件时间戳）"
-      exit 0
+      # 无显式时间戳时，使用状态文件的创建时间作为保守估计
+      impl_epoch=$(stat -f "%B" "$STATE_FILE" 2>/dev/null || stat -c "%W" "$STATE_FILE" 2>/dev/null || echo "0")
+    else
+      # 将 ISO 时间戳转换为 epoch（需要 GNU date 或 BSD date）
+      impl_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${impl_timestamp%%Z*}" "+%s" 2>/dev/null || \
+                   date -d "$impl_timestamp" "+%s" 2>/dev/null || echo "0")
     fi
+
+    if [[ "$impl_epoch" == "0" ]]; then
+      echo "⚠ 无法解析 IMPLEMENTATION 时间戳，使用状态文件修改时间作为基准"
+      impl_epoch=$(stat -f "%m" "$STATE_FILE" 2>/dev/null || stat -c "%Y" "$STATE_FILE" 2>/dev/null || echo "0")
+    fi
+
+    # 检查冻结目录中的文件是否有比 IMPLEMENTATION 进入时间更新的修改
+    frozen_dirs=("$ADR_DIR" "$PROJECT_ROOT/context-layer/specs")
+    violations=()
+
+    for dir in "${frozen_dirs[@]}"; do
+      if [[ -d "$dir" ]]; then
+        while IFS= read -r file; do
+          file_epoch=$(stat -f "%m" "$file" 2>/dev/null || stat -c "%Y" "$file" 2>/dev/null || echo "0")
+          if [[ "$file_epoch" -gt "$impl_epoch" ]]; then
+            violations+=("$file")
+          fi
+        done < <(find "$dir" -name "*.md" -type f 2>/dev/null)
+      fi
+    done
+
+    if [[ ${#violations[@]} -gt 0 ]]; then
+      echo ""
+      echo "✗ 决策冻结违规（降级模式）：以下文件在 IMPLEMENTATION 后被修改："
+      printf '  - %s\n' "${violations[@]}"
+      echo ""
+      echo "修复步骤:"
+      echo "  1. 如果需要修改冻结项，请先回退到 Decision Layer"
+      echo "  2. 或创建新的 ADR 记录变更决策"
+      exit 1
+    fi
+
+    echo "✓ 决策冻结检查通过（降级模式：基于 IMPLEMENTATION 时间戳）"
+    exit 0
   fi
 
   # 无状态文件时记录警告但不阻断

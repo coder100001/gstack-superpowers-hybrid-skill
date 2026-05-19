@@ -79,10 +79,10 @@ if [[ "$has_placeholder" == "true" ]]; then
   exit 1
 fi
 
-# 检查用户确认标记（检查所有 plan 文件，任一有确认即可）
+# 检查用户确认标记（仅检查 recent_plans，与占位符检查范围一致）
 confirmed=false
-for plan_file in $plan_files; do
-  if grep -qi "^##.*确认\|^##.*Approval\|^##.*approved\|\[x\].*confirmed\|\[x\].*确认" "$plan_file" 2>/dev/null; then
+for plan_file in "${recent_plans[@]}"; do
+  if [[ -n "$plan_file" ]] && grep -qi "^##.*Approval\|^##.*approved\|\[x\].*confirmed\|\[x\].*确认" "$plan_file" 2>/dev/null; then
     confirmed=true
     break
   fi

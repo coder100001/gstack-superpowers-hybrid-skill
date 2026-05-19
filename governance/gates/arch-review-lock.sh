@@ -11,10 +11,10 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ADR_DIR="$PROJECT_ROOT/decision-layer/adr"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 
-# 读取复杂度级别
+# 读取复杂度级别（精确匹配行首格式）
 complexity=""
 if [[ -f "$STATE_FILE" ]]; then
-  complexity=$(grep -i "complexity\|level\|级别" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  complexity=$(grep -i "^- *complexity:\|^- *level:\|^- *级别:" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
 fi
 
 # L1 任务自动通过
@@ -56,8 +56,8 @@ fi
 # 检查最新 ADR 是否包含审议结论
 latest_adr=$(ls -t "$ADR_DIR"/ADR-*.md 2>/dev/null | head -1)
 if [[ -n "$latest_adr" ]]; then
-  # 检查 ADR 是否包含决策状态
-  if ! grep -qi "approved\|accepted\|确认\|通过\|Decision:" "$latest_adr" 2>/dev/null; then
+  # 检查 ADR 是否包含决策状态（结构化格式匹配）
+  if ! grep -qi "^Decision:\|^Status:.*Approved\|^Status:.*Accepted\|^- \[x\].*approved\|^- \[x\].*确认" "$latest_adr" 2>/dev/null; then
     echo ""
     echo "✗ ARCH_REVIEW 未通过：最新 ADR 缺少决策状态"
     echo "  文件: $latest_adr"
