@@ -1,5 +1,5 @@
 {
-  "version": "4.2",
+  "version": "4.1",
   "states": {
     "IDEA": { "entry_gate": null },
     "DISCOVERY": { "entry_gate": null },

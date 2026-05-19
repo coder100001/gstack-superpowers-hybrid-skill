@@ -86,13 +86,13 @@
 
 ### gs-hybrid-v3
 
-**主入口技能**，AI Engineering Governance System v4.0。
+**主入口技能**，AI Engineering Governance System v4.1。
 
 #### 核心特性
 
 - **三层架构**: Decision / Context / Execution 三层分离
 - **模块化设计**: 9个模块按需加载
-- **复杂度分级**: L1/L2/L3 三级流程
+- **复杂度分级**: L0/L1/L2/L3 四级流程
 - **强制确认机制**: REQUIREMENT_LOCK 和 TASK_DECOMPOSITION 强制用户确认
 - **多角色审议**: 产品/架构/性能/安全/运维 5个维度审查
 - **决策冻结机制**: 执行层不允许更改架构和需求
@@ -117,8 +117,9 @@
 
 ```
 IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
-    → Context Hydration → IMPLEMENTATION → SELF_REVIEW → QA
+    → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW → QA
     → SHIP_REVIEW → RETRO
+    (任意状态 → ABORTED | 任意状态 → IDEA [决策冻结回滚])
 ```
 
 #### 专用指令

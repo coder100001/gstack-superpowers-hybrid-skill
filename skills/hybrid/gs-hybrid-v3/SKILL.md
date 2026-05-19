@@ -1,13 +1,13 @@
 ---
 name: "gs-hybrid-v3"
-description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.0 重构：从技能分类升级为职责分层系统，新增状态机、决策冻结、上下文注水机制。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1 渐进式加载优化：从技能分类升级为职责分层系统，新增状态机、决策冻结、上下文注水机制。"
 ---
 
 # AI Engineering Governance System v4.0 (三层架构正式版)
 
 > **核心理念**: 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
 > 本系统将 Superpowers 的工程纪律 + GStack 的多角色审议 + Context Layer 的契约驱动，统一为可执行的三层职责系统
-> **v4.0 升级**: 从技能分类升级为职责分层系统 | 9 状态状态机 | 决策冻结 | 上下文注水
+> **v4.1 升级**: 从技能分类升级为职责分层系统 | 12 状态状态机(含 ABORTED) | L0-L4 复杂度分级 | 决策冻结 | 上下文注水
 
 ---
 
@@ -199,26 +199,31 @@ RETRO:          复盘记录
 | DISCOVERY → | REQUIREMENT_LOCK | IDEA | ✅ | ✅ |
 | REQUIREMENT_LOCK → | ARCH_REVIEW | DISCOVERY | ✅ | ✅ |
 | ARCH_REVIEW → | TASK_DECOMPOSITION | REQUIREMENT_LOCK | ✅ | ✅ |
-| TASK_DECOMPOSITION → | Context Hydration | ARCH_REVIEW | ✅ | ✅ |
-| Context Hydration → | IMPLEMENTATION | TASK_DECOMPOSITION | ✅ | ✅ |
+| TASK_DECOMPOSITION → | CONTEXT_HYDRATION | ARCH_REVIEW | ✅ | ✅ |
+| CONTEXT_HYDRATION → | IMPLEMENTATION | TASK_DECOMPOSITION | ✅ | ✅ |
 | IMPLEMENTATION → | SELF_REVIEW | IMPLEMENTATION | ✅ | ✅ |
 | SELF_REVIEW → | QA | SELF_REVIEW | ✅ | ✅ |
 | QA → | SHIP_REVIEW | QA | ✅ | ✅ |
 | SHIP_REVIEW → | RETRO | SHIP_REVIEW | ✅ | ✅ |
-| 任意 → | Decision Layer | 决策冻结变更 | 变更流程 | 变更流程 |
+| 任意 → | ABORTED | 总是 | ✅ | ✅ |
+| 任意 → | IDEA | 决策冻结回滚 | 变更流程 | 变更流程 |
+
+> **命名约定**: 状态机代码中使用 `CONTEXT_HYDRATION`，文档中可写作 `Context Hydration`，两者等价。
 
 ---
 
 ## 强制阻断规则
 
 <HARD-GATE>
-1. **REQUIREMENT_LOCK 需求确认**: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
-2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration（L1 可通过对话确认，不强制产出独立 plan 文件；L2/L3 必须产出 plan 文件）
-3. **Context Hydration**: 执行层编码前必须完成上下文注水，否则禁止进入 IMPLEMENTATION
-4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
-5. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
-6. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
-7. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
+1. **REQUIREMENT_LOCK 需求确认** [gate: requirement-lock]: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
+2. **ARCH_REVIEW 架构审议** [gate: arch-review-lock]: L2+ 任务必须有 ADR 记录且包含决策状态，L1 自动豁免
+3. **TASK_DECOMPOSITION 任务确认** [gate: task-decomposition-lock]: plan 文件存在且不含占位符，用户已确认
+4. **Context Hydration 上下文注水** [gate: context-hydration]: 所有 P0 Spec 文件必须存在
+5. **决策冻结** [gate: decision-freeze]: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
+6. **测试存在** [gate: test-presence]: 变更必须包含对应测试文件，否则不能进入 SELF_REVIEW
+7. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
+8. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
+9. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
 </HARD-GATE>
 
 ---
@@ -260,15 +265,14 @@ RETRO:          复盘记录
 
 ## 项目配置 (快速参考)
 
-使用前必须配置以下项目参数：
+使用前必须配置以下项目参数（示例为本项目实际配置，其他项目按需替换）：
 
 ```yaml
-language: "Go 1.21+"                    # 开发语言
-test_command: "go test ./... -race"     # 测试命令
-coverage_command: "go test ./... -coverprofile=coverage.out"  # 覆盖率
-lint_command: "golangci-lint run"       # 代码检查
-security_scanner: "gosec ./..."         # 安全扫描
-concurrency_model: "goroutine"          # 并发模型
+language: "Node.js 18+"                    # 开发语言
+runtime: "node"                             # 运行时
+test_command: "npm test"                    # 测试命令
+lint_command: "shellcheck scripts/*.sh"     # 代码检查
+shell: "bash/zsh"                           # Shell 类型
 ```
 
 **详细配置请参考**: [01-intro.md](./modules/01-intro.md)
@@ -345,8 +349,13 @@ concurrency_model: "goroutine"          # 并发模型
 进入 Execution Layer 前必须加载：
 1. project-spec（项目约束）
 2. architecture-spec（架构约束）
-3. 当前 ADR 历史
-4. 活跃约束清单
+3. api-spec（API 契约约束）
+4. test-spec（测试约束）
+5. ADR 历史（活跃的架构决策记录）
+6. 活跃约束清单
+7. domain-boundaries（领域边界定义）
+8. coding-standards（编码规则定义）
+9. 当前工作流状态
 
 **详细协议**: [context-to-execution.md](../../../bridges/context-to-execution.md)
 

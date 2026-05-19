@@ -26,6 +26,8 @@ hydration:
   required_assets:
     - project-spec
     - architecture-spec
+    - api-spec
+    - test-spec
     - constraints-spec
     - domain-boundaries
     - coding-standards
