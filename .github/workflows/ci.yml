@@ -37,6 +37,7 @@ jobs:
         with:
           args: >
             --no-progress
+            --root-dir .
             --exclude 'http://localhost'
             --exclude 'https://github.com/coder100001'
             --exclude 'https://github.com/obra'
