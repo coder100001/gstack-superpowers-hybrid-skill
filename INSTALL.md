@@ -10,10 +10,10 @@
 
 ## 项目架构
 
-本项目采用**三层架构**（v4.0）：
+本项目采用**三层架构**（v4.1）：
 
 ```
-gstack--superpowers--hybrid-skill/
+gstack-superpowers-hybrid-skill/
 ├── decision-layer/        # 决策层（多角色审议）
 ├── context-layer/         # 上下文层（契约、注水）
 ├── execution-layer/       # 执行层（受约束的实现）
@@ -27,212 +27,213 @@ gstack--superpowers--hybrid-skill/
 └── scripts/               # 维护脚本
 ```
 
-## 安装步骤
+## 快速开始
 
-### 方法 1：在 Trae 中使用（推荐）
-
-1. 将本项目复制到 Trae 的工作目录：
+### 方法 1：使用安装脚本（推荐）
 
 ```bash
-# 假设您在 Trae 中打开了一个项目
-cd /path/to/your/project
+cd /path/to/gstack-superpowers-hybrid-skill
 
-# 复制技能包（包含三层架构）
-cp -r /path/to/gstack--superpowers--hybrid-skill ~/.trae-cn/superpowers
+./scripts/install.sh install
 ```
 
-2. 重启 Trae，技能将自动加载
+这个脚本会：
+- 检查前置条件
+- 备份现有安装（如果有）
+- 复制所有文件到 `~/.trae-cn/superpowers`
+- 设置正确的权限
+- 验证安装
 
-3. 验证安装：
+### 方法 2：手动安装
 
 ```bash
-# 检查技能文件是否存在
-ls ~/.trae-cn/superpowers/skills/
+cp -r /path/to/gstack-superpowers-hybrid-skill ~/.trae-cn/superpowers
+```
 
-# 检查三层架构目录
+## 安装脚本详细说明
+
+### 命令
+
+```bash
+./scripts/install.sh <命令> [选项]
+```
+
+| 命令 | 说明 |
+|:-----|:-----|
+| `install` | 安装到目标目录（默认） |
+| `uninstall` | 卸载 |
+| `rollback` | 回滚到上一个版本 |
+| `validate` | 验证安装 |
+| `status` | 显示安装状态 |
+| `backups` | 列出所有备份 |
+
+### 选项
+
+| 选项 | 说明 |
+|:-----|:-----|
+| `--target DIR` | 目标目录（默认: `~/.trae-cn/superpowers`） |
+| `--no-backup` | 安装时不创建备份 |
+| `--dry-run` | 预览模式，不执行实际操作 |
+| `--force` | 强制安装，覆盖现有文件 |
+| `--verbose` | 详细输出 |
+| `-y, --yes` | 跳过确认提示 |
+| `-h, --help` | 显示帮助信息 |
+
+### 示例
+
+```bash
+./scripts/install.sh install
+./scripts/install.sh install --target ~/.claude/skills/gstack-hybrid
+./scripts/install.sh install --dry-run
+./scripts/install.sh uninstall
+./scripts/install.sh rollback
+./scripts/install.sh validate
+./scripts/install.sh status
+./scripts/install.sh backups
+```
+
+## 安装到不同平台
+
+### 安装到 Trae（默认）
+
+```bash
+./scripts/install.sh install
+```
+
+目标目录：`~/.trae-cn/superpowers`
+
+### 安装到 Claude Code
+
+```bash
+./scripts/install.sh install --target ~/.claude/skills/gstack-hybrid
+```
+
+### 安装到自定义位置
+
+```bash
+./scripts/install.sh install --target /path/to/custom/location
+```
+
+## 验证安装
+
+### 使用脚本验证
+
+```bash
+./scripts/install.sh validate
+```
+
+### 手动验证
+
+```bash
+ls ~/.trae-cn/superpowers/skills/
 ls ~/.trae-cn/superpowers/decision-layer/
 ls ~/.trae-cn/superpowers/context-layer/
 ls ~/.trae-cn/superpowers/execution-layer/
 ```
 
-### 方法 2：手动安装到 Claude Code
+### 检查核心文件
 
 ```bash
-# 1. 创建插件目录
-mkdir -p ~/.claude/skills/gstack-hybrid
-
-# 2. 复制所有技能
-cp -r skills/* ~/.claude/skills/gstack-hybrid/
-
-# 3. 复制三层架构
-cp -r decision-layer context-layer execution-layer bridges governance ~/.claude/
-
-# 4. 复制配置文件
-cp CLAUDE.md ~/.claude/
-```
-
-### 方法 3：本地开发模式
-
-如果您想在本项目上开发和测试：
-
-```bash
-# 1. 克隆项目
-git clone &lt;repo-url&gt;
-cd gstack--superpowers--hybrid-skill
-
-# 2. 给脚本添加执行权限
-chmod +x scripts/*.sh
-
-# 3. 同步上游技能（如果本地有安装）
-./scripts/sync-upstream.sh
-
-# 4. 验证技能文件
-ls skills/*/SKILL.md
-
-# 5. 验证三层架构
-ls decision-layer/ context-layer/ execution-layer/
-```
-
-## 验证安装
-
-### 1. 检查核心文件
-
-```bash
-# 检查关键技能是否存在
-echo "检查核心技能..."
 for skill in brainstorming writing-plans test-driven-development gs-hybrid-v3; do
-    if [[ -f "skills/$skill/SKILL.md" ]]; then
+    found=false
+    for dir in ~/.trae-cn/superpowers/skills/superpowers/"$skill" ~/.trae-cn/superpowers/skills/hybrid/"$skill"; do
+        if [[ -f "$dir/SKILL.md" ]]; then
+            found=true
+            break
+        fi
+    done
+    if [[ "$found" == "true" ]]; then
         echo "✅ $skill: 存在"
     else
         echo "❌ $skill: 缺失"
     fi
 done
-
-# 检查三层架构目录
-echo ""
-echo "检查三层架构..."
-for dir in decision-layer context-layer execution-layer bridges governance; do
-    if [[ -d "$dir" ]]; then
-        echo "✅ $dir: 存在"
-    else
-        echo "❌ $dir: 缺失"
-    fi
-done
 ```
 
-### 2. 检查脚本权限
+## 备份和回滚
+
+### 查看备份
 
 ```bash
-# 检查脚本是否有执行权限
-ls -la scripts/*.sh
+./scripts/install.sh backups
 ```
 
-如果没有执行权限，运行：
+### 回滚到上一个版本
 
 ```bash
+./scripts/install.sh rollback
+```
+
+### 备份位置
+
+所有备份存储在：`~/.trae-cn/superpowers-backups/`
+
+## 开发模式
+
+如果您想在本项目上开发和测试：
+
+```bash
+git clone <repo-url>
+cd gstack-superpowers-hybrid-skill
+
 chmod +x scripts/*.sh
-```
 
-### 3. 测试同步脚本
-
-```bash
-# 测试检查功能
-./scripts/sync-upstream.sh --check
-
-# 测试 dry-run 模式
-./scripts/sync-upstream.sh --dry-run
-```
-
-## 首次使用
-
-### 1. 同步上游技能
-
-```bash
-# 同步所有上游技能
 ./scripts/sync-upstream.sh
 
-# 或分别同步
+./scripts/install.sh install
+```
+
+## 同步上游技能
+
+安装后，您可以同步上游技能：
+
+```bash
+./scripts/sync-upstream.sh
 ./scripts/sync-upstream.sh --superpowers
 ./scripts/sync-upstream.sh --gstack
-```
-
-### 2. 验证版本
-
-```bash
-# 查看当前追踪的上游版本
-cat .upstream-versions.json
-```
-
-### 3. 创建备份（可选）
-
-```bash
-# 创建当前状态的备份（包含三层架构）
-./scripts/sync-upstream.sh --backup
-```
-
-### 4. 测试 gs-hybrid-v3 技能
-
-在 Trae 或 Claude Code 中使用：
-
-```
-# 简单测试 L1 任务
-gs-hybrid-v3 修改一个小问题
-
-# 完整测试 L3 任务
-gs-hybrid-v3 开发一个新功能
 ```
 
 ## 常见问题
 
 ### Q1: 脚本提示 "Permission denied"
 
-**解决方案**：
-
 ```bash
-chmod +x scripts/sync-upstream.sh
+chmod +x scripts/*.sh
 ```
 
-### Q2: 同步时提示上游路径不存在
+### Q2: 目标目录已存在
 
-**解决方案**：
-
-确认您已安装了对应的上游项目：
+使用 `--force` 选项强制安装：
 
 ```bash
-# 检查 superpowers
-ls ~/.trae-cn/superpowers
-
-# 检查 gstack
-ls ~/.claude/skills/gstack
+./scripts/install.sh install --force
 ```
 
-如果不存在，请先安装上游项目。
-
-### Q3: 三层架构目录缺失
-
-**解决方案**：
-
-重新同步或手动复制：
+或先卸载再安装：
 
 ```bash
-# 从备份恢复
-./scripts/sync-upstream.sh --rollback
-
-# 或手动复制（如果在开发模式）
-cd /path/to/gstack--superpowers--hybrid-skill
-cp -r decision-layer context-layer execution-layer bridges governance ~/.trae-cn/superpowers/
+./scripts/install.sh uninstall
+./scripts/install.sh install
 ```
 
-### Q4: gs-hybrid-v3 技能版本不正确
-
-**解决方案**：
+### Q3: 如何查看当前安装状态
 
 ```bash
-# 检查当前版本
-cat .upstream-versions.json | grep hybrid
+./scripts/install.sh status
+```
 
-# 确保 SKILL.md 是 v4.0
-cat skills/hybrid/gs-hybrid-v3/SKILL.md | head -20
+### Q4: 如何预览安装操作
+
+```bash
+./scripts/install.sh install --dry-run --verbose
+```
+
+### Q5: 三层架构目录缺失
+
+重新安装或手动复制：
+
+```bash
+./scripts/install.sh install --force
 ```
 
 ## 下一步

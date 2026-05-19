@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "版本号升级配置 — 声明所有需要同步版本号的文件（仅支持 JSON 格式文件，jq 可解析）",
+  "files": [
+    { "path": "gstack-skills/package.json", "field": "version" }
+  ],
+  "audit": {
+    "exclude": [
+      ".git",
+      "node_modules",
+      ".backups",
+      "gstack-skills/node_modules",
+      "*.log",
+      "coverage"
+    ]
+  }
+}

@@ -230,13 +230,10 @@ RETRO (Governance)
 # 3. 执行同步
 ./scripts/sync-upstream.sh
 
-# 4. 应用自定义补丁
-./scripts/apply-patches.sh
+# 4. 验证更新
+./scripts/validate-project.sh
 
-# 5. 验证更新
-./scripts/verify-update.sh
-
-# 6. 提交更改
+# 5. 提交更改
 git add .
 git commit -m "chore: sync upstream updates + v4.0 maintenance"
 ```
@@ -298,7 +295,7 @@ git commit -m "chore: sync upstream updates + v4.0 maintenance"
 
 ### 3. 变更日志
 
-维护 `CHANGELOG.md` 记录 v4.0 的修改：
+项目变更有 `RELEASE-NOTES.md` 记录，更新时同步更新该文件：
 
 ```markdown
 # Change Log
@@ -343,8 +340,8 @@ git commit -m "chore: sync upstream updates + v4.0 maintenance"
 | 同步 gstack | `./scripts/sync-upstream.sh --gstack` |
 | 备份 | `./scripts/sync-upstream.sh --backup` |
 | 回滚 | `./scripts/sync-upstream.sh --rollback` |
-| 应用补丁 | `./scripts/apply-patches.sh` |
-| 验证更新 | `./scripts/verify-update.sh` |
+| 验证完整性 | `./scripts/validate-project.sh` |
+| 验证模块加载 | `./scripts/validate-module-load.sh` |
 
 ## 获取帮助
 
