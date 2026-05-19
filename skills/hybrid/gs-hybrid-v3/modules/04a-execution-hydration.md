@@ -55,7 +55,7 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 
 ### 加载验证规则
 
-**重要**: 加载 Spec 时必须遵循 [context-to-execution.md](../../../bridges/context-to-execution.md) 中的**强制引述规则**：
+**重要**: 加载 Spec 时必须遵循 [context-to-execution.md](../../../../bridges/context-to-execution.md) 中的**强制引述规则**：
 
 ```
 ✅ 已加载 project-spec.md：
