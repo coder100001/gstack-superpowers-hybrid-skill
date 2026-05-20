@@ -58,4 +58,4 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 记录变更请求 → 暂停实现 → 退回 Decision Layer → 更新 Context Layer → 重新注水 → 恢复实现
 ```
 
-> 详细流程见 [07-handling.md](./07-handling.md) 和 [governance/decision-freeze.md](../../../governance/decision-freeze.md)。
+> 详细流程见 [07-handling.md](./07-handling.md) 和 [governance/decision-freeze.md](../../../../governance/decision-freeze.md)。
