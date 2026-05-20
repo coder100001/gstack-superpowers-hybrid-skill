@@ -6,7 +6,7 @@
     "REQUIREMENT_LOCK": { "entry_gate": "requirement-lock" },
     "ARCH_REVIEW": { "entry_gate": "arch-review-lock" },
     "TASK_DECOMPOSITION": { "entry_gate": "task-decomposition-lock" },
-    "PLAN_CONFIRM": { "entry_gate": null },
+    "PLAN_CONFIRM": { "entry_gate": "plan-confirm" },
     "CONTEXT_HYDRATION": { "entry_gate": "context-hydration" },
     "IMPLEMENTATION": { "entry_gate": "decision-freeze" },
     "SELF_REVIEW": { "entry_gate": "test-presence" },

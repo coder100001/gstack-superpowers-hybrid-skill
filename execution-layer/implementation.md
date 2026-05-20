@@ -1,7 +1,7 @@
 # Implementation Rules
 
 > **层**: Execution Layer · **职责**: 受约束实现
-> **前置条件**: 上下文注水完成（见 bridges/context-to-execution.md）
+> **前置条件**: 上下文注水完成（见 bridges/context-hydration.md）
 > **禁止**: 重新设计架构、修改领域边界、忽略约束规则、跳过测试
 
 ---
@@ -91,4 +91,4 @@ Step 3: 自审
 
 ---
 
-**关联文件**: [testing.md](./testing.md) · [review.md](./review.md) · [validation.md](./validation.md) · [context-hydration](../bridges/context-to-execution.md)
+**关联文件**: [testing.md](./testing.md) · [review.md](./review.md) · [validation.md](./validation.md) · [context-hydration](../bridges/context-hydration.md)

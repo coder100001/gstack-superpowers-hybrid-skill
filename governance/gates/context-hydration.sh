@@ -60,7 +60,7 @@ if [[ ${#missing[@]} -gt 0 ]]; then
     echo "  2. L1 任务仅需 P0 文件，P1/P2 文件可选"
   fi
   echo "  3. 如果是新项目，运行 /brainstorm 生成初始 spec"
-  echo "  4. 检查 context-layer/hydration/hydration.md 了解注水流程"
+  echo "  4. 检查 bridges/context-hydration.md 了解注水流程"
   exit 1
 fi
 

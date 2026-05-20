@@ -97,12 +97,11 @@ hybrid 帮我开发用户认证功能
 │   │   └── coding-standards/    ← 编码标准
 │   │       ├── index.md
 │   │       ├── common.md
-│   │       ├── go.md
-│   │       ├── typescript.md
-│   │       ├── ai-red-lines.md
-│   │       └── extension-guide.md
-│   └── hydration/               ← 注水规范
-│       └── hydration.md
+│   └── coding-standards/         编码规范
+│       ├── go.md
+│       ├── typescript.md
+│       ├── ai-red-lines.md
+│       └── extension-guide.md
 │
 ├── execution-layer/             ← 执行层
 │   ├── implementation.md        受约束执行规则
@@ -112,8 +111,7 @@ hybrid 帮我开发用户认证功能
 │
 ├── bridges/                     ← 层间桥接
 │   ├── decision-to-context.md   决策→上下文转化
-│   ├── context-to-execution.md  上下文→执行注水
-│   └── execution-to-decision.md 执行→决策回退
+│   └── context-hydration.md     上下文→执行注水
 │
 ├── governance/                  ← 治理规则
 │   ├── decision-freeze.md       决策冻结协议

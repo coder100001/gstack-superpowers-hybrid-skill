@@ -163,4 +163,92 @@ Layer          Layer          Layer
 
 ---
 
-**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-to-execution.md) · [ADR-001](../decision-layer/adr/ADR-001-initial-architecture-framework.md)
+## 7. 触发条件（执行层反馈）
+
+执行层在以下情况下必须暂停实现并走变更流程：
+
+| 触发场景 | 示例 | 严重程度 |
+|:---------|:-----|:---------|
+| 架构决策不可行 | ADR 选型的技术方案在实际实现中有未预见的障碍 | Major |
+| 约束与实现冲突 | project-spec 规则导致合法需求无法实现 | Major |
+| 发现遗漏约束 | 实现过程中发现需要但尚未定义的约束规则 | Minor |
+| 领域边界模糊 | 两个域的职责划分在实现中出现灰色地带 | Major |
+| 需求范围偏差 | 实现时发现用户实际需求与文档记录不一致 | Critical |
+| 性能/安全违规 | 实现后发现某方案有性能或安全隐患 | Major |
+
+---
+
+## 8. 变更请求模板
+
+实现受阻时，必须使用以下模板创建变更请求：
+
+```
+## Execution Feedback - [日期]
+
+### 触发场景
+[描述实现中遇到了什么具体问题]
+
+### 当前决策/约束
+[引用具体的 ADR / spec 条款]
+
+### 建议变更
+[建议如何修改决策或约束]
+
+### 变更理由
+1. [理由 1: 具体的技术障碍]
+2. [理由 2: 与实际的假设冲突]
+
+### 影响评估
+- 已完成代码量: [文件/行数]
+- 需重做代码量: [预估]
+- 影响范围: [模块/文件列表]
+- 建议方案: [重做 / 适配 / 仅向后修复]
+
+### 严重程度
+[Minor / Major / Critical]
+```
+
+---
+
+## 9. 审批路径
+
+变更请求提交后，按严重程度走不同审批路径：
+
+### 审批人
+
+| 严重程度 | 审批人 | 审批时限 | 超时处理 |
+|:---------|:-------|:---------|:---------|
+| Minor | 架构师（单点） | 4h | 自动升级为 Major |
+| Major | 架构师 + 产品负责人 | 8h | 自动升级为 Critical |
+| Critical | 全 Decision Layer 审议 | 24h | 暂停实现，等待用户决策 |
+
+### 审批流程
+
+```
+变更请求提交
+    │
+    ▼
+[1] 严重程度判定（按 §7 触发场景）
+    │
+    ├─ Minor → 架构师单点审批
+    │          ├─ 批准 → 更新 Context Layer → 重新注水 → 恢复实现
+    │          └─ 驳回 → 记录驳回理由 → 原方案继续或用户介入
+    │
+    ├─ Major → 架构师 + 产品负责人联合审批
+    │          ├─ 批准 → 增量审议（2-3 维度）→ 更新 Context Layer → 重新注水
+    │          └─ 驳回 → 记录驳回理由 → 原方案继续或用户介入
+    │
+    └─ Critical → 全 Decision Layer 审议
+                 ├─ 批准 → 完整审议（5 维度）→ 更新 Context Layer → 完整注水
+                 └─ 驳回 → 记录驳回理由 → 用户决策（接受原方案 / 调整需求）
+```
+
+### 自动升级规则
+
+- Minor 超过 4h 未审批 → 自动升级为 Major，通知产品负责人
+- Major 超过 8h 未审批 → 自动升级为 Critical，触发全 Decision Layer 审议
+- Critical 超过 24h 未审批 → 暂停实现，等待用户明确决策
+
+---
+
+**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-hydration.md) · [ADR-001](../decision-layer/adr/ADR-001-initial-architecture-framework.md)

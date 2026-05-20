@@ -302,7 +302,7 @@ AI: 确认一下需求：
 # 架构设计文档: [功能名称]
 
 ## 编号
-`decision-layer/adr/ADR-00X-feature-name.md
+`decision-layer/adr/ADR-00X-feature-name.md`
 
 ## 背景与问题
 [描述要解决什么问题]

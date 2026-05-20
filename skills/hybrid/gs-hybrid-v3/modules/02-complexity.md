@@ -2,6 +2,8 @@
 
 > **Context Load**: Step 0 评估，无需框架文件。评估后根据级别决定后续加载内容。
 
+> **单一真相源声明**: 本文件是 L0/L1/L2/L3 复杂度分级的唯一定义源。其他文件（如 architecture-spec、constraints-spec、domain-boundaries、architecture-review）引用本文件定义，不得重复定义或产生歧义。
+
 ## 任务复杂度分级
 
 根据变更范围、影响面和风险等级，将任务分为三级：

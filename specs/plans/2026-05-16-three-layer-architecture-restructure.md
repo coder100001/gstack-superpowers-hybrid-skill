@@ -41,7 +41,7 @@
 |:----|:---------|:-----|
 | P0-1 | `decision-layer/reviews/architecture-review.md` | 多角色架构审议协议 |
 | P0-2 | `context-layer/specs/project-spec.md` | 项目约束运行时契约 |
-| P0-3 | `bridges/context-to-execution.md` | 上下文灌入协议（hydration） |
+| P0-3 | `bridges/context-hydration.md` | 上下文灌入协议（hydration） |
 
 ### 优先级 P1（推荐第二轮落地）
 
@@ -53,7 +53,7 @@
 | P1-4 | `context-layer/specs/architecture-spec.md` | 架构约束契约 |
 | P1-5 | `context-layer/specs/constraints-spec.md` | 约束清单契约 |
 | P1-6 | `context-layer/specs/domain-boundaries.md` | 领域边界契约 |
-| P1-7 | `context-layer/hydration/hydration.md` | 上下文加载协议 |
+| P1-7 | `bridges/context-hydration.md` | 上下文加载协议 |
 | P1-8 | `execution-layer/implementation.md` | 受约束执行规则 |
 | P1-9 | `execution-layer/testing.md` | 测试执行规则 |
 | P1-10 | `execution-layer/review.md` | 执行层审查规则 |
@@ -118,7 +118,7 @@ execution-layer/
 
 bridges/
   decision-to-context.md     (P1-12)
-  context-to-execution.md    (P0-3)
+  context-hydration.md    (P0-3)
 
 governance/
   decision-freeze.md         (P1-13)

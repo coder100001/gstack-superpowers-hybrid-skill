@@ -23,6 +23,13 @@
       "fail_message": "TASK_DECOMPOSITION 未通过：plan 缺失、含占位符或未确认"
     },
     {
+      "name": "plan-confirm",
+      "script": "governance/gates/plan-confirm.sh",
+      "applies_to": ["PLAN_CONFIRM"],
+      "check": "用户已明确确认执行计划，范围/拆解/风险/验收标准无异议",
+      "fail_message": "PLAN_CONFIRM 未通过：用户未确认执行计划"
+    },
+    {
       "name": "context-hydration",
       "script": "governance/gates/context-hydration.sh",
       "applies_to": ["CONTEXT_HYDRATION"],

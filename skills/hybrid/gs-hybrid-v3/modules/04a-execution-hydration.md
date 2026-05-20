@@ -1,6 +1,6 @@
 # 04a — Context Layer → Execution Layer: Context Hydration
 
-> **Context Load**: 加载 `context-layer/hydration/hydration.md`, `context-layer/specs/project-spec.md`, `context-layer/specs/architecture-spec.md`, `context-layer/specs/constraints-spec.md`, `context-layer/specs/domain-boundaries.md`, `bridges/decision-to-context.md`, `bridges/context-to-execution.md`（Context Hydration 阶段）；`execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md`（IMPLEMENTATION 阶段）。
+> **Context Load**: 加载 `context-layer/specs/project-spec.md`, `context-layer/specs/architecture-spec.md`, `context-layer/specs/constraints-spec.md`, `context-layer/specs/domain-boundaries.md`, `bridges/decision-to-context.md`, `bridges/context-hydration.md`（Context Hydration 阶段）；`execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md`（IMPLEMENTATION 阶段）。
 
 ## 核心概念
 
@@ -55,12 +55,7 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 
 ### 加载验证规则
 
-**重要**: 加载 Spec 时的强制引述规则以 [context-to-execution.md §2](../../../../bridges/context-to-execution.md) 为唯一真相源，包括引述格式、条数要求、Token 预算机制。本文件不再重复定义。
-
-核心要求摘要：
-- 必须原文引述具体约束条款，禁止仅声明"已加载"
-- L1 每项至少 2 条，L2/L3 每项至少 2-3 条
-- Token 预算：L1 ~1,500 / L2 ~3,000 / L3 ~5,000
+**重要**: 加载 Spec 时的强制引述规则以 [context-hydration.md §4](../../../../bridges/context-hydration.md) 为唯一真相源，包括引述格式、条数要求、Token 预算机制。本文件不重复定义。
 
 ---
 
@@ -206,104 +201,8 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 
 ## Execution Layer 规则
 
-### 工程规范执行规则
-
-#### 代码风格
-
-- **命名规范**
-  - 变量名符合项目约定
-  - 函数名清晰表达意图
-  - 常量使用正确命名方式
-
-- **代码格式**
-  - 缩进一致
-  - 行长度符合限制
-  - 空行使用恰当
-
-- **注释规范**
-  - 公共函数有文档注释
-  - 复杂逻辑有解释
-  - TODO/FIXME 标记清楚
-
-#### 最佳实践
-
-- **错误处理**
-  - 所有错误被处理
-  - 错误信息有用
-  - 无 panic/recover 滥用
-
-- **资源管理**
-  - 文件句柄正确关闭
-  - 数据库连接正确释放
-  - 无资源泄漏风险
-
-- **并发安全**
-  - 共享状态正确保护
-  - 无竞态条件
-  - 死锁风险被评估
-
-#### 性能要求
-
-- **算法复杂度**
-  - 时间复杂度合理
-  - 空间复杂度合理
-  - 无明显性能瓶颈
-
-- **资源使用**
-  - 内存使用合理
-  - CPU 使用合理
-  - 无不必要分配
-
-### 架构执行规则
-
-#### SOLID 原则实施
-
-- **S - 单一职责原则**
-  - 每个模块/类只有一个改变理由
-  - 函数只做一件事
-  - 避免 God Class/Object
-
-- **O - 开闭原则**
-  - 对扩展开放
-  - 对修改关闭
-  - 新增功能无需修改现有代码
-
-- **L - 里氏替换原则**
-  - 子类可替换父类
-  - 继承关系合理
-  - 无违反契约行为
-
-- **I - 接口隔离原则**
-  - 接口小而专注
-  - 客户端不依赖不需要方法
-  - 无胖接口
-
-- **D - 依赖倒置原则**
-  - 依赖抽象而非具体
-  - 高层模块不依赖低层模块
-  - 依赖关系正确
-
-#### 架构检查
-
-- **模块职责**
-  - 模块边界清晰
-  - 模块间耦合合理
-  - 内聚性高
-
-- **接口设计**
-  - 接口稳定
-  - 参数设计合理
-  - 返回值一致
-
-- **数据流**
-  - 数据流向清晰
-  - 状态管理合理
-  - 无循环依赖
-
-- **扩展性**
-  - 易于添加新功能
-  - 易于替换实现
-  - 支持未来需求
+> 执行层的编码规范遵循 SOLID 原则和通用工程最佳实践。
+> 具体实现流程和红线规则见 [execution-layer/implementation.md](../../../../execution-layer/implementation.md)。
 
 ---
 

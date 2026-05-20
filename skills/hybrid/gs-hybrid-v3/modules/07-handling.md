@@ -216,4 +216,4 @@ IMPLEMENTATION 期间冻结 4 类项：**架构决策**、**需求范围**、**A
 
 ---
 
-**关联文件**: [decision-freeze](../../../../governance/decision-freeze.md) · [architecture-review](../../../../decision-layer/reviews/architecture-review.md) · [context-hydration](../../../../bridges/context-to-execution.md)
+**关联文件**: [decision-freeze](../../../../governance/decision-freeze.md) · [architecture-review](../../../../decision-layer/reviews/architecture-review.md) · [context-hydration](../../../../bridges/context-hydration.md)

@@ -22,7 +22,7 @@
 
 AI: [状态: Step 0 | 进度: 复杂度评估 | 冻结项: 无]
 
-收到。我将按照 AI Engineering Governance System v4.0 执行：
+收到。我将按照 AI Engineering Governance System v4.1 执行：
 
 Step 0:     评估任务复杂度 (L1/L2/L3)
 
@@ -117,7 +117,7 @@ concurrency:
 | 层 | 核心文件 | 映射的原技能 |
 |----|---------|-------------|
 | Decision Layer | [architecture-review.md](../../../../decision-layer/reviews/architecture-review.md) | `plan-ceo-review`, `plan-eng-review`, `brainstorming`, `design` |
-| Context Layer | [context-to-execution.md](../../../../bridges/context-to-execution.md), [project-spec.md](../../../../context-layer/specs/project-spec.md) | `context-save`, `context-restore` |
+| Context Layer | [context-hydration.md](../../../../bridges/context-hydration.md), [project-spec.md](../../../../context-layer/specs/project-spec.md) | `context-save`, `context-restore` |
 | Execution Layer | [implementation.md](../../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `qa` |
 | Bridges | [decision-to-context.md](../../../../bridges/decision-to-context.md) | 新增职责 |
 | Governance | [decision-freeze.md](../../../../governance/decision-freeze.md) | 新增职责 |

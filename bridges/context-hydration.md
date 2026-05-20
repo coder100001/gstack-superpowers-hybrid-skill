@@ -16,23 +16,29 @@ Context Hydration（上下文注水）是连接 Context Layer 和 Execution Laye
 
 ---
 
-## 2. 注水清单
+## 2. 可注水资产清单
 
-在执行前强制加载以下上下文：
+所有实现工作开始前需要加载的上下文资产：
 
-```
-Required Loading Order:
+| 资产 | 路径 | 优先级 | 更新频率 | 加载方式 |
+|:-----|:-----|:-------|:---------|:---------|
+| 项目约束 | `context-layer/specs/project-spec.md` | P0 | 项目级 | 首次加载后缓存 |
+| 架构约束 | `context-layer/specs/architecture-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| API 约束 | `context-layer/specs/api-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| 测试约束 | `context-layer/specs/test-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| 约束清单 | `context-layer/specs/constraints-spec.md` | P0 | 决策更新时 | 每次重新加载 |
+| 领域边界 | `context-layer/specs/domain-boundaries.md` | P0 | 决策更新时 | 每次重新加载 |
+| 编码标准 | `context-layer/specs/coding-standards/index.md` | P0 | 规则变更时 | 每次重新加载 |
+| ADR 历史 | `decision-layer/adr/` 目录 | P0 | 决策更新时 | 仅加载活跃 ADR |
+| 任务清单 | `specs/plans/tasks.md` | P1 | 任务分解时 | 每次重新加载 |
+| 工作流状态 | `artifacts/workflow-state.md` | P1 | 状态变更时 | 每次重新加载 |
+| 项目配置 | `project-config.yml` | P2 | 项目级 | 首次加载后缓存 |
 
-1. project-spec.md          ← 项目全局约束（最高优先级）
-2. architecture-spec.md     ← 架构决策约束
-3. api-spec.md              ← API 契约约束（路由/Schema/错误码/认证/版本）
-4. test-spec.md             ← 测试约束（覆盖率指标/命名/Mock策略/CI命令）
-5. ADR history (decision-layer/adr/) ← 活跃的架构决策记录
-6. active constraints       ← 当前活跃的约束清单
-7. domain-boundaries.md     ← 领域边界定义
-8. coding-standards/index.md ← 编码规则定义
-9. current workflow state   ← 当前工作流位置与产出物
-```
+### 优先级说明
+
+- **P0**: 必须在进入 Execution Layer 前加载，缺失则阻断
+- **P1**: 应在 Execution Layer 启动时加载，缺失不阻断但记录警告
+- **P2**: 按需加载，非必需
 
 ### Token 预算机制
 
@@ -49,7 +55,57 @@ Required Loading Order:
 - ADR 历史仅加载与当前任务相关的记录（按 ADR 标题/标签过滤），而非全量加载
 - coding-standards 仅加载当前语言相关的规则子集
 
-### 加载验证（强制引述）
+---
+
+## 3. 资产格式规范
+
+### 3.1 版本标识
+
+每个注水资产文件必须包含版本标识：
+
+```yaml
+---
+hydration:
+  asset: "project-spec"
+  version: "1.2.0"
+  updated: "2026-05-16"
+  adr_ref: "ADR-001, ADR-003"
+---
+```
+
+### 3.2 变更追踪
+
+资产文件尾部必须包含变更历史：
+
+```markdown
+---
+
+## 变更历史
+
+| 版本 | 日期 | 变更内容 | ADR |
+|:----|:-----|:---------|:----|
+| 1.0.0 | 2026-05-01 | 初始创建 | — |
+| 1.1.0 | 2026-05-10 | 新增并发规则章节 | ADR-005 |
+| 1.2.0 | 2026-05-16 | 新增安全约束章节 | ADR-008 |
+```
+
+### 3.3 资产发现
+
+按以下顺序发现可用资产：
+
+```
+1. 检查 context-layer/specs/ 目录
+2. 检查 decision-layer/adr/ 目录
+3. 检查 artifacts/ 目录
+4. 检查 specs/plans/ 目录
+5. 检查 project-config.yml（根目录）
+```
+
+每个目录发现失败时记录日志但不阻断流程——仅 P0 资产的缺失会触发阻断。
+
+---
+
+## 4. 加载验证（强制引述）
 
 > **单一真相源**: 引述规则的定义以本节为准。[04a-execution-hydration.md](../skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md) 中的引述规则引用本协议。
 
@@ -85,7 +141,7 @@ Required Loading Order:
 
 ---
 
-## 3. 注水确认模板
+## 5. 注水确认模板
 
 注水完成后，AI 必须明确声明：
 
@@ -113,7 +169,19 @@ Required Loading Order:
 
 ---
 
-## 4. 重新注水触发条件
+## 6. 缓存策略
+
+| 资产 | 缓存策略 | 失效条件 |
+|:-----|:---------|:---------|
+| project-spec | 全局缓存（session 级） | ADR 更新、用户手动刷新 |
+| architecture-spec | 每次刷新 | — |
+| domain-boundaries | 每次刷新 | — |
+| ADR 历史 | 缓存索引，按需加载具体 ADR | 新 ADR 创建 |
+| 任务清单 | 每次刷新 | — |
+
+---
+
+## 7. 重新注水触发条件
 
 以下情况必须重新执行注水：
 
@@ -127,7 +195,7 @@ Required Loading Order:
 
 ---
 
-## 5. 违规处理
+## 8. 违规处理
 
 如果检测到未完成注水就进入了实现阶段：
 
@@ -143,7 +211,7 @@ Required Loading Order:
 
 ---
 
-## 6. 示例
+## 9. 示例
 
 ### 正确流程
 
@@ -187,7 +255,7 @@ AI: 我直接开始编码...
 
 ---
 
-## 7. 与现有技能的集成
+## 10. 与现有技能的集成
 
 本协议与以下技能协作：
 
@@ -198,6 +266,4 @@ AI: 我直接开始编码...
 
 ---
 
-**关联文件**: [decision-to-context](decision-to-context.md) · [hydration spec](../context-layer/hydration/hydration.md) · [governance](../governance/decision-freeze.md) · [execution-to-decision](execution-to-decision.md)
-
-> 注：注水资产的具体清单和优先级见 [hydration spec](../context-layer/hydration/hydration.md)，本协议仅规定注水的执行流程和强制规则。
+**关联文件**: [decision-to-context](decision-to-context.md) · [decision-freeze](../governance/decision-freeze.md) · [04a-execution-hydration.md](../skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md)

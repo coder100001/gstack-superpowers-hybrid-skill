@@ -136,14 +136,14 @@ check_bridges() {
     [[ -f "$f" ]] && files+=("$(basename "$f")")
   done
 
-  if [[ ${#files[@]} -eq 3 ]]; then
-    echo "  [OK] 3 bridge files: ${files[*]}"
+  if [[ ${#files[@]} -eq 2 ]]; then
+    echo "  [OK] 2 bridge files: ${files[*]}"
   else
-    echo "  [FAIL] expected 3, found ${#files[@]}: ${files[*]}"
+    echo "  [FAIL] expected 2, found ${#files[@]}: ${files[*]}"
     e=$((e + 1))
   fi
 
-  for name in "decision-to-context.md" "context-to-execution.md" "execution-to-decision.md"; do
+  for name in "decision-to-context.md" "context-hydration.md"; do
     [[ -f "$PROJECT_ROOT/bridges/$name" ]] || { echo "  [FAIL] missing bridges/$name"; e=$((e + 1)); }
   done
 

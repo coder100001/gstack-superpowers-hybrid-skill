@@ -28,6 +28,8 @@
 
 ### 分级审议规则
 
+> **复杂度分级**: L1/L2/L3 的判定标准以 [02-complexity.md](../../skills/hybrid/gs-hybrid-v3/modules/02-complexity.md) 为唯一真相源。本节定义审议维度激活规则。
+
 不同复杂度级别激活不同维度集合：
 
 | 级别 | 必须维度 | 可选维度 | 说明 |
@@ -155,4 +157,4 @@ Step 4: 决策表决
 
 ---
 
-**关联文件**: [ADR-001](../../decision-layer/adr/ADR-001-initial-architecture-framework.md) · [project-spec](../../context-layer/specs/project-spec.md) · [context-hydration](../../bridges/context-to-execution.md)
+**关联文件**: [ADR-001](../../decision-layer/adr/ADR-001-initial-architecture-framework.md) · [project-spec](../../context-layer/specs/project-spec.md) · [context-hydration](../../bridges/context-hydration.md)

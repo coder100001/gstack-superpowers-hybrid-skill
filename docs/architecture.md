@@ -95,9 +95,9 @@ v4.0 解决了以下关键问题：
 | 层 | 路径 | 职责 | 核心文件 |
 |:---|:-----|:-----|:---------|
 | **Decision Layer** | `decision-layer/` | 需求发散 → 多角色审议 → ADR 决策 | [architecture-review](../decision-layer/reviews/architecture-review.md) |
-| **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 → 边界隔离 | [project-spec](../context-layer/specs/project-spec.md) · [hydration](../context-layer/hydration/hydration.md) |
+| **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 → 边界隔离 | [project-spec](../context-layer/specs/project-spec.md) · [context-hydration](../bridges/context-hydration.md) |
 | **Execution Layer** | `execution-layer/` | 受约束 TDD → 自审 → QA → 交付 | [implementation](../execution-layer/implementation.md) |
-| **Bridges** | `bridges/` | Decision→Context 转化 + Context→Execution 注水 + Execution→Decision 回退 | [decision-to-context](../bridges/decision-to-context.md) · [context-to-execution](../bridges/context-to-execution.md) · [execution-to-decision](../bridges/execution-to-decision.md) |
+| **Bridges** | `bridges/` | Decision→Context 转化 + Context→Execution 注水 + Execution→Decision 回退 | [decision-to-context](../bridges/decision-to-context.md) · [context-hydration](../bridges/context-hydration.md) |
 | **Governance** | `governance/` | 状态机 Gate 校验 + 决策冻结 + CI 强制闸 | [machine.json](../governance/machine.json) · [gates.json](../governance/gates.json) · [transition.sh](../governance/transition.sh) |
 
 ### Decision Layer (决策层)
@@ -686,7 +686,7 @@ specs/plans/PLAN-XXX.md (TASK_DECOMPOSITION)
 |:-----|:-----|
 | [decision-layer/reviews/](../decision-layer/reviews/) | 多角色审议协议 |
 | [context-layer/specs/](../context-layer/specs/) | 上下文约束契约 |
-| [context-layer/hydration/](../context-layer/hydration/) | 注水规范 |
+| [bridges/context-hydration.md](../bridges/context-hydration.md) | 注水规范 |
 | [execution-layer/](../execution-layer/) | 执行规则 |
 | [bridges/](../bridges/) | 层间桥接协议 |
 | [governance/](../governance/) | 治理规则 |

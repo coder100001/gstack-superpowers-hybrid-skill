@@ -129,4 +129,4 @@ Architecture Deliberation [2026-05-16] - User Auth Module
 
 ---
 
-**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-to-execution.md) · [decision-freeze](../governance/decision-freeze.md)
+**关联文件**: [architecture-review](../decision-layer/reviews/architecture-review.md) · [context-hydration](../bridges/context-hydration.md) · [decision-freeze](../governance/decision-freeze.md)
