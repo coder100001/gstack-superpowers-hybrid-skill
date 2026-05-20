@@ -307,6 +307,7 @@ copy_files() {
         "hooks"
         "agents"
         "overrides"
+        "schema"
         ".sync-filter.json"
         "CLAUDE.md"
         "project-config.yml"

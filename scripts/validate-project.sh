@@ -37,22 +37,35 @@ check_version_consistency() {
   echo "=== [1/6] 版本一致性检查 ==="
   local e=0
 
-  if grep -q "v4\\.0" "$PROJECT_ROOT/README.md"; then
-    echo "  [OK] README.md contains v4.0"
-  else
-    echo "  [FAIL] README.md missing v4.0"; e=$((e + 1))
+  # 从 project-config.yml 动态读取版本号
+  CONFIG_VERSION=""
+  if [[ -f "$PROJECT_ROOT/project-config.yml" ]]; then
+    CONFIG_VERSION=$(grep -E "^version:" "$PROJECT_ROOT/project-config.yml" 2>/dev/null | head -1 | sed 's/^version:[[:space:]]*//' | tr -d '"' | tr -d "'")
   fi
 
-  if grep -q "version:.*4\\.1\\.0" "$PROJECT_ROOT/project-config.yml"; then
-    echo "  [OK] project-config.yml version is 4.1.0"
-  else
-    echo "  [FAIL] project-config.yml missing 4.1.0"; e=$((e + 1))
-  fi
+  if [[ -n "$CONFIG_VERSION" ]]; then
+    # 主版本号（v4.1 格式）
+    CONFIG_VERSION_SHORT="v${CONFIG_VERSION%.*}"
 
-  if grep -q "v4\\.0" "$PROJECT_ROOT/docs/architecture.md"; then
-    echo "  [OK] docs/architecture.md contains v4.0"
+    if grep -q "$CONFIG_VERSION_SHORT" "$PROJECT_ROOT/README.md"; then
+      echo "  [OK] README.md contains $CONFIG_VERSION_SHORT"
+    else
+      echo "  [FAIL] README.md missing $CONFIG_VERSION_SHORT"; e=$((e + 1))
+    fi
+
+    if grep -q "version:.*${CONFIG_VERSION}" "$PROJECT_ROOT/project-config.yml"; then
+      echo "  [OK] project-config.yml version is $CONFIG_VERSION"
+    else
+      echo "  [FAIL] project-config.yml missing $CONFIG_VERSION"; e=$((e + 1))
+    fi
+
+    if grep -q "$CONFIG_VERSION_SHORT" "$PROJECT_ROOT/docs/architecture.md"; then
+      echo "  [OK] docs/architecture.md contains $CONFIG_VERSION_SHORT"
+    else
+      echo "  [FAIL] docs/architecture.md missing $CONFIG_VERSION_SHORT"; e=$((e + 1))
+    fi
   else
-    echo "  [FAIL] docs/architecture.md missing v4.0"; e=$((e + 1))
+    echo "  [FAIL] Cannot read version from project-config.yml"; e=$((e + 1))
   fi
 
   [[ $e -eq 0 ]] && echo "  => version consistent" || echo "  => $e failure(s)"

@@ -199,14 +199,21 @@ RETRO:          复盘记录
 | DISCOVERY → | REQUIREMENT_LOCK | IDEA | ✅ | ✅ |
 | REQUIREMENT_LOCK → | ARCH_REVIEW | DISCOVERY | ✅ | ✅ |
 | ARCH_REVIEW → | TASK_DECOMPOSITION | REQUIREMENT_LOCK | ✅ | ✅ |
-| TASK_DECOMPOSITION → | CONTEXT_HYDRATION | ARCH_REVIEW | ✅ | ✅ |
-| CONTEXT_HYDRATION → | IMPLEMENTATION | TASK_DECOMPOSITION | ✅ | ✅ |
+| TASK_DECOMPOSITION → | PLAN_CONFIRM | ARCH_REVIEW | ✅ | ✅ |
+| PLAN_CONFIRM → | CONTEXT_HYDRATION | TASK_DECOMPOSITION | ✅ | ✅ |
+| CONTEXT_HYDRATION → | IMPLEMENTATION | PLAN_CONFIRM | ✅ | ✅ |
 | IMPLEMENTATION → | SELF_REVIEW | IMPLEMENTATION | ✅ | ✅ |
 | SELF_REVIEW → | QA | SELF_REVIEW | ✅ | ✅ |
 | QA → | SHIP_REVIEW | QA | ✅ | ✅ |
 | SHIP_REVIEW → | RETRO | SHIP_REVIEW | ✅ | ✅ |
 | 任意 → | ABORTED | 总是 | ✅ | ✅ |
 | 任意 → | IDEA | 决策冻结回滚 | 变更流程 | 变更流程 |
+| IMPLEMENTATION → | ARCH_REVIEW | 变更请求 | 变更流程 | 变更流程 |
+| IMPLEMENTATION → | TASK_DECOMPOSITION | 范围变更 | 变更流程 | 变更流程 |
+| SELF_REVIEW → | IMPLEMENTATION | 审查失败 | ✅ | ✅ |
+| QA → | SELF_REVIEW | QA 未通过 | ✅ | ✅ |
+| QA → | IMPLEMENTATION | QA 严重失败 | 变更流程 | 变更流程 |
+| SHIP_REVIEW → | QA | 发布检查未通过 | ✅ | ✅ |
 
 > **命名约定**: 状态机代码中使用 `CONTEXT_HYDRATION`，文档中可写作 `Context Hydration`，两者等价。
 
@@ -399,7 +406,8 @@ shell: "bash/zsh"                           # Shell 类型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
-| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水；**v4.1** 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载 |
+| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水 |
+| **v4.1** | **2026-05-16** | 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载；新增 PLAN_CONFIRM 状态和回滚转换路径 |
 
 ---
 

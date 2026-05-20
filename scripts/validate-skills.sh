@@ -36,13 +36,13 @@ echo "  Checked $total SKILL.md files"
 echo "=== [2/4] Checking skill.schema.json format ==="
 if command -v python3 &>/dev/null; then
   python3 -c "
-import json
-with open('$SCHEMA_FILE') as f:
+import json, sys
+with open(sys.argv[1]) as f:
     data = json.load(f)
 assert data.get('\$schema'), 'Missing \$schema'
 assert 'name' in data.get('properties', {}), 'Missing name property'
 print('  schema format OK')
-" || { log_error "schema JSON format error"; errors=$((errors + 1)); }
+" "$SCHEMA_FILE" || { log_error "schema JSON format error"; errors=$((errors + 1)); }
 else
   echo "  (skipped, needs python3)"
 fi
@@ -58,6 +58,9 @@ while IFS= read -r line; do
   if [[ "$skill_raw" = gstack:* ]]; then
     skill_name="${skill_raw#gstack:}"
     skill_dir="gstack/${skill_name}"
+  elif [[ "$skill_raw" = gs-hybrid* ]]; then
+    skill_name="${skill_raw}"
+    skill_dir="hybrid/${skill_raw}"
   else
     skill_name="${skill_raw}"
     skill_dir="superpowers/${skill_name}"
@@ -75,12 +78,12 @@ echo "  Route references check done"
 echo "=== [4/4] Checking routes vs sync-filter consistency ==="
 if [[ -f "$FILTER_FILE" ]]; then
   filter_json=$(python3 -c "
-import json
-with open('$FILTER_FILE') as f:
+import json, sys
+with open(sys.argv[1]) as f:
     data = json.load(f)
 for s in data.get('gstack', {}).get('routed_skills', []):
     print(s)
-" 2>/dev/null || echo "")
+" "$FILTER_FILE" 2>/dev/null || echo "")
 
   route_gstack=$(grep -E '^\s+- name:.*gstack:' "$ROUTES_FILE" | sed 's/.*name:[[:space:]]*//; s/gstack://; s/"//g')
 

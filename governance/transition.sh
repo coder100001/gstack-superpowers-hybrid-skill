@@ -172,7 +172,8 @@ if [[ -n "$gate_name" ]]; then
         decision-freeze)
           echo "  1. 如果需要修改冻结项，请先回退到 Decision Layer"
           echo "  2. 运行: transition.sh IMPLEMENTATION ARCH_REVIEW --reason change_request"
-          echo "  3. 或创建新的 ADR 记录变更决策"
+          echo "  3. 或运行: transition.sh IMPLEMENTATION TASK_DECOMPOSITION --reason scope_change"
+          echo "  4. 或创建新的 ADR 记录变更决策"
           ;;
         test-presence)
           echo "  1. 确保测试文件存在"

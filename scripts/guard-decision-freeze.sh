@@ -39,7 +39,7 @@ if [[ -z "$changed" ]]; then
 fi
 
 adr_count=$(echo "$changed" | grep -cE "^decision-layer/adr/|^context-layer/specs/" 2>/dev/null || echo 0)
-impl_count=$(echo "$changed" | grep -cE "^skills/hybrid/|^skills/superpowers/|^scripts/" 2>/dev/null || echo 0)
+impl_count=$(echo "$changed" | grep -cE "^skills/hybrid/|^skills/superpowers/|^skills/gstack/|^skills/custom/|^scripts/" 2>/dev/null || echo 0)
 
 if [[ $adr_count -gt 0 && $impl_count -gt 0 ]]; then
   echo "❌ 决策冻结违规：同时变更了冻结区和执行区"
@@ -48,7 +48,7 @@ if [[ $adr_count -gt 0 && $impl_count -gt 0 ]]; then
   echo "$changed" | grep -E "^decision-layer/adr/|^context-layer/specs/" | sed 's/^/  /'
   echo ""
   echo "执行区文件 ($impl_count):"
-  echo "$changed" | grep -E "^skills/hybrid/|^skills/superpowers/|^scripts/" | sed 's/^/  /'
+  echo "$changed" | grep -E "^skills/hybrid/|^skills/superpowers/|^skills/gstack/|^skills/custom/|^scripts/" | sed 's/^/  /'
   echo ""
   echo "修复方案：将冻结变更拆到独立 PR，或用变更流程退回 Decision Layer"
   exit 1

@@ -11,7 +11,28 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HYDRATION_STATE="$PROJECT_ROOT/artifacts/hydration-state.md"
 
-required=("project-spec" "architecture-spec" "api-spec" "test-spec" "constraints-spec" "domain-boundaries")
+# P0 必需文件（所有级别必须存在）
+p0_required=("project-spec" "architecture-spec")
+# P1/P2 文件（L2+ 任务必须存在，L1 可选）
+p1_required=("api-spec" "test-spec" "constraints-spec" "domain-boundaries")
+
+# 读取复杂度级别
+STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
+complexity=""
+if [[ -f "$STATE_FILE" ]]; then
+  complexity=$(grep -iE "^(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  if [[ -z "$complexity" ]]; then
+    complexity=$(grep -iE "^- *(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  fi
+fi
+
+# 根据复杂度级别确定必需文件列表
+if [[ "$complexity" == "l1" ]]; then
+  required=("${p0_required[@]}")
+else
+  required=("${p0_required[@]}" "${p1_required[@]}")
+fi
+
 missing=()
 
 for asset in "${required[@]}"; do
@@ -26,15 +47,20 @@ if [[ ${#missing[@]} -gt 0 ]]; then
   printf '  - %s\n' "${missing[@]}"
   echo ""
   echo "修复步骤:"
-  echo "  1. 确保以下文件存在:"
+  echo "  1. 确保以下 P0 文件存在（所有级别必需）:"
   echo "     - context-layer/specs/project-spec.md"
   echo "     - context-layer/specs/architecture-spec.md"
-  echo "     - context-layer/specs/api-spec.md"
-  echo "     - context-layer/specs/test-spec.md"
-  echo "     - context-layer/specs/constraints-spec.md"
-  echo "     - context-layer/specs/domain-boundaries.md"
-  echo "  2. 如果是新项目，运行 /brainstorm 生成初始 spec"
-  echo "  3. 检查 context-layer/hydration/hydration.md 了解注水流程"
+  if [[ "$complexity" != "l1" ]]; then
+    echo "  2. 确保以下 P1/P2 文件存在（L2+ 必需）:"
+    echo "     - context-layer/specs/api-spec.md"
+    echo "     - context-layer/specs/test-spec.md"
+    echo "     - context-layer/specs/constraints-spec.md"
+    echo "     - context-layer/specs/domain-boundaries.md"
+  else
+    echo "  2. L1 任务仅需 P0 文件，P1/P2 文件可选"
+  fi
+  echo "  3. 如果是新项目，运行 /brainstorm 生成初始 spec"
+  echo "  4. 检查 context-layer/hydration/hydration.md 了解注水流程"
   exit 1
 fi
 

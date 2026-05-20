@@ -11,10 +11,14 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ADR_DIR="$PROJECT_ROOT/decision-layer/adr"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 
-# 读取复杂度级别（精确匹配行首格式）
+# 读取复杂度级别（兼容 YAML 键值格式和列表格式）
 complexity=""
 if [[ -f "$STATE_FILE" ]]; then
-  complexity=$(grep -i "^- *complexity:\|^- *level:\|^- *级别:" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  complexity=$(grep -iE "^(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  # 如果未匹配到键值格式，尝试列表格式
+  if [[ -z "$complexity" ]]; then
+    complexity=$(grep -iE "^- *(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  fi
 fi
 
 # L1 任务自动通过

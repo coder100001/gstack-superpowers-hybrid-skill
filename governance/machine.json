@@ -6,6 +6,7 @@
     "REQUIREMENT_LOCK": { "entry_gate": "requirement-lock" },
     "ARCH_REVIEW": { "entry_gate": "arch-review-lock" },
     "TASK_DECOMPOSITION": { "entry_gate": "task-decomposition-lock" },
+    "PLAN_CONFIRM": { "entry_gate": null },
     "CONTEXT_HYDRATION": { "entry_gate": "context-hydration" },
     "IMPLEMENTATION": { "entry_gate": "decision-freeze" },
     "SELF_REVIEW": { "entry_gate": "test-presence" },
@@ -19,13 +20,20 @@
     { "from": "DISCOVERY", "to": "REQUIREMENT_LOCK" },
     { "from": "REQUIREMENT_LOCK", "to": "ARCH_REVIEW" },
     { "from": "ARCH_REVIEW", "to": "TASK_DECOMPOSITION" },
-    { "from": "TASK_DECOMPOSITION", "to": "CONTEXT_HYDRATION" },
+    { "from": "TASK_DECOMPOSITION", "to": "PLAN_CONFIRM" },
+    { "from": "PLAN_CONFIRM", "to": "CONTEXT_HYDRATION" },
     { "from": "CONTEXT_HYDRATION", "to": "IMPLEMENTATION" },
     { "from": "IMPLEMENTATION", "to": "SELF_REVIEW" },
     { "from": "SELF_REVIEW", "to": "QA" },
     { "from": "QA", "to": "SHIP_REVIEW" },
     { "from": "SHIP_REVIEW", "to": "RETRO" },
     { "from": "*", "to": "ABORTED" },
-    { "from": "*", "to": "IDEA", "reason": "decision_freeze_rollback" }
+    { "from": "*", "to": "IDEA", "reason": "decision_freeze_rollback" },
+    { "from": "IMPLEMENTATION", "to": "ARCH_REVIEW", "reason": "change_request" },
+    { "from": "IMPLEMENTATION", "to": "TASK_DECOMPOSITION", "reason": "scope_change" },
+    { "from": "SELF_REVIEW", "to": "IMPLEMENTATION", "reason": "review_failed" },
+    { "from": "QA", "to": "SELF_REVIEW", "reason": "qa_failed" },
+    { "from": "QA", "to": "IMPLEMENTATION", "reason": "qa_critical_failure" },
+    { "from": "SHIP_REVIEW", "to": "QA", "reason": "ship_review_failed" }
   ]
 }

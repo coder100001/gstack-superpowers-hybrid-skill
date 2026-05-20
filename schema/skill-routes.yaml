@@ -62,6 +62,13 @@ routes:
         trigger: "implementation complete"
         purpose: "decide merge/PR/cleanup strategy"
 
+  # ==== Hybrid Skills ====
+  hybrid:
+    ENTRY:
+      - name: "gs-hybrid-v3"
+        trigger: "all tasks"
+        purpose: "main entry point for AI Engineering Governance System"
+
   # ==== GStack Skills ====
   gstack:
     ARCH_REVIEW:
