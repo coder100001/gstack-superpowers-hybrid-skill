@@ -1,136 +1,162 @@
 # Skills Route Table
 # Machine-readable routing map: maps stage -> skill name -> trigger condition
-# Validated by scripts/validate-skills.sh against actual SKILL.md on disk
+# This is the SINGLE SOURCE OF TRUTH for skill routing.
+# SKILL.md routing tables are readable summaries only — do not maintain separately.
+# Validated by scripts/check-skill-routes.sh
+
+version: "4.1"
+updated: "2026-05-25"
+canonical_source: "schema/skill-routes.yaml"
 
 routes:
 
-  # ==== Superpowers Skills ====
+  # ==== Superpowers Skills (状态机映射) ====
   superpowers:
     DISCOVERY:
       - name: brainstorming
-        trigger: "creative tasks, new features"
-        purpose: "needs exploration, progressive questioning, spec generation"
-      - name: "using-superpowers"
+        trigger: "L2+ tasks"
+        purpose: "需求澄清、渐进式提问、方案探索、spec 文件"
+      - name: using-superpowers
         trigger: "session start"
         purpose: "establish skill invocation pattern"
-
-    TASK_DECOMPOSITION:
-      - name: "writing-plans"
-        trigger: "all tasks"
-        purpose: "structured Plan (Spec -> Task decomposition)"
-
-    IMPLEMENTATION:
-      - name: "test-driven-development"
-        trigger: "all tasks"
-        purpose: "TDD before implementation code"
-      - name: "dispatching-parallel-agents"
-        trigger: "2+ independent subtasks"
-        purpose: "parallel agent dispatch"
-      - name: "executing-plans"
-        trigger: "plan available"
-        purpose: "execute written plan in separate session"
-      - name: "subagent-driven-development"
-        trigger: "plan with independent tasks"
-        purpose: "subagent execution within session"
-      - name: "using-git-worktrees"
-        trigger: "new feature needing isolation"
-        purpose: "create isolated worktree"
-
-    SELF_REVIEW:
-      - name: "requesting-code-review"
-        trigger: "L2+ tasks, before merge"
-        purpose: "verify work meets requirements"
-      - name: "receiving-code-review"
-        trigger: "review feedback received"
-        purpose: "technical rigor before implementing suggestions"
+        auto_trigger: true
 
     ARCH_REVIEW:
-      - name: "writing-skills"
-        trigger: "creating/editing SKILL.md files"
-        purpose: "skill authoring with verification"
+      - name: design
+        trigger: "L2+ tasks"
+        purpose: "Design Doc 编写 (方案对比/设计决策存档)"
 
-    EXCEPTION:
-      - name: "systematic-debugging"
-        trigger: "bugs, test failures, unexpected behavior"
-        purpose: "root cause analysis before fixing"
+    TASK_DECOMPOSITION:
+      - name: writing-plans
+        trigger: "all tasks"
+        purpose: "结构化 Plan (Spec→Task分解/5类模板/依赖图)"
+
+    PLAN_CONFIRM:
+      - name: plan-verification
+        trigger: "all tasks"
+        purpose: "Plan 验证确认 (范围/拆解/风险/验收硬阻断)"
+
+    IMPLEMENTATION:
+      - name: test-driven-development
+        trigger: "all tasks"
+        purpose: "TDD 编码"
+      - name: dispatching-parallel-agents
+        trigger: "2+ independent subtasks"
+        purpose: "parallel agent dispatch"
+        manual: true
+      - name: executing-plans
+        trigger: "plan available"
+        purpose: "execute written plan in separate session"
+        manual: true
+      - name: subagent-driven-development
+        trigger: "plan with independent tasks"
+        purpose: "subagent execution within session"
+        manual: true
+      - name: using-git-worktrees
+        trigger: "new feature needing isolation"
+        purpose: "create isolated worktree"
+        manual: true
+
+    SELF_REVIEW:
+      - name: requesting-code-review
+        trigger: "L2+ tasks"
+        purpose: "代码规范审查"
+      - name: receiving-code-review
+        trigger: "review feedback received"
+        purpose: "technical rigor before implementing suggestions"
+        manual: true
 
     SHIP_REVIEW:
-      - name: "verification-before-completion"
+      - name: verification-before-completion
         trigger: "all tasks"
-        purpose: "verify before claiming done"
-      - name: "finishing-a-development-branch"
+        purpose: "验证交付"
+      - name: finishing-a-development-branch
         trigger: "implementation complete"
         purpose: "decide merge/PR/cleanup strategy"
+        manual: true
+
+    EXCEPTION:
+      - name: systematic-debugging
+        trigger: "bugs, test failures, unexpected behavior"
+        purpose: "root cause analysis before fixing"
+        manual: true
 
   # ==== Hybrid Skills ====
   hybrid:
     ENTRY:
-      - name: "gs-hybrid-v3"
+      - name: gs-hybrid-v3
         trigger: "all tasks"
         purpose: "main entry point for AI Engineering Governance System"
+        manual: true
 
-  # ==== GStack Skills ====
+  # ==== GStack Skills (激活条件) ====
   gstack:
     ARCH_REVIEW:
-      - name: "gstack:design-review"
+      - name: gstack:design-review
         trigger: "frontend UI/UX changes"
-        purpose: "visual consistency audit"
-      - name: "gstack:plan-eng-review"
+        purpose: "前端视觉审查"
+      - name: gstack:plan-eng-review
         trigger: "L2+ tasks"
-        purpose: "engineering feasibility review"
-      - name: "gstack:plan-devex-review"
+        purpose: "工程可行性审查"
+      - name: gstack:plan-devex-review
         trigger: "L2+ tasks"
-        purpose: "developer experience review"
+        purpose: "开发者体验审查"
 
     QA:
-      - name: "gstack:qa"
+      - name: gstack:qa
         trigger: "L3 tasks"
-        purpose: "QA testing, functional verification"
-      - name: "gstack:cso"
+        purpose: "QA 测试、功能验证"
+      - name: gstack:cso
         trigger: "security-sensitive code"
-        purpose: "security audit"
-      - name: "gstack:benchmark"
+        purpose: "安全扫描"
+      - name: gstack:benchmark
         trigger: "L3 + performance-sensitive tasks"
-        purpose: "performance baseline testing"
+        purpose: "性能基准测试"
 
     SELF_REVIEW:
-      - name: "gstack:codex"
+      - name: gstack:codex
         trigger: "L3 tasks"
-        purpose: "cross-model code review"
-
-    SAFETY:
-      - name: "gstack:careful"
-        trigger: "destructive commands, prod access"
-        purpose: "warn before rm -rf, DROP TABLE, force-push"
-      - name: "gstack:freeze"
-        trigger: "debugging sessions"
-        purpose: "restrict edits to specific directory"
-      - name: "gstack:guard"
-        trigger: "maximum safety needed"
-        purpose: "careful + freeze combined"
+        purpose: "跨模型审查"
 
     SHIP_REVIEW:
-      - name: "gstack:ship"
+      - name: gstack:ship
         trigger: "ready to deploy"
-        purpose: "release checklist, PR creation"
-
-    DISCOVERY:
-      - name: "gstack:context-restore"
-        trigger: "session resume"
-        purpose: "restore previous working context"
-      - name: "gstack:context-save"
-        trigger: "session pause"
-        purpose: "save working context for later"
-      - name: "gstack:learn"
-        trigger: "repeated patterns, past fixes"
-        purpose: "manage project learnings across sessions"
+        purpose: "发布检查清单"
 
     RETRO:
-      - name: "gstack:retro"
-        trigger: "L3 tasks, weekly"
-        purpose: "engineering retrospective"
+      - name: gstack:retro
+        trigger: "L3 tasks"
+        purpose: "工程复盘"
 
     EXCEPTION:
-      - name: "gstack:investigate"
+      - name: gstack:investigate
         trigger: "debugging, root cause analysis"
-        purpose: "systematic debugging with RCA"
+        purpose: "根因调试"
+
+    SAFETY:
+      - name: gstack:careful
+        trigger: "destructive commands, prod access"
+        purpose: "warn before rm -rf, DROP TABLE, force-push"
+        manual: true
+      - name: gstack:freeze
+        trigger: "debugging sessions"
+        purpose: "restrict edits to specific directory"
+        manual: true
+      - name: gstack:guard
+        trigger: "maximum safety needed"
+        purpose: "careful + freeze combined"
+        manual: true
+
+    DISCOVERY:
+      - name: gstack:context-restore
+        trigger: "session resume"
+        purpose: "restore previous working context"
+        manual: true
+      - name: gstack:context-save
+        trigger: "session pause"
+        purpose: "save working context for later"
+        manual: true
+      - name: gstack:learn
+        trigger: "repeated patterns, past fixes"
+        purpose: "manage project learnings across sessions"
+        manual: true

@@ -1,14 +1,15 @@
 
 # 快速开始指南
 
-&gt; 本指南帮助您在 5 分钟内开始使用 AI Engineering Governance System v4.0。
+> 本指南帮助您在 5 分钟内开始使用 AI Engineering Governance System v4.1。
 
 ## 目录
 
 1. [安装](#安装)
 2. [配置](#配置)
 3. [使用](#使用)
-4. [常见问题](#常见问题)
+4. [治理脚本](#治理脚本)
+5. [常见问题](#常见问题)
 
 ---
 
@@ -19,38 +20,45 @@
 - macOS / Linux / Windows (WSL)
 - Git
 - Bash / Zsh
+- Python 3 (可选，用于 YAML→JSON 转换)
 
 ### 安装步骤
 
 #### 1. 克隆项目
 
 ```bash
-git clone &lt;repo-url&gt;
-cd gstack--superpowers--hybrid-skill
+git clone <repo-url>
+cd gstack-superpowers-hybrid-skill
 ```
 
 #### 2. 添加执行权限
 
 ```bash
-chmod +x scripts/*.sh
+chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 ```
 
-#### 3. 同步上游技能
+#### 3. 安装到本地
 
 ```bash
-# 同步所有上游更新
-./scripts/sync-upstream.sh
-
-# 验证安装
-ls skills/superpowers/  # 应该看到 14 个技能
-ls skills/gstack/       # 应该看到 16 个技能
-ls skills/hybrid/       # 应该看到 gs-hybrid-v3
+./scripts/install.sh install --force
 ```
 
-#### 4. 验证工具脚本
+安装目录: `~/.trae-cn/superpowers/`
+
+#### 4. 验证安装
 
 ```bash
-ls gstack-skills/bin/ | wc -l  # 应该显示 53+
+# 验证状态机
+./scripts/validate-state-machine.sh
+# 输出: SM:0 (0错误, 0警告)
+
+# 验证技能路由
+./scripts/check-skill-routes.sh
+# 输出: ROUTE:0 (0错误)
+
+# 验证 YAML→JSON 同步
+./scripts/yaml2json.sh --check
+# 输出: YAML2JSON:0 错误
 ```
 
 ---
@@ -133,25 +141,27 @@ Execution Layer (执行层)
   └─ 自审 + QA 验证
 ```
 
-### 完整开发流程
+### 状态机流程 (13 状态)
 
-```bash
-# 启动完整流程
-hybrid 帮我开发用户认证功能
+```
+IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION 
+    → PLAN_CONFIRM → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW 
+    → QA → SHIP_REVIEW → RETRO
+                                       
+(任意状态) → ABORTED (异常终止)
 ```
 
-AI 将执行：
-1. **IDEA**: 评估任务复杂度 (L1/L2/L3)
-2. **DISCOVERY**: 需求澄清（brainstorming）
-3. **REQUIREMENT_LOCK**: 需求锁定（🔴 强制确认）
-4. **ARCH_REVIEW**: 多角色架构审议（L2+）
-5. **TASK_DECOMPOSITION**: 任务拆分
-6. **Context Hydration**: 上下文契约注入
-7. **IMPLEMENTATION**: TDD 编码实现
-8. **SELF_REVIEW**: 自审（对照契约）
-9. **QA**: 质量验证（L3 强制，调用 gstack:qa）
-10. **SHIP_REVIEW**: 交付审查
-11. **RETRO**: 复盘记录（L3 强制）
+### Gate 检查点 (7 个)
+
+| Gate | 状态 | 检查内容 |
+|------|------|---------|
+| G001 requirement-lock | REQUIREMENT_LOCK | 用户确认需求 |
+| G002 arch-review-lock | ARCH_REVIEW | L2+ 有 ADR |
+| G003 task-decomposition-lock | TASK_DECOMPOSITION | plan 存在且无占位符 |
+| G004 plan-confirm | PLAN_CONFIRM | 用户确认执行计划 |
+| G005 context-hydration | CONTEXT_HYDRATION | Spec 文件存在 |
+| G006 decision-freeze | IMPLEMENTATION | 冻结项未修改 |
+| G007 test-presence | SELF_REVIEW | 测试文件存在 |
 
 ### 复杂度分级响应
 
@@ -174,88 +184,56 @@ AI 将执行：
 | `/debug` | 调试助手 | 问题诊断与修复 |
 | `/refactor` | 重构建议 | 代码改进与优化 |
 
-### 使用示例
+---
 
-#### 示例 1: 规划新功能
+## 治理脚本
 
-```
-用户: /plan 开发用户认证模块
+### 状态机校验
 
-AI: 收到。启动规划流程...
-
-IDEA: 评估复杂度...
-→ 评估结果: L2 (中等任务)
-
-DISCOVERY: 需求澄清（brainstorming）...
-→ 产出：初版需求文档
-
-REQUIREMENT_LOCK: 需求锁定确认...
-→ 展示需求范围
-→ 等待用户确认...
-
-用户: 确认需求范围
-
-ARCH_REVIEW: 多角色架构审议...
-→ 产品视角：业务价值评估
-→ 架构视角：模块划分
-→ 性能视角：吞吐量预估
-→ 安全视角：信任边界
-→ 运维视角：部署方案
-→ 产出：架构设计文档 + ADR
-
-TASK_DECOMPOSITION: 任务拆分...
-→ 产出：tasks.md
-
-上下文注水：加载契约...
-
-执行层开始...
+```bash
+./scripts/validate-state-machine.sh
 ```
 
-#### 示例 2: 代码审查
+检查项：
+1. 状态唯一性 (13 状态)
+2. 转换引用合法性 (19 转换)
+3. 必需状态存在
+4. 状态可达性
+5. YAML/JSON 一致性
 
-```
-用户: /review 请审查这段代码
+### Gate 检查
 
-AI: 收到。启动代码审查...
-
-上下文注水：加载契约...
-
-代码审查...
-→ 对照架构规范
-→ 检查领域边界
-→ 验证约束遵循
-→ 检查测试覆盖
-
-审查完成！
-→ 生成审查报告
+```bash
+./governance/check-gates.sh --to REQUIREMENT_LOCK --level L3
 ```
 
-#### 示例 3: 调试问题
+参数：
+- `--from`: 起始状态
+- `--to`: 目标状态
+- `--level`: 复杂度级别 (L1/L2/L3)
 
+### 技能路由健康检查
+
+```bash
+./scripts/check-skill-routes.sh
 ```
-用户: /debug 这个 API 返回 500 错误
 
-AI: 收到。启动调试助手...
+检查项：
+- 技能目录扫描 (33 技能)
+- SKILL.md 路由引用提取 (37 引用)
+- 一致性检查
 
-问题理解...
-→ 分析错误现象
+### YAML→JSON 同步
 
-信息收集...
-→ 查看日志
-→ 检查配置
+```bash
+# 检查一致性
+./scripts/yaml2json.sh --check
 
-根因分析...
-→ 定位问题原因
-
-方案制定...
-→ 提出修复方案
-
-修复验证...
-→ 应用修复
-→ 验证解决
-
-调试完成！
+# 自动生成
+./scripts/yaml2json.sh
 ```
+
+确保 `governance/machine.json` 和 `governance/gates.json` 始终与 YAML 真相源同步。
 
 ---
 
@@ -270,14 +248,7 @@ cat .upstream-versions.json
 ### Q2: 如何更新上游技能？
 
 ```bash
-# 同步所有
 ./scripts/sync-upstream.sh
-
-# 仅同步 superpowers
-./scripts/sync-upstream.sh --superpowers
-
-# 仅同步 gstack
-./scripts/sync-upstream.sh --gstack
 ```
 
 ### Q3: 如何自定义技能？
@@ -290,11 +261,14 @@ skills/custom/
     └── SKILL.md
 ```
 
-### Q4: 同步出现问题如何回滚？
+### Q4: 安装出现问题如何回滚？
 
 ```bash
-# 回滚到上一个备份
-./scripts/sync-upstream.sh --rollback
+# 查看备份
+ls ~/.trae-cn/superpowers-backups/
+
+# 恢复备份
+cp -r ~/.trae-cn/superpowers-backups/backup_YYYYMMDD_HHMMSS/* ~/.trae-cn/superpowers/
 ```
 
 ### Q5: 如何扩展 gs-hybrid-v3？
@@ -336,7 +310,17 @@ GStack 技能不是默认加载，而是满足条件时显式调用：
 - 性能敏感任务 → 调用 `gstack:benchmark`
 - 发布/部署 → 调用 `gstack:ship`
 
-详细路由请参考 [SKILL.md - 技能路由表](../skills/hybrid/gs-hybrid-v3/SKILL.md)。
+详细路由请参考 [skill-routes.yaml](../schema/skill-routes.yaml)。
+
+### Q9: 真相源文件有哪些？
+
+| 文件 | 用途 |
+|------|------|
+| `governance/state-machine.yaml` | 状态机定义 |
+| `governance/gates.yaml` | Gate 定义 |
+| `schema/skill-routes.yaml` | 技能路由 |
+
+JSON 文件 (`machine.json`, `gates.json`) 是运行时格式，由 `yaml2json.sh` 自动生成，不应手动编辑。
 
 ---
 
@@ -344,10 +328,9 @@ GStack 技能不是默认加载，而是满足条件时显式调用：
 
 | 文档 | 内容 | 路径 |
 |:-----|:-----|:-----|
-| **主入口** | gs-hybrid-v3 v4.0 完整流程 | [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) |
+| **主入口** | gs-hybrid-v3 v4.1 完整流程 | [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) |
 | **架构设计** | 三层架构详细设计 | [architecture.md](./architecture.md) |
-| **技能参考** | 所有技能列表（自动生成） | [skills-reference.md](./skills-reference.md) |
+| **技能参考** | 所有技能列表 | [skills-reference.md](./skills-reference.md) |
 | **维护更新** | 同步策略 | [MAINTENANCE.md](../MAINTENANCE.md) |
 
 > **文档维护规则**: 本文档为索引层，所有详细内容指向 SKILL.md。禁止在本文档中重复定义与 SKILL.md 冲突的内容。
-

@@ -154,32 +154,31 @@ if [[ -n "$gate_name" ]]; then
       echo ""
       echo "✗ 跃迁被阻断: $FROM → $TO (gate: $gate_name)"
       echo ""
+      # 从 gates.json 动态读取修复步骤
       echo "修复步骤:"
-      case "$gate_name" in
-        requirement-lock)
-          echo "  1. 运行 /brainstorm 生成需求文档"
-          echo "  2. 确认需求后运行 /plan"
-          echo "  3. 或手动创建 spec 文件: context-layer/specs/YYYY-MM-DD-*-spec.md"
-          echo "     并添加 ## Approval 章节记录用户确认"
-          ;;
-        context-hydration)
-          echo "  1. 确保以下文件存在:"
-          echo "     - context-layer/specs/project-spec.md"
-          echo "     - context-layer/specs/architecture-spec.md"
-          echo "     - context-layer/specs/constraints-spec.md"
-          echo "  2. 检查 ADR 目录: decision-layer/adr/"
-          ;;
-        decision-freeze)
-          echo "  1. 如果需要修改冻结项，请先回退到 Decision Layer"
-          echo "  2. 运行: transition.sh IMPLEMENTATION ARCH_REVIEW --reason change_request"
-          echo "  3. 或运行: transition.sh IMPLEMENTATION TASK_DECOMPOSITION --reason scope_change"
-          echo "  4. 或创建新的 ADR 记录变更决策"
-          ;;
-        test-presence)
-          echo "  1. 确保测试文件存在"
-          echo "  2. 检查 project-config.yml 中的 test_command 配置"
-          ;;
-      esac
+      remediation_found=false
+      if [[ -f "$GATES_FILE" ]]; then
+        gate_count=$(json_get "$GATES_FILE" '.gates | length')
+        gate_count=${gate_count:-0}
+        for ((i=0; i<gate_count; i++)); do
+          gname=$(json_get "$GATES_FILE" ".gates[$i].name")
+          if [[ "$gname" == "$gate_name" ]]; then
+            rem_count=$(json_get "$GATES_FILE" ".gates[$i].remediation | length")
+            rem_count=${rem_count:-0}
+            for ((j=0; j<rem_count; j++)); do
+              step=$(json_get "$GATES_FILE" ".gates[$i].remediation[$j]")
+              if [[ -n "$step" ]]; then
+                echo "  $step"
+                remediation_found=true
+              fi
+            done
+            break
+          fi
+        done
+      fi
+      if ! $remediation_found; then
+        echo "  （无自动修复步骤，请检查 gates.yaml 中的 remediation 定义）"
+      fi
       exit 1
     fi
     echo "  ✓ Gate 通过: $gate_name"

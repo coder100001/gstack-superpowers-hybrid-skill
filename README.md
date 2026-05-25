@@ -50,9 +50,9 @@
 
 ```bash
 git clone <repo-url>
-cd gstack--superpowers--hybrid-skill
+cd gstack-superpowers-hybrid-skill
 chmod +x scripts/*.sh
-./scripts/sync-upstream.sh
+./scripts/install.sh install --force
 ```
 
 ### 使用
@@ -78,7 +78,7 @@ hybrid 帮我开发用户认证功能
 /
 ├── decision-layer/              ← 决策层
 │   ├── adr/                     ← 架构决策记录
-│   │   ├── ADR-001-*.md         (8个ADR)
+│   │   ├── ADR-001-*.md         (9个ADR)
 │   │   └── README.md
 │   └── reviews/                 ← 多角色审议协议
 │       ├── architecture-review.md  架构审议
@@ -97,11 +97,11 @@ hybrid 帮我开发用户认证功能
 │   │   └── coding-standards/    ← 编码标准
 │   │       ├── index.md
 │   │       ├── common.md
-│   └── coding-standards/         编码规范
-│       ├── go.md
-│       ├── typescript.md
-│       ├── ai-red-lines.md
-│       └── extension-guide.md
+│   │       ├── go.md
+│   │       ├── typescript.md
+│   │       ├── ai-red-lines.md
+│   │       └── extension-guide.md
+│   └── hydration/               ← 上下文注水协议
 │
 ├── execution-layer/             ← 执行层
 │   ├── implementation.md        受约束执行规则
@@ -113,15 +113,18 @@ hybrid 帮我开发用户认证功能
 │   ├── decision-to-context.md   决策→上下文转化
 │   └── context-hydration.md     上下文→执行注水
 │
-├── governance/                  ← 治理规则
-│   ├── decision-freeze.md       决策冻结协议
-│   ├── machine.json             状态机定义(12状态)
-│   ├── gates.json               Gate规则定义(6个)
-│   ├── transition.sh            跃迁入口脚本
+├── governance/                  ← 治理规则（可执行化）
+│   ├── state-machine.yaml       ← 状态机真相源 (13状态)
+│   ├── machine.json             ← 运行时格式 (自动生成)
+│   ├── gates.yaml               ← Gate定义真相源 (7个Gate)
+│   ├── gates.json               ← 运行时格式 (自动生成)
+│   ├── check-gates.sh           ← Gate检查入口
+│   ├── transition.sh            ← 状态跃迁入口
 │   ├── gates/                   ← Gate脚本
 │   │   ├── requirement-lock.sh
 │   │   ├── arch-review-lock.sh
 │   │   ├── task-decomposition-lock.sh
+│   │   ├── plan-confirm.sh
 │   │   ├── context-hydration.sh
 │   │   ├── decision-freeze.sh
 │   │   └── test-presence.sh
@@ -133,8 +136,17 @@ hybrid 帮我开发用户认证功能
 │   ├── hybrid/
 │   │   └── gs-hybrid-v3/
 │   │       ├── SKILL.md         ← 主入口
-│   │       └── modules/         (9个模块)
+│   │       └── modules/         (7个模块)
 │   └── custom/
+│
+├── schema/                      ← Schema定义
+│   └── skill-routes.yaml        ← 技能路由真相源
+│
+├── scripts/                     ← 维护脚本
+│   ├── install.sh               安装脚本
+│   ├── validate-state-machine.sh 状态机校验
+│   ├── check-skill-routes.sh    路由健康检查
+│   └── yaml2json.sh             YAML→JSON自动生成
 │
 ├── gstack-skills/bin/           (工具脚本)
 ├── docs/
@@ -146,11 +158,48 @@ hybrid 帮我开发用户认证功能
 │   └── skills-reference.md
 │
 ├── specs/plans/                 ← 计划文档
-├── scripts/                     ← 维护脚本
+├── artifacts/                   ← 产出物
+│   ├── workflow-state.md        工作流状态
+│   └── retro/                   复盘记录
 └── README.md                    ← 本文件
 ```
 
 > **详细架构**: 完整的三层架构设计请参考 [architecture.md](docs/architecture.md)。
+
+---
+
+## 治理脚本
+
+### 状态机校验
+
+```bash
+./scripts/validate-state-machine.sh
+# 输出: SM:0 (0错误, 0警告)
+```
+
+### Gate 检查
+
+```bash
+./governance/check-gates.sh --to REQUIREMENT_LOCK --level L3
+# 输出: GATE:0 (通过) 或 GATE:1 (阻断)
+```
+
+### 技能路由健康检查
+
+```bash
+./scripts/check-skill-routes.sh
+# 输出: ROUTE:0 (0错误)
+```
+
+### YAML→JSON 同步
+
+```bash
+# 检查一致性
+./scripts/yaml2json.sh --check
+
+# 自动生成
+./scripts/yaml2json.sh
+```
 
 ---
 

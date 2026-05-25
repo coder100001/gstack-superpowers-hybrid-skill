@@ -1,39 +1,308 @@
 {
   "version": "4.1",
+  "updated": "2026-05-25",
+  "adr_ref": "ADR-009",
+  "metadata": {
+    "description": "State machine for AI Engineering Governance System.\nDefines all valid states, transitions, and entry gates.\n",
+    "canonical_source": "governance/state-machine.yaml",
+    "backup_source": "governance/machine.json",
+    "generated_at": "2026-05-25T13:53:32Z",
+    "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/state-machine.yaml"
+  },
   "states": {
-    "IDEA": { "entry_gate": null },
-    "DISCOVERY": { "entry_gate": null },
-    "REQUIREMENT_LOCK": { "entry_gate": "requirement-lock" },
-    "ARCH_REVIEW": { "entry_gate": "arch-review-lock" },
-    "TASK_DECOMPOSITION": { "entry_gate": "task-decomposition-lock" },
-    "PLAN_CONFIRM": { "entry_gate": "plan-confirm" },
-    "CONTEXT_HYDRATION": { "entry_gate": "context-hydration" },
-    "IMPLEMENTATION": { "entry_gate": "decision-freeze" },
-    "SELF_REVIEW": { "entry_gate": "test-presence" },
-    "QA": { "entry_gate": null },
-    "SHIP_REVIEW": { "entry_gate": null },
-    "RETRO": { "entry_gate": null },
-    "ABORTED": { "entry_gate": null }
+    "IDEA": {
+      "description": "Initial state - task received but not yet processed",
+      "layer": "decision",
+      "entry_gate": null,
+      "required": true
+    },
+    "DISCOVERY": {
+      "description": "Requirements clarification and context gathering",
+      "layer": "decision",
+      "entry_gate": null,
+      "required": true
+    },
+    "REQUIREMENT_LOCK": {
+      "description": "Requirements confirmed by user",
+      "layer": "decision",
+      "entry_gate": "requirement-lock",
+      "required": true,
+      "hard_gate": true
+    },
+    "ARCH_REVIEW": {
+      "description": "Multi-dimensional architecture review",
+      "layer": "decision",
+      "entry_gate": "arch-review-lock",
+      "required": true,
+      "l2_plus_required": true
+    },
+    "TASK_DECOMPOSITION": {
+      "description": "Task breakdown and planning",
+      "layer": "decision",
+      "entry_gate": "task-decomposition-lock",
+      "required": true,
+      "hard_gate": true
+    },
+    "PLAN_CONFIRM": {
+      "description": "Execution plan confirmed by user",
+      "layer": "decision",
+      "entry_gate": "plan-confirm",
+      "required": true,
+      "hard_gate": true
+    },
+    "CONTEXT_HYDRATION": {
+      "description": "Load all context contracts before execution",
+      "layer": "bridge",
+      "entry_gate": "context-hydration",
+      "required": true,
+      "hard_gate": true
+    },
+    "IMPLEMENTATION": {
+      "description": "Execute implementation with decision freeze",
+      "layer": "execution",
+      "entry_gate": "decision-freeze",
+      "required": true,
+      "frozen_state": true
+    },
+    "SELF_REVIEW": {
+      "description": "Self-review against contracts",
+      "layer": "execution",
+      "entry_gate": "test-presence",
+      "required": true
+    },
+    "QA": {
+      "description": "Quality assurance verification",
+      "layer": "execution",
+      "entry_gate": null,
+      "required": true
+    },
+    "SHIP_REVIEW": {
+      "description": "Release readiness check",
+      "layer": "execution",
+      "entry_gate": null,
+      "required": true
+    },
+    "RETRO": {
+      "description": "Retrospective and lessons learned",
+      "layer": "execution",
+      "entry_gate": null,
+      "required": true
+    },
+    "ABORTED": {
+      "description": "Task aborted due to error or user cancellation",
+      "layer": "terminal",
+      "entry_gate": null,
+      "required": true
+    }
   },
   "transitions": [
-    { "from": "IDEA", "to": "DISCOVERY" },
-    { "from": "DISCOVERY", "to": "REQUIREMENT_LOCK" },
-    { "from": "REQUIREMENT_LOCK", "to": "ARCH_REVIEW" },
-    { "from": "ARCH_REVIEW", "to": "TASK_DECOMPOSITION" },
-    { "from": "TASK_DECOMPOSITION", "to": "PLAN_CONFIRM" },
-    { "from": "PLAN_CONFIRM", "to": "CONTEXT_HYDRATION" },
-    { "from": "CONTEXT_HYDRATION", "to": "IMPLEMENTATION" },
-    { "from": "IMPLEMENTATION", "to": "SELF_REVIEW" },
-    { "from": "SELF_REVIEW", "to": "QA" },
-    { "from": "QA", "to": "SHIP_REVIEW" },
-    { "from": "SHIP_REVIEW", "to": "RETRO" },
-    { "from": "*", "to": "ABORTED" },
-    { "from": "*", "to": "IDEA", "reason": "decision_freeze_rollback" },
-    { "from": "IMPLEMENTATION", "to": "ARCH_REVIEW", "reason": "change_request" },
-    { "from": "IMPLEMENTATION", "to": "TASK_DECOMPOSITION", "reason": "scope_change" },
-    { "from": "SELF_REVIEW", "to": "IMPLEMENTATION", "reason": "review_failed" },
-    { "from": "QA", "to": "SELF_REVIEW", "reason": "qa_failed" },
-    { "from": "QA", "to": "IMPLEMENTATION", "reason": "qa_critical_failure" },
-    { "from": "SHIP_REVIEW", "to": "QA", "reason": "ship_review_failed" }
-  ]
+    {
+      "from": "IDEA",
+      "to": "DISCOVERY",
+      "precondition": "Task content provided",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "DISCOVERY",
+      "to": "REQUIREMENT_LOCK",
+      "precondition": "Requirements clarified",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "REQUIREMENT_LOCK",
+      "to": "ARCH_REVIEW",
+      "precondition": "User confirmed requirements",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "change_flow_required": false
+    },
+    {
+      "from": "ARCH_REVIEW",
+      "to": "TASK_DECOMPOSITION",
+      "precondition": "Architecture review passed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "TASK_DECOMPOSITION",
+      "to": "PLAN_CONFIRM",
+      "precondition": "Tasks decomposed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "PLAN_CONFIRM",
+      "to": "CONTEXT_HYDRATION",
+      "precondition": "User confirmed plan",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "CONTEXT_HYDRATION",
+      "to": "IMPLEMENTATION",
+      "precondition": "All contracts loaded",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "IMPLEMENTATION",
+      "to": "SELF_REVIEW",
+      "precondition": "Implementation complete",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "SELF_REVIEW",
+      "to": "QA",
+      "precondition": "Self-review passed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "QA",
+      "to": "SHIP_REVIEW",
+      "precondition": "QA passed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "SHIP_REVIEW",
+      "to": "RETRO",
+      "precondition": "Ship review passed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "IMPLEMENTATION",
+      "to": "ARCH_REVIEW",
+      "reason": "change_request",
+      "precondition": "Architecture change required",
+      "complexity_scope": [
+        "L2",
+        "L3"
+      ],
+      "change_flow_required": true
+    },
+    {
+      "from": "IMPLEMENTATION",
+      "to": "TASK_DECOMPOSITION",
+      "reason": "scope_change",
+      "precondition": "Scope change required",
+      "complexity_scope": [
+        "L2",
+        "L3"
+      ],
+      "change_flow_required": true
+    },
+    {
+      "from": "SELF_REVIEW",
+      "to": "IMPLEMENTATION",
+      "reason": "review_failed",
+      "precondition": "Self-review failed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "QA",
+      "to": "SELF_REVIEW",
+      "reason": "qa_failed",
+      "precondition": "QA failed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "QA",
+      "to": "IMPLEMENTATION",
+      "reason": "qa_critical_failure",
+      "precondition": "Critical QA failure",
+      "complexity_scope": [
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "SHIP_REVIEW",
+      "to": "QA",
+      "reason": "ship_review_failed",
+      "precondition": "Ship review failed",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "*",
+      "to": "ABORTED",
+      "reason": "error_or_cancel",
+      "precondition": "Any state can abort",
+      "complexity_scope": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    {
+      "from": "*",
+      "to": "IDEA",
+      "reason": "decision_freeze_rollback",
+      "precondition": "Major rollback required",
+      "complexity_scope": [
+        "L2",
+        "L3"
+      ]
+    }
+  ],
+  "validation_rules": {
+    "state_uniqueness": true,
+    "transition_validity": true,
+    "required_states": [
+      "IDEA",
+      "IMPLEMENTATION",
+      "ABORTED"
+    ],
+    "reachability": "All states except IDEA must be reachable",
+    "no_cycles": "No infinite loops in main flow"
+  }
 }

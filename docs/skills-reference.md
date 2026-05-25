@@ -18,7 +18,7 @@
 
 **路径**: `skills/superpowers/`
 
-**数量**: 14个
+**数量**: 16个
 
 **定位**: 工程纪律与结构化拆解
 
@@ -28,20 +28,22 @@
 
 | 技能 | 描述 | 触发方式 |
 |------|------|---------|
-| [brainstorming](../skills/superpowers/brainstorming/SKILL.md) | You MUST use this before any creative work - creating features, building compone... | 自动/手动 |
-| [dispatching-parallel-agents](../skills/superpowers/dispatching-parallel-agents/SKILL.md) | Use when facing 2+ independent tasks that can be worked on without shared state ... | 自动/手动 |
-| [executing-plans](../skills/superpowers/executing-plans/SKILL.md) | Use when you have a written implementation plan to execute in a separate session... | 自动/手动 |
-| [finishing-a-development-branch](../skills/superpowers/finishing-a-development-branch/SKILL.md) | Use when implementation is complete, all tests pass, and you need to decide how ... | 自动/手动 |
-| [receiving-code-review](../skills/superpowers/receiving-code-review/SKILL.md) | Use when receiving code review feedback, before implementing suggestions, especi... | 自动/手动 |
-| [requesting-code-review](../skills/superpowers/requesting-code-review/SKILL.md) | Use when completing tasks, implementing major features, or before merging to ver... | 自动/手动 |
-| [subagent-driven-development](../skills/superpowers/subagent-driven-development/SKILL.md) | Use when executing implementation plans with independent tasks in the current se... | 自动/手动 |
-| [systematic-debugging](../skills/superpowers/systematic-debugging/SKILL.md) | Use when encountering any bug, test failure, or unexpected behavior, before prop... | 自动/手动 |
-| [test-driven-development](../skills/superpowers/test-driven-development/SKILL.md) | Use when implementing any feature or bugfix, before writing implementation code... | 自动/手动 |
-| [using-git-worktrees](../skills/superpowers/using-git-worktrees/SKILL.md) | Use when starting feature work that needs isolation from current workspace or be... | 自动/手动 |
-| [using-superpowers](../skills/superpowers/using-superpowers/SKILL.md) | Use when starting any conversation - establishes how to find and use skills, req... | 自动/手动 |
-| [verification-before-completion](../skills/superpowers/verification-before-completion/SKILL.md) | Use when about to claim work is complete, fixed, or passing, before committing o... | 自动/手动 |
-| [writing-plans](../skills/superpowers/writing-plans/SKILL.md) | Use when you have a spec or requirements for a multi-step task, before touching ... | 自动/手动 |
-| [writing-skills](../skills/superpowers/writing-skills/SKILL.md) | Use when creating new skills, editing existing skills, or verifying skills work ... | 自动/手动 |
+| [brainstorming](../skills/superpowers/brainstorming/SKILL.md) | You MUST use this before any creative work - creating features, building compone... | 自动 |
+| [design](../skills/superpowers/design/SKILL.md) | Design Doc 编写 - 方案对比/设计决策存档 | 自动 |
+| [dispatching-parallel-agents](../skills/superpowers/dispatching-parallel-agents/SKILL.md) | Use when facing 2+ independent tasks that can be worked on without shared state ... | 手动 |
+| [executing-plans](../skills/superpowers/executing-plans/SKILL.md) | Use when you have a written implementation plan to execute in a separate session... | 手动 |
+| [finishing-a-development-branch](../skills/superpowers/finishing-a-development-branch/SKILL.md) | Use when implementation is complete, all tests pass, and you need to decide how ... | 手动 |
+| [plan-verification](../skills/superpowers/plan-verification/SKILL.md) | Plan 验证确认 - 范围/拆解/风险/验收硬阻断 | 自动 |
+| [receiving-code-review](../skills/superpowers/receiving-code-review/SKILL.md) | Use when receiving code review feedback, before implementing suggestions, especi... | 手动 |
+| [requesting-code-review](../skills/superpowers/requesting-code-review/SKILL.md) | Use when completing tasks, implementing major features, or before merging to ver... | 自动 |
+| [subagent-driven-development](../skills/superpowers/subagent-driven-development/SKILL.md) | Use when executing implementation plans with independent tasks in the current se... | 手动 |
+| [systematic-debugging](../skills/superpowers/systematic-debugging/SKILL.md) | Use when encountering any bug, test failure, or unexpected behavior, before prop... | 手动 |
+| [test-driven-development](../skills/superpowers/test-driven-development/SKILL.md) | Use when implementing any feature or bugfix, before writing implementation code... | 自动 |
+| [using-git-worktrees](../skills/superpowers/using-git-worktrees/SKILL.md) | Use when starting feature work that needs isolation from current workspace or be... | 手动 |
+| [using-superpowers](../skills/superpowers/using-superpowers/SKILL.md) | Use when starting any conversation - establishes how to find and use skills, req... | 自动 |
+| [verification-before-completion](../skills/superpowers/verification-before-completion/SKILL.md) | Use when about to claim work is complete, fixed, or passing, before committing o... | 自动 |
+| [writing-plans](../skills/superpowers/writing-plans/SKILL.md) | Use when you have a spec or requirements for a multi-step task, before touching ... | 自动 |
+| [writing-skills](../skills/superpowers/writing-skills/SKILL.md) | Use when creating new skills, editing existing skills, or verifying skills work ... | 手动 |
 
 ---
 
@@ -59,22 +61,22 @@
 
 | 技能 | 描述 | 触发方式 |
 |------|------|---------|
-| [benchmark](../skills/gstack/benchmark/SKILL.md) | Performance regression detection using the browse daemon. Establishes   baseline... | 手动 |
+| [benchmark](../skills/gstack/benchmark/SKILL.md) | Performance regression detection using the browse daemon. Establishes   baseline... | 条件 |
 | [careful](../skills/gstack/careful/SKILL.md) | Safety guardrails for destructive commands. Warns before rm -rf, DROP TABLE,   f... | 手动 |
-| [codex](../skills/gstack/codex/SKILL.md) | OpenAI Codex CLI wrapper — three modes. Code review: independent diff review v... | 手动 |
+| [codex](../skills/gstack/codex/SKILL.md) | OpenAI Codex CLI wrapper — three modes. Code review: independent diff review v... | 条件 |
 | [context-restore](../skills/gstack/context-restore/SKILL.md) | Restore working context saved earlier by /context-save. Loads the most recent   ... | 手动 |
 | [context-save](../skills/gstack/context-save/SKILL.md) | Save working context. Captures git state, decisions made, and remaining work   s... | 手动 |
-| [cso](../skills/gstack/cso/SKILL.md) | Chief Security Officer mode. Infrastructure-first security audit: secrets archae... | 手动 |
-| [design-review](../skills/gstack/design-review/SKILL.md) | Designer's eye QA: finds visual inconsistency, spacing issues, hierarchy problem... | 手动 |
+| [cso](../skills/gstack/cso/SKILL.md) | Chief Security Officer mode. Infrastructure-first security audit: secrets archae... | 条件 |
+| [design-review](../skills/gstack/design-review/SKILL.md) | Designer's eye QA: finds visual inconsistency, spacing issues, hierarchy problem... | 条件 |
 | [freeze](../skills/gstack/freeze/SKILL.md) | Restrict file edits to a specific directory for the session. Blocks Edit and   W... | 手动 |
 | [guard](../skills/gstack/guard/SKILL.md) | Full safety mode: destructive command warnings + directory-scoped edits.   Combi... | 手动 |
-| [investigate](../skills/gstack/investigate/SKILL.md) | Systematic debugging with root cause investigation. Four phases: investigate,   ... | 手动 |
+| [investigate](../skills/gstack/investigate/SKILL.md) | Systematic debugging with root cause investigation. Four phases: investigate,   ... | 条件 |
 | [learn](../skills/gstack/learn/SKILL.md) | Manage project learnings. Review, search, prune, and export what gstack   has le... | 手动 |
-| [plan-devex-review](../skills/gstack/plan-devex-review/SKILL.md) | Interactive developer experience plan review. Explores developer personas,   ben... | 手动 |
-| [plan-eng-review](../skills/gstack/plan-eng-review/SKILL.md) | Eng manager-mode plan review. Lock in the execution plan — architecture,   dat... | 手动 |
-| [qa](../skills/gstack/qa/SKILL.md) | Systematically QA test a web application and fix bugs found. Runs QA testing,   ... | 手动 |
-| [retro](../skills/gstack/retro/SKILL.md) | Weekly engineering retrospective. Analyzes commit history, work patterns,   and ... | 手动 |
-| [ship](../skills/gstack/ship/SKILL.md) | Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION,... | 手动 |
+| [plan-devex-review](../skills/gstack/plan-devex-review/SKILL.md) | Interactive developer experience plan review. Explores developer personas,   ben... | 条件 |
+| [plan-eng-review](../skills/gstack/plan-eng-review/SKILL.md) | Eng manager-mode plan review. Lock in the execution plan — architecture,   dat... | 条件 |
+| [qa](../skills/gstack/qa/SKILL.md) | Systematically QA test a web application and fix bugs found. Runs QA testing,   ... | 条件 |
+| [retro](../skills/gstack/retro/SKILL.md) | Weekly engineering retrospective. Analyzes commit history, work patterns,   and ... | 条件 |
+| [ship](../skills/gstack/ship/SKILL.md) | Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION,... | 条件 |
 
 ---
 
@@ -91,13 +93,13 @@
 #### 核心特性
 
 - **三层架构**: Decision / Context / Execution 三层分离
-- **模块化设计**: 9个模块按需加载
-- **复杂度分级**: L0/L1/L2/L3 四级流程
+- **模块化设计**: 7个模块按需加载
+- **复杂度分级**: L1/L2/L3 三级流程
 - **强制确认机制**: REQUIREMENT_LOCK 和 TASK_DECOMPOSITION 强制用户确认
 - **多角色审议**: 产品/架构/性能/安全/运维 5个维度审查
 - **决策冻结机制**: 执行层不允许更改架构和需求
 - **Context Hydration**: 执行前强制注入上下文契约
-- **Governance 层**: 状态机 + Gate 脚本 + CI Guard
+- **Governance 层**: 状态机 (13状态) + Gate 脚本 (7个) + CI Guard
 
 #### 模块列表
 
@@ -113,14 +115,27 @@
 | 06-workflows.md | 专用流程指令 | 指令触发 |
 | 07-handling.md | 异常处理和状态回滚 | 异常发生时 |
 
-#### 状态机流程
+#### 状态机流程 (13 状态)
 
 ```
 IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
-    → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW → QA
-    → SHIP_REVIEW → RETRO
-    (任意状态 → ABORTED | 任意状态 → IDEA [决策冻结回滚])
+    → PLAN_CONFIRM → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW
+    → QA → SHIP_REVIEW → RETRO
+                                       
+(任意状态) → ABORTED (异常终止)
 ```
+
+#### Gate 检查点 (7 个)
+
+| Gate | 状态 | 检查内容 |
+|------|------|---------|
+| G001 requirement-lock | REQUIREMENT_LOCK | 用户确认需求 |
+| G002 arch-review-lock | ARCH_REVIEW | L2+ 有 ADR |
+| G003 task-decomposition-lock | TASK_DECOMPOSITION | plan 存在且无占位符 |
+| G004 plan-confirm | PLAN_CONFIRM | 用户确认执行计划 |
+| G005 context-hydration | CONTEXT_HYDRATION | Spec 文件存在 |
+| G006 decision-freeze | IMPLEMENTATION | 冻结项未修改 |
+| G007 test-presence | SELF_REVIEW | 测试文件存在 |
 
 #### 专用指令
 
@@ -160,19 +175,29 @@ skills/custom/
 |------|-------------|--------|--------|
 | **定位** | 工程纪律 | 多角色审议 | AI工程治理 |
 | **架构** | 单一流程 | 工具集 | Decision/Context/Execution三层 |
-| **数量** | 14个 | 16个 | 1个（融合两者） |
+| **数量** | 16个 | 16个 | 1个（融合两者） |
 | **重点** | 流程规范 | 决策审议 | 治理流程 |
-| **触发** | 自动+手动 | 手动 | 自动+手动 |
+| **触发** | 自动+手动 | 条件+手动 | 自动+条件+手动 |
 | **维护** | 上游同步 | 上游同步 | 手动维护 |
 
 ### 三层职责分配
 
 | 层 | 职责 | 激活的 Skills |
 |------|------|:-------------|
-| **Decision Layer** | 想清楚做什么 | `brainstorming`, `writing-plans`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
+| **Decision Layer** | 想清楚做什么 | `brainstorming`, `design`, `writing-plans`, `plan-verification`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
 | **Context Layer** | 固化共识、防遗忘 | `context-save`, `context-restore`, `learn` |
-| **Execution Layer** | 严格按契约做 | `test-driven-development`, `requesting-code-review`, `gstack:qa`, `gstack:cso` |
-| **Governance** | 决策冻结、状态机控制 | `gstack:ship`, `gstack:retro`, `freeze`, `guard`, `careful` |
+| **Execution Layer** | 严格按契约做 | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `gstack:qa`, `gstack:cso`, `gstack:benchmark`, `gstack:codex` |
+| **Governance** | 决策冻结、状态机控制 | `gstack:ship`, `gstack:retro`, `gstack:investigate`, `freeze`, `guard`, `careful` |
+
+---
+
+## 真相源文件
+
+| 文件 | 用途 |
+|------|------|
+| `governance/state-machine.yaml` | 状态机定义 (13 状态) |
+| `governance/gates.yaml` | Gate 定义 (7 个) |
+| `schema/skill-routes.yaml` | 技能路由表 |
 
 ---
 
@@ -188,6 +213,6 @@ skills/custom/
 
 ---
 
-> **生成时间**: 2026-05-19 10:05:17 UTC
+> **生成时间**: 2026-05-25 22:30:00 UTC
 > 
 > **生成命令**: `bash scripts/generate-skills-reference.sh`

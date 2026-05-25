@@ -99,16 +99,21 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 > **真相源**: Gate 定义的机器可读定义见 [`governance/gates.yaml`](../../../governance/gates.yaml)。本节仅为可读摘要，禁止在多处重复维护。校验脚本: `governance/check-gates.sh`
 
 <HARD-GATE>
-1. **REQUIREMENT_LOCK 需求确认** [gate: requirement-lock]: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
-2. **ARCH_REVIEW 架构审议** [gate: arch-review-lock]: L2+ 任务必须有 ADR 记录且包含决策状态，L1 自动豁免
-3. **TASK_DECOMPOSITION 任务确认** [gate: task-decomposition-lock]: plan 文件存在且不含占位符，用户已确认（L1 可通过对话确认，不强制产出独立 plan 文件；L2/L3 必须产出 plan 文件）
-4. **Context Hydration 上下文注水** [gate: context-hydration]: 所有 P0 Spec 文件必须存在
-5. **决策冻结** [gate: decision-freeze]: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
-6. **测试存在** [gate: test-presence]: 变更必须包含对应测试文件，否则不能进入 SELF_REVIEW
-7. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
-8. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
-9. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
+1. **REQUIREMENT_LOCK 需求确认** [gate: G001 requirement-lock]: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
+2. **ARCH_REVIEW 架构审议** [gate: G002 arch-review-lock]: L2+ 任务必须有 ADR 记录且包含决策状态，L1 自动豁免
+3. **TASK_DECOMPOSITION 任务确认** [gate: G003 task-decomposition-lock]: plan 文件存在且不含占位符（L1 可通过对话确认，不强制产出独立 plan 文件；L2/L3 必须产出 plan 文件）
+4. **PLAN_CONFIRM Plan 确认** [gate: G004 plan-confirm]: plan 必须包含确认标记且用户已明确批准，否则不能进入 CONTEXT_HYDRATION
+5. **Context Hydration 上下文注水** [gate: G005 context-hydration]: 所有 P0 Spec 文件必须存在
+6. **决策冻结** [gate: G006 decision-freeze]: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
+7. **测试存在** [gate: G007 test-presence]: 变更必须包含对应测试文件，否则不能进入 SELF_REVIEW
 </HARD-GATE>
+
+<BEHAVIOR-CONSTRAINTS>
+以下为 AI Agent 行为约束，非机器可执行 Gate（无独立校验脚本），由 Agent 自律执行：
+- **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
+- **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
+- **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
+</BEHAVIOR-CONSTRAINTS>
 
 ---
 
@@ -149,34 +154,50 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 
 ## Skill 路由表（按需加载）
 
+> **真相源**: 路由表的机器可读定义见 `schema/skill-routes.yaml`。本节仅为可读摘要，禁止在多处重复维护。
+
 ### Superpowers Skills 路由（状态机映射）
 
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **DISCOVERY** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
-| **ARCH_REVIEW** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) |
-| **TASK_DECOMPOSITION** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
-| **PLAN_CONFIRM** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
-| **SELF_REVIEW** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
-| **IMPLEMENTATION** | `test-driven-development` | 所有任务 | TDD 编码 |
-| **SHIP_REVIEW** | `verification-before-completion` | 所有任务 | 验证交付 |
+| 状态 | Skill | 触发条件 | 用途 | 类型 |
+|------|-------|---------|------|------|
+| **DISCOVERY** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索 | 自动 |
+| **DISCOVERY** | `using-superpowers` | 会话启动 | 建立技能调用模式 | 自动 |
+| **ARCH_REVIEW** | `design` | L2+ 任务 | Design Doc 编写 (方案对比/设计决策存档) | 自动 |
+| **TASK_DECOMPOSITION** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) | 自动 |
+| **PLAN_CONFIRM** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) | 自动 |
+| **IMPLEMENTATION** | `test-driven-development` | 所有任务 | TDD 编码 | 自动 |
+| **IMPLEMENTATION** | `dispatching-parallel-agents` | 2+ 独立子任务 | 并行 Agent 分发 | 手动 |
+| **IMPLEMENTATION** | `executing-plans` | Plan 可用 | 在独立会话中执行 Plan | 手动 |
+| **IMPLEMENTATION** | `subagent-driven-development` | 独立任务 Plan | 会话内子 Agent 执行 | 手动 |
+| **IMPLEMENTATION** | `using-git-worktrees` | 需要隔离的新功能 | 创建隔离 worktree | 手动 |
+| **SELF_REVIEW** | `requesting-code-review` | L2+ 任务 | 代码规范审查 | 自动 |
+| **SELF_REVIEW** | `receiving-code-review` | 收到审查反馈 | 实施审查建议前的技术严谨性 | 手动 |
+| **SHIP_REVIEW** | `verification-before-completion` | 所有任务 | 验证交付 | 自动 |
+| **SHIP_REVIEW** | `finishing-a-development-branch` | 实现完成 | 合并/PR/清理策略 | 手动 |
+| **EXCEPTION** | `systematic-debugging` | Bug/测试失败 | 修复前根因分析 | 手动 |
 
 ### GStack Skills 路由（激活条件）
 
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **ARCH_REVIEW** | `gstack:design-review` | 涉及前端 UI/UX | 前端视觉审查 |
-| **ARCH_REVIEW** | `gstack:plan-eng-review` | L2+ 任务 | 工程可行性审查 |
-| **ARCH_REVIEW** | `gstack:plan-devex-review` | L2+ 任务 | 开发者体验审查 |
-| **QA** | `gstack:qa` | L3 任务 | QA 测试、功能验证 |
-| **QA** | `gstack:cso` | 检测到安全相关代码 | 安全扫描 |
-| **QA** | `gstack:benchmark` | L3 + 性能敏感任务 | 性能基准测试 |
-| **SELF_REVIEW** | `gstack:codex` | L3 任务 | 跨模型审查 |
-| **SHIP_REVIEW** | `gstack:ship` | 需要发布/部署 | 发布检查清单 |
-| **RETRO** | `gstack:retro` | L3 任务 | 工程复盘 |
-| **异常处理** | `gstack:investigate` | 调试/根因分析 | 根因调试 |
+| 状态 | Skill | 触发条件 | 用途 | 类型 |
+|------|-------|---------|------|------|
+| **ARCH_REVIEW** | `gstack:design-review` | 涉及前端 UI/UX | 前端视觉审查 | 条件 |
+| **ARCH_REVIEW** | `gstack:plan-eng-review` | L2+ 任务 | 工程可行性审查 | 条件 |
+| **ARCH_REVIEW** | `gstack:plan-devex-review` | L2+ 任务 | 开发者体验审查 | 条件 |
+| **QA** | `gstack:qa` | L3 任务 | QA 测试、功能验证 | 条件 |
+| **QA** | `gstack:cso` | 安全相关代码 | 安全扫描 | 条件 |
+| **QA** | `gstack:benchmark` | L3 + 性能敏感 | 性能基准测试 | 条件 |
+| **SELF_REVIEW** | `gstack:codex` | L3 任务 | 跨模型审查 | 条件 |
+| **SHIP_REVIEW** | `gstack:ship` | 需要发布/部署 | 发布检查清单 | 条件 |
+| **RETRO** | `gstack:retro` | L3 任务 | 工程复盘 | 条件 |
+| **EXCEPTION** | `gstack:investigate` | 调试/根因分析 | 根因调试 | 条件 |
+| **SAFETY** | `gstack:careful` | 破坏性命令 | 危险操作警告 | 手动 |
+| **SAFETY** | `gstack:freeze` | 调试会话 | 限制编辑范围 | 手动 |
+| **SAFETY** | `gstack:guard` | 最高安全需求 | careful + freeze 组合 | 手动 |
+| **DISCOVERY** | `gstack:context-restore` | 会话恢复 | 恢复上次工作上下文 | 手动 |
+| **DISCOVERY** | `gstack:context-save` | 会话暂停 | 保存工作上下文 | 手动 |
+| **DISCOVERY** | `gstack:learn` | 重复模式 | 跨会话学习管理 | 手动 |
 
-> **激活规则**: GStack 技能不是默认加载，而是在对应状态满足触发条件时显式调用。AI 必须在进入对应状态时检查触发条件，满足则调用，不满足则跳过。
+> **激活规则**: "自动"= 状态机进入时自动触发；"条件"= 满足触发条件时显式调用；"手动"= 需要用户或 Agent 主动调用，不自动触发。
 
 ### 三层架构路由
 
