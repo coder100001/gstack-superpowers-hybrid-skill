@@ -90,9 +90,13 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 
 > **命名约定**: 状态机代码中使用 `CONTEXT_HYDRATION`，文档中可写作 `Context Hydration`，两者等价。
 
+> **真相源**: 状态转换表的机器可读定义见 [`governance/state-machine.yaml`](../../../governance/state-machine.yaml)。本表格仅为可读摘要，禁止在多处重复维护。校验脚本: `scripts/validate-state-machine.sh`
+
 ---
 
 ## 强制阻断规则
+
+> **真相源**: Gate 定义的机器可读定义见 [`governance/gates.yaml`](../../../governance/gates.yaml)。本节仅为可读摘要，禁止在多处重复维护。校验脚本: `governance/check-gates.sh`
 
 <HARD-GATE>
 1. **REQUIREMENT_LOCK 需求确认** [gate: requirement-lock]: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW

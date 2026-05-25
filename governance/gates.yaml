@@ -1,0 +1,164 @@
+# Gates Definition
+# AI Engineering Governance System v4.1
+# This is the SINGLE SOURCE OF TRUTH for gate definitions.
+# Do NOT duplicate this content in SKILL.md or other documents.
+
+version: "4.1"
+updated: "2026-05-25"
+adr_ref: "ADR-009"
+
+metadata:
+  description: |
+    Gate definitions for AI Engineering Governance System.
+    Each gate defines a hard blocking condition that must be satisfied
+    before transitioning to the target state.
+  canonical_source: "governance/gates.yaml"
+  backup_source: "governance/gates.json"
+
+gates:
+  requirement-lock:
+    id: "G001"
+    name: "requirement-lock"
+    description: "用户是否明确确认了需求清单"
+    script: "governance/gates/requirement-lock.sh"
+    applies_to:
+      - REQUIREMENT_LOCK
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "REQUIREMENT_LOCK 未通过：用户未确认需求"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "运行 /brainstorm 生成需求文档"
+      - "确认需求后运行 /plan"
+      - "或手动创建 spec 文件并添加 ## Approval 章节"
+
+  arch-review-lock:
+    id: "G002"
+    name: "arch-review-lock"
+    description: "L2+ 任务是否有 ADR 记录且包含决策状态"
+    script: "governance/gates/arch-review-lock.sh"
+    applies_to:
+      - ARCH_REVIEW
+    severity: "hard"
+    l1_exempt: true
+    fail_message: "ARCH_REVIEW 未通过：缺少 ADR 或 ADR 未包含决策状态"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "创建 ADR 文件: decision-layer/adr/ADR-NNN-title.md"
+      - "确保 ADR 包含 Status、Context、Decision 章节"
+      - "L1 任务可豁免此 Gate"
+
+  task-decomposition-lock:
+    id: "G003"
+    name: "task-decomposition-lock"
+    description: "plan 文件存在且不含 TBD/TODO/PLACEHOLDER，用户已确认"
+    script: "governance/gates/task-decomposition-lock.sh"
+    applies_to:
+      - TASK_DECOMPOSITION
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "TASK_DECOMPOSITION 未通过：plan 缺失、含占位符或未确认"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "运行 /plan 生成执行计划"
+      - "确保 plan 文件无 TBD/TODO/PLACEHOLDER"
+      - "用户确认执行计划"
+
+  plan-confirm:
+    id: "G004"
+    name: "plan-confirm"
+    description: "用户已明确确认执行计划，范围/拆解/风险/验收标准无异议"
+    script: "governance/gates/plan-confirm.sh"
+    applies_to:
+      - PLAN_CONFIRM
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "PLAN_CONFIRM 未通过：用户未确认执行计划"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "向用户展示完整执行计划"
+      - "获取用户明确确认（口头或书面）"
+      - "确认范围、拆解、风险、验收标准"
+
+  context-hydration:
+    id: "G005"
+    name: "context-hydration"
+    description: "所有 P0 Spec 文件是否存在"
+    script: "governance/gates/context-hydration.sh"
+    applies_to:
+      - CONTEXT_HYDRATION
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "CONTEXT_HYDRATION 未通过：缺少上下文契约文件"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "确保 P0 文件存在: project-spec.md, architecture-spec.md"
+      - "L2+ 任务还需: api-spec.md, test-spec.md, constraints-spec.md, domain-boundaries.md"
+      - "检查 bridges/context-hydration.md 了解注水流程"
+
+  decision-freeze:
+    id: "G006"
+    name: "decision-freeze"
+    description: "自上次 ARCH_REVIEW 后 ADR/specs 是否未被修改"
+    script: "governance/gates/decision-freeze.sh"
+    applies_to:
+      - IMPLEMENTATION
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "决策冻结违规：IMPLEMENTATION 期间不得修改 ADR 或 Specs"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "如果需要修改冻结项，请先回退到 Decision Layer"
+      - "运行: transition.sh IMPLEMENTATION ARCH_REVIEW --reason change_request"
+      - "或创建新的 ADR 记录变更决策"
+
+  test-presence:
+    id: "G007"
+    name: "test-presence"
+    description: "本次变更是否包含对应测试文件"
+    script: "governance/gates/test-presence.sh"
+    applies_to:
+      - SELF_REVIEW
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "没有对应测试的代码不能进入 SELF_REVIEW"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "确保测试文件存在"
+      - "检查 project-config.yml 中的 test_command 配置"
+      - "参考 test-spec.md 了解测试要求"
+
+validation_rules:
+  gate_uniqueness: true
+  script_existence: true
+  applies_to_validity: true
+  severity_values: ["hard", "soft", "warning"]
+  required_fields:
+    - id
+    - name
+    - description
+    - script
+    - applies_to
+    - severity
+    - fail_message

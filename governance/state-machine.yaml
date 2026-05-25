@@ -1,0 +1,224 @@
+# State Machine Definition
+# AI Engineering Governance System v4.1
+# This is the SINGLE SOURCE OF TRUTH for state machine definitions.
+# Do NOT duplicate this content in SKILL.md or other documents.
+
+version: "4.1"
+updated: "2026-05-25"
+adr_ref: "ADR-009"
+
+metadata:
+  description: |
+    State machine for AI Engineering Governance System.
+    Defines all valid states, transitions, and entry gates.
+  canonical_source: "governance/state-machine.yaml"
+  backup_source: "governance/machine.json"
+
+states:
+  IDEA:
+    description: "Initial state - task received but not yet processed"
+    layer: "decision"
+    entry_gate: null
+    required: true
+    
+  DISCOVERY:
+    description: "Requirements clarification and context gathering"
+    layer: "decision"
+    entry_gate: null
+    required: true
+    
+  REQUIREMENT_LOCK:
+    description: "Requirements confirmed by user"
+    layer: "decision"
+    entry_gate: "requirement-lock"
+    required: true
+    hard_gate: true
+    
+  ARCH_REVIEW:
+    description: "Multi-dimensional architecture review"
+    layer: "decision"
+    entry_gate: "arch-review-lock"
+    required: true
+    l2_plus_required: true
+    
+  TASK_DECOMPOSITION:
+    description: "Task breakdown and planning"
+    layer: "decision"
+    entry_gate: "task-decomposition-lock"
+    required: true
+    hard_gate: true
+    
+  PLAN_CONFIRM:
+    description: "Execution plan confirmed by user"
+    layer: "decision"
+    entry_gate: "plan-confirm"
+    required: true
+    hard_gate: true
+    
+  CONTEXT_HYDRATION:
+    description: "Load all context contracts before execution"
+    layer: "bridge"
+    entry_gate: "context-hydration"
+    required: true
+    hard_gate: true
+    
+  IMPLEMENTATION:
+    description: "Execute implementation with decision freeze"
+    layer: "execution"
+    entry_gate: "decision-freeze"
+    required: true
+    frozen_state: true
+    
+  SELF_REVIEW:
+    description: "Self-review against contracts"
+    layer: "execution"
+    entry_gate: "test-presence"
+    required: true
+    
+  QA:
+    description: "Quality assurance verification"
+    layer: "execution"
+    entry_gate: null
+    required: true
+    
+  SHIP_REVIEW:
+    description: "Release readiness check"
+    layer: "execution"
+    entry_gate: null
+    required: true
+    
+  RETRO:
+    description: "Retrospective and lessons learned"
+    layer: "execution"
+    entry_gate: null
+    required: true
+    
+  ABORTED:
+    description: "Task aborted due to error or user cancellation"
+    layer: "terminal"
+    entry_gate: null
+    required: true
+
+transitions:
+  # Main flow (Decision Layer)
+  - from: IDEA
+    to: DISCOVERY
+    precondition: "Task content provided"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: DISCOVERY
+    to: REQUIREMENT_LOCK
+    precondition: "Requirements clarified"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: REQUIREMENT_LOCK
+    to: ARCH_REVIEW
+    precondition: "User confirmed requirements"
+    complexity_scope: [L1, L2, L3]
+    change_flow_required: false
+    
+  - from: ARCH_REVIEW
+    to: TASK_DECOMPOSITION
+    precondition: "Architecture review passed"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: TASK_DECOMPOSITION
+    to: PLAN_CONFIRM
+    precondition: "Tasks decomposed"
+    complexity_scope: [L1, L2, L3]
+    
+  # Bridge to Execution Layer
+  - from: PLAN_CONFIRM
+    to: CONTEXT_HYDRATION
+    precondition: "User confirmed plan"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: CONTEXT_HYDRATION
+    to: IMPLEMENTATION
+    precondition: "All contracts loaded"
+    complexity_scope: [L1, L2, L3]
+    
+  # Execution Layer flow
+  - from: IMPLEMENTATION
+    to: SELF_REVIEW
+    precondition: "Implementation complete"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: SELF_REVIEW
+    to: QA
+    precondition: "Self-review passed"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: QA
+    to: SHIP_REVIEW
+    precondition: "QA passed"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: SHIP_REVIEW
+    to: RETRO
+    precondition: "Ship review passed"
+    complexity_scope: [L1, L2, L3]
+
+  # Rollback flows (Execution -> Decision)
+  - from: IMPLEMENTATION
+    to: ARCH_REVIEW
+    reason: "change_request"
+    precondition: "Architecture change required"
+    complexity_scope: [L2, L3]
+    change_flow_required: true
+    
+  - from: IMPLEMENTATION
+    to: TASK_DECOMPOSITION
+    reason: "scope_change"
+    precondition: "Scope change required"
+    complexity_scope: [L2, L3]
+    change_flow_required: true
+
+  # Review failure flows
+  - from: SELF_REVIEW
+    to: IMPLEMENTATION
+    reason: "review_failed"
+    precondition: "Self-review failed"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: QA
+    to: SELF_REVIEW
+    reason: "qa_failed"
+    precondition: "QA failed"
+    complexity_scope: [L1, L2, L3]
+    
+  - from: QA
+    to: IMPLEMENTATION
+    reason: "qa_critical_failure"
+    precondition: "Critical QA failure"
+    complexity_scope: [L2, L3]
+    
+  - from: SHIP_REVIEW
+    to: QA
+    reason: "ship_review_failed"
+    precondition: "Ship review failed"
+    complexity_scope: [L1, L2, L3]
+
+  # Abort flows (wildcard)
+  - from: "*"
+    to: ABORTED
+    reason: "error_or_cancel"
+    precondition: "Any state can abort"
+    complexity_scope: [L1, L2, L3]
+    
+  # Reset flow (wildcard)
+  - from: "*"
+    to: IDEA
+    reason: "decision_freeze_rollback"
+    precondition: "Major rollback required"
+    complexity_scope: [L2, L3]
+
+validation_rules:
+  state_uniqueness: true
+  transition_validity: true
+  required_states:
+    - IDEA
+    - IMPLEMENTATION
+    - ABORTED
+  reachability: "All states except IDEA must be reachable"
+  no_cycles: "No infinite loops in main flow"
