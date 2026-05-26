@@ -94,43 +94,68 @@ routes:
     ARCH_REVIEW:
       - name: gstack:design-review
         trigger: "frontend UI/UX changes"
+        detect:
+          file_patterns: ["**/*.css", "**/*.scss", "**/*.tsx", "**/components/**", "**/styles/**"]
+          keywords: ["UI", "UX", "style", "layout", "component", "design"]
         purpose: "前端视觉审查"
       - name: gstack:plan-eng-review
         trigger: "L2+ tasks"
+        detect:
+          complexity: ["L2", "L3"]
         purpose: "工程可行性审查"
       - name: gstack:plan-devex-review
         trigger: "L2+ tasks"
+        detect:
+          complexity: ["L2", "L3"]
         purpose: "开发者体验审查"
 
     QA:
       - name: gstack:qa
         trigger: "L3 tasks"
+        detect:
+          complexity: ["L3"]
         purpose: "QA 测试、功能验证"
       - name: gstack:cso
         trigger: "security-sensitive code"
+        detect:
+          file_patterns: ["**/auth/**", "**/security/**", "**/login/**", "**/password/**"]
+          keywords: ["password", "token", "secret", "auth", "credential", "API_KEY", "SQL", "DROP", "DELETE"]
         purpose: "安全扫描"
       - name: gstack:benchmark
         trigger: "L3 + performance-sensitive tasks"
+        detect:
+          complexity: ["L3"]
+          file_patterns: ["**/benchmark/**", "**/perf/**"]
+          keywords: ["performance", "latency", "throughput", "benchmark", "optimize"]
         purpose: "性能基准测试"
 
     SELF_REVIEW:
       - name: gstack:codex
         trigger: "L3 tasks"
+        detect:
+          complexity: ["L3"]
         purpose: "跨模型审查"
 
     SHIP_REVIEW:
       - name: gstack:ship
         trigger: "ready to deploy"
+        detect:
+          file_patterns: ["**/VERSION", "**/CHANGELOG*", "**/package.json"]
+          keywords: ["release", "deploy", "ship", "publish"]
         purpose: "发布检查清单"
 
     RETRO:
       - name: gstack:retro
         trigger: "L3 tasks"
+        detect:
+          complexity: ["L3"]
         purpose: "工程复盘"
 
     EXCEPTION:
       - name: gstack:investigate
         trigger: "debugging, root cause analysis"
+        detect:
+          keywords: ["error", "bug", "fail", "exception", "crash", "debug"]
         purpose: "根因调试"
 
     SAFETY:

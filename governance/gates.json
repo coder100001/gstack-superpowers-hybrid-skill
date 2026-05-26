@@ -6,7 +6,7 @@
     "description": "Gate definitions for AI Engineering Governance System.\nEach gate defines a hard blocking condition that must be satisfied\nbefore transitioning to the target state.\n",
     "canonical_source": "governance/gates.yaml",
     "backup_source": "governance/gates.json",
-    "generated_at": "2026-05-26T01:09:50Z",
+    "generated_at": "2026-05-26T08:03:46Z",
     "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/gates.yaml"
   },
   "gates": {
@@ -162,6 +162,29 @@
         "确保测试文件存在",
         "检查 project-config.yml 中的 test_command 配置",
         "参考 test-spec.md 了解测试要求"
+      ]
+    },
+    "acceptance-check": {
+      "id": "G008",
+      "name": "acceptance-check",
+      "description": "验收项与结果证据映射检查",
+      "script": "governance/gates/acceptance-check.sh",
+      "applies_to": [
+        "SHIP_REVIEW"
+      ],
+      "severity": "hard",
+      "l1_exempt": true,
+      "fail_message": "存在未覆盖的验收项，请补充证据或调整验收标准",
+      "exit_codes": {
+        "pass": 0,
+        "block": 1,
+        "infra_error": 2
+      },
+      "remediation": [
+        "检查 plan 中的 acceptance 列表",
+        "确保每项验收标准都有对应测试/文档/截图证据",
+        "在 artifacts/acceptance/ 目录下补充证据文件",
+        "或更新 plan 调整验收标准"
       ]
     }
   },
