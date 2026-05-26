@@ -105,6 +105,12 @@ transitions:
     to: DISCOVERY
     precondition: "Task content provided"
     complexity_scope: [L1, L2, L3]
+
+  # L0 fast path
+  - from: IDEA
+    to: IMPLEMENTATION
+    precondition: "L0 task confirmed (single-file/config change)"
+    complexity_scope: [L0]
     
   - from: DISCOVERY
     to: REQUIREMENT_LOCK
@@ -153,6 +159,11 @@ transitions:
     to: SHIP_REVIEW
     precondition: "QA passed"
     complexity_scope: [L1, L2, L3]
+
+  - from: IMPLEMENTATION
+    to: SHIP_REVIEW
+    precondition: "L0 task implementation complete"
+    complexity_scope: [L0]
     
   - from: SHIP_REVIEW
     to: RETRO
@@ -204,7 +215,7 @@ transitions:
     to: ABORTED
     reason: "error_or_cancel"
     precondition: "Any state can abort"
-    complexity_scope: [L1, L2, L3]
+    complexity_scope: [L0, L1, L2, L3]
     
   # Reset flow (wildcard)
   - from: "*"

@@ -6,7 +6,7 @@
     "description": "Gate definitions for AI Engineering Governance System.\nEach gate defines a hard blocking condition that must be satisfied\nbefore transitioning to the target state.\n",
     "canonical_source": "governance/gates.yaml",
     "backup_source": "governance/gates.json",
-    "generated_at": "2026-05-26T08:03:46Z",
+    "generated_at": "2026-05-26T08:13:35Z",
     "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/gates.yaml"
   },
   "gates": {
@@ -129,6 +129,7 @@
         "IMPLEMENTATION"
       ],
       "severity": "hard",
+      "l0_exempt": true,
       "l1_exempt": false,
       "fail_message": "决策冻结违规：IMPLEMENTATION 期间不得修改 ADR 或 Specs",
       "exit_codes": {
@@ -173,6 +174,7 @@
         "SHIP_REVIEW"
       ],
       "severity": "hard",
+      "l0_exempt": true,
       "l1_exempt": true,
       "fail_message": "存在未覆盖的验收项，请补充证据或调整验收标准",
       "exit_codes": {

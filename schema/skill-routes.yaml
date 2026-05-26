@@ -2,7 +2,8 @@
 # Machine-readable routing map: maps stage -> skill name -> trigger condition
 # This is the SINGLE SOURCE OF TRUTH for skill routing.
 # SKILL.md routing tables are readable summaries only — do not maintain separately.
-# Validated by scripts/check-skill-routes.sh
+# Consumed by scripts/resolve-skill-routes.sh
+# Summary references are checked by scripts/check-skill-routes.sh
 
 version: "4.1"
 updated: "2026-05-25"

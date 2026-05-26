@@ -16,6 +16,7 @@
 - `SKILL.md` 是薄入口，不重复大表
 - `governance/state-machine.yaml` 是状态机真相源
 - `governance/gates.yaml` 是 Gate 真相源
+- `schema/skill-routes.yaml` 是机器路由真相源
 - 文档描述若与 YAML 冲突，以 YAML 为准
 
 ## 快速开始
@@ -35,7 +36,10 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 # Gate 校验（支持 from/to/level/context）
 ./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2
 
-# 路由健康检查（从 SKILL.md 路由表提取）
+# 路由解析（消费 schema/skill-routes.yaml）
+./scripts/resolve-skill-routes.sh --category gstack --state QA --level L3 --json
+
+# 路由摘要健康检查（核对 SKILL.md 摘要与本地技能）
 ./scripts/check-skill-routes.sh
 
 # YAML/JSON 同步检查
@@ -56,7 +60,9 @@ governance/state-machine.yaml                # 状态机真相源
 governance/gates.yaml                        # Gate 真相源
 governance/check-gates.sh                    # Gate 检查入口
 scripts/validate-state-machine.sh            # 状态机校验
+scripts/resolve-skill-routes.sh              # 机器路由解析
 scripts/check-skill-routes.sh                # 路由健康检查
+schema/skill-routes.yaml                     # 机器路由真相源
 docs/getting-started.md                      # 上手说明
 docs/architecture.md                         # 架构说明
 ```

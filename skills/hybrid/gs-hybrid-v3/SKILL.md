@@ -30,13 +30,16 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 
 - 状态机真相源: [governance/state-machine.yaml](../../../governance/state-machine.yaml)
 - Gate 真相源: [governance/gates.yaml](../../../governance/gates.yaml)
+- 路由真相源: [schema/skill-routes.yaml](../../../schema/skill-routes.yaml)
 - 状态机校验: `scripts/validate-state-machine.sh`
-- Gate 校验: `governance/check-gates.sh --from <state> --to <state> --level <L1|L2|L3>`
-- 路由健康检查: `scripts/check-skill-routes.sh`
+- Gate 校验: `governance/check-gates.sh --from <state> --to <state> --level <L0|L1|L2|L3>`
+- 路由解析: `scripts/resolve-skill-routes.sh --category <category> --state <state> --level <L0|L1|L2|L3>`
+- 路由摘要健康检查: `scripts/check-skill-routes.sh`
 
 规则：
 - 本文件不再重复维护“状态转换明细表”和“Hard Gate 细则表”。
-- 若本文件与真相源冲突，以治理层 YAML 为准。
+- 若本文件路由摘要与 `schema/skill-routes.yaml` 冲突，以 `schema/skill-routes.yaml` 为准。
+- 若本文件状态/Gate 摘要与治理层 YAML 冲突，以治理层 YAML 为准。
 
 ## 加载策略速查表
 
@@ -56,7 +59,7 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 
 加载规则：进入下一阶段后释放前序上下文，仅保留契约摘要。
 
-## 执行路由（唯一路由表）
+## 执行路由（可读摘要）
 
 ### Superpowers 路由
 

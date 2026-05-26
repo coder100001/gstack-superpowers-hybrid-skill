@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # transition.sh — 状态跃迁入口
-# 用法: ./governance/transition.sh <from> <to> [--level L3] [--reason string] [--json]
+# 用法: ./governance/transition.sh <from> <to> [--level L0|L1|L2|L3] [--reason string] [--json]
 # 示例: ./governance/transition.sh IDEA DISCOVERY --level L3 --reason "new feature" --json
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -114,7 +114,7 @@ print(json.dumps(result, indent=2))
 }
 
 if [[ $# -lt 2 ]]; then
-  echo "用法: transition.sh <from> <to> [--level L1|L2|L3] [--reason <reason>] [--json]"
+  echo "用法: transition.sh <from> <to> [--level L0|L1|L2|L3] [--reason <reason>] [--json]"
   echo ""
   echo "示例:"
   echo "  transition.sh IDEA DISCOVERY --level L3"
@@ -267,7 +267,89 @@ if [[ -n "$gate_name" ]]; then
   fi
 fi
 
-# 4. 更新状态持久化文件
+# 4. 解析路由（消费 schema/skill-routes.yaml detect 规则）
+ROUTE_RESOLVER="$PROJECT_ROOT/scripts/resolve-skill-routes.sh"
+resolved_routes="none"
+resolved_routes_json="[]"
+route_resolution_status="ok"
+route_resolution_error="none"
+
+if [[ -x "$ROUTE_RESOLVER" ]]; then
+  route_error_file="$(mktemp /tmp/resolve-routes-status.XXXXXX)"
+  changed_files_csv=$(
+    {
+      git diff --name-only --cached 2>/dev/null || true
+      git diff --name-only 2>/dev/null || true
+      git ls-files --others --exclude-standard 2>/dev/null || true
+    } | awk 'NF' | sort -u | paste -sd, - || true
+  )
+
+  collect_route_names() {
+    local category="$1"
+    local json_out
+    local stderr_file
+    stderr_file="$(mktemp /tmp/resolve-routes-stderr.XXXXXX)"
+
+    if ! json_out=$(bash "$ROUTE_RESOLVER" --category "$category" --state "$TO" --level "$LEVEL" --files "${changed_files_csv:-}" --text "$REASON" --json 2>"$stderr_file"); then
+      printf '%s|%s:%s\n' "degraded" "$category" "$(tr '\n' ' ' <"$stderr_file" | sed 's/[[:space:]]\+/ /g' | sed 's/^ //; s/ $//')" > "$route_error_file"
+      rm -f "$stderr_file"
+      echo ""
+      return
+    fi
+    rm -f "$stderr_file"
+
+    if [[ -n "$json_out" ]]; then
+      local parsed_names
+      parsed_names=$(python3 -c '
+import json,sys
+try:
+    data=json.loads(sys.argv[1])
+    names=[m.get("name","") for m in data.get("matches",[]) if m.get("name")]
+    print(",".join(names))
+except Exception:
+    raise SystemExit(1)
+' "$json_out" 2>/dev/null) || {
+        printf '%s|%s:%s\n' "degraded" "$category" "invalid_json" > "$route_error_file"
+        echo ""
+        return
+      }
+      echo "$parsed_names"
+    fi
+  }
+
+  superpowers_routes="$(collect_route_names superpowers)"
+  gstack_routes="$(collect_route_names gstack)"
+
+  if [[ -s "$route_error_file" ]]; then
+    route_error_line="$(tail -n 1 "$route_error_file" 2>/dev/null || true)"
+    route_resolution_status="${route_error_line%%|*}"
+    route_resolution_error="${route_error_line#*|}"
+  fi
+  rm -f "$route_error_file"
+
+  merged_routes=$(
+    {
+      echo "$superpowers_routes"
+      echo "$gstack_routes"
+    } | tr ',' '\n' | awk 'NF' | sort -u | paste -sd, - || true
+  )
+
+  if [[ -n "$merged_routes" ]]; then
+    resolved_routes="$merged_routes"
+    resolved_routes_json=$(
+      python3 -c '
+import json,sys
+items=[x for x in sys.argv[1].split(",") if x]
+print(json.dumps(items, ensure_ascii=False))
+' "$merged_routes" 2>/dev/null || echo "[]"
+    )
+  fi
+else
+  route_resolution_status="degraded"
+  route_resolution_error="resolver_unavailable"
+fi
+
+# 5. 更新状态持久化文件
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 mkdir -p "$(dirname "$STATE_FILE")"
 
@@ -278,6 +360,29 @@ ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00
 existing_history=""
 if [[ -f "$STATE_FILE" ]]; then
   existing_history=$(sed -n '/^| [0-9]/p' "$STATE_FILE" 2>/dev/null | tail -20 || true)
+fi
+
+# 去重：若最新一条与本次状态/级别/Gate/Routes 完全一致，则不重复追加
+new_gate_value="${gates_passed:-—}"
+new_route_value="${resolved_routes}"
+should_append_history=true
+if [[ -n "$existing_history" ]]; then
+  last_row=$(echo "$existing_history" | tail -1)
+  if [[ -n "$last_row" ]]; then
+    last_from=$(echo "$last_row" | awk -F'|' '{gsub(/^ +| +$/, "", $3); print $3}')
+    last_to=$(echo "$last_row" | awk -F'|' '{gsub(/^ +| +$/, "", $4); print $4}')
+    last_level=$(echo "$last_row" | awk -F'|' '{gsub(/^ +| +$/, "", $5); print $5}')
+    last_gate=$(echo "$last_row" | awk -F'|' '{gsub(/^ +| +$/, "", $6); print $6}')
+    last_routes=$(echo "$last_row" | awk -F'|' '{gsub(/^ +| +$/, "", $7); print $7}')
+    if [[ "$last_from" == "$FROM" && "$last_to" == "$TO" && "$last_level" == "$LEVEL" && "$last_gate" == "$new_gate_value" && "$last_routes" == "$new_route_value" ]]; then
+      should_append_history=false
+    fi
+  fi
+fi
+
+new_history_row=""
+if [[ "$should_append_history" == true ]]; then
+  new_history_row="| $ts | $FROM | $TO | $LEVEL | $new_gate_value | $new_route_value |"
 fi
 
 cat > "$STATE_FILE" << EOF
@@ -293,21 +398,24 @@ status: $TO
 level: $LEVEL
 previous: $FROM
 gate_passed: ${gates_passed:-none}
+route_skills: ${resolved_routes}
+route_resolution: ${route_resolution_status}
+route_resolution_error: ${route_resolution_error}
 reason: $REASON
 \`\`\`
 
 ## State History
 
-| Timestamp | From | To | Level | Gate |
-|-----------|------|-----|-------|------|
+| Timestamp | From | To | Level | Gate | Routes |
+|-----------|------|-----|-------|------|--------|
 $existing_history
-| $ts | $FROM | $TO | $LEVEL | ${gates_passed:-—} |
+$new_history_row
 
 ---
 *This file is auto-generated by transition.sh*
 EOF
 
-# 5. 写入 journal
+# 6. 写入 journal
 mkdir -p "$JOURNAL_DIR"
 journal_file="$JOURNAL_DIR/$(date +%Y-%m-%d).json"
 
@@ -316,10 +424,59 @@ if [[ -n "$gates_passed" ]]; then
   gp_json="[\"$gates_passed\"]"
 fi
 
-entry="{\"timestamp\":\"$ts\",\"from\":\"$FROM\",\"to\":\"$TO\",\"level\":\"$LEVEL\",\"gates_passed\":$gp_json,\"reason\":\"$REASON\",\"session\":\"agent-enforcement\"}"
-echo "$entry" >> "$journal_file"
+entry=$(
+  python3 -c '
+import json
+import sys
 
-# 6. 输出结果
+result = {
+    "timestamp": sys.argv[1],
+    "from": sys.argv[2],
+    "to": sys.argv[3],
+    "level": sys.argv[4],
+    "gates_passed": json.loads(sys.argv[5]),
+    "route_skills": json.loads(sys.argv[6]),
+    "route_resolution_status": sys.argv[7],
+    "route_resolution_error": sys.argv[8],
+    "reason": sys.argv[9],
+    "session": "agent-enforcement",
+}
+print(json.dumps(result, ensure_ascii=False))
+' "$ts" "$FROM" "$TO" "$LEVEL" "$gp_json" "$resolved_routes_json" "$route_resolution_status" "$route_resolution_error" "$REASON"
+)
+
+journal_should_append=true
+if [[ -f "$journal_file" ]]; then
+  last_entry=$(tail -n 1 "$journal_file" 2>/dev/null || true)
+  if [[ -n "$last_entry" ]]; then
+    journal_compare=$(
+      python3 -c '
+import json
+import sys
+
+try:
+    last = json.loads(sys.argv[1])
+    current = json.loads(sys.argv[2])
+except Exception:
+    print("append")
+    raise SystemExit(0)
+
+keys = ["from", "to", "level", "gates_passed", "route_skills", "route_resolution_status", "route_resolution_error", "reason", "session"]
+same = all(last.get(k) == current.get(k) for k in keys)
+print("skip" if same else "append")
+' "$last_entry" "$entry" 2>/dev/null || echo "append"
+    )
+    if [[ "$journal_compare" == "skip" ]]; then
+      journal_should_append=false
+    fi
+  fi
+fi
+
+if [[ "$journal_should_append" == true ]]; then
+  echo "$entry" >> "$journal_file"
+fi
+
+# 7. 输出结果
 if $OUTPUT_JSON; then
   output_json_result "success" "$FROM" "$TO" "$LEVEL" "$REASON" "$gate_result_json" "$journal_file" "$STATE_FILE" "" ""
 else
@@ -328,6 +485,11 @@ else
   echo "  $FROM → $TO"
   echo "  级别: $LEVEL"
   echo "  Gate: ${gates_passed:-无}"
+  echo "  Routes: ${resolved_routes}"
+  echo "  Route Resolution: ${route_resolution_status}"
+  if [[ "$route_resolution_status" != "ok" ]]; then
+    echo "  Route Error: ${route_resolution_error}"
+  fi
   echo "  Journal: $journal_file"
   echo "  State: $STATE_FILE"
 fi

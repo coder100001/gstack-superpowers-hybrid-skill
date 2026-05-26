@@ -13,7 +13,7 @@ GSTACK_COUNT=$(find "$PROJECT_ROOT/skills/gstack" -maxdepth 2 -name "SKILL.md" |
 cat > "$OUTPUT_FILE" << HEADER
 # 技能参考手册
 
-> **文档状态**: 自动生成 · **真相源**: [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md)
+> **文档状态**: 自动生成 · **真相源**: 技能定义来自各技能 \`SKILL.md\`，机器路由来自 [skill-routes.yaml](../schema/skill-routes.yaml)
 >
 > 本文档由脚本自动生成，禁止手动编辑。如需修改技能信息，请编辑对应 SKILL.md 后重新运行 \`scripts/generate-skills-reference.sh\`。
 
@@ -108,7 +108,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 
 - **三层架构**: Decision / Context / Execution 三层分离
 - **模块化设计**: 7个模块按需加载
-- **复杂度分级**: L1/L2/L3 三级流程
+- **复杂度分级**: L0/L1/L2/L3 四级流程
 - **强制确认机制**: REQUIREMENT_LOCK、TASK_DECOMPOSITION、PLAN_CONFIRM
 - **多角色审议**: 产品/架构/性能/安全/运维 5个维度审查
 - **决策冻结机制**: 执行层不允许更改架构和需求
@@ -120,7 +120,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 | 模块 | 内容 | 加载时机 |
 |------|------|---------|
 | 01-intro.md | 三层架构介绍、项目配置 | 初始 |
-| 02-complexity.md | 复杂度分级 (L1/L2/L3) | Step 0 |
+| 02-complexity.md | 复杂度分级 (L0/L1/L2/L3) | Step 0 |
 | 03a-discovery-arch.md | DISCOVERY + REQUIREMENT_LOCK + ARCH_REVIEW | Decision Layer |
 | 03b-task-decomposition.md | TASK_DECOMPOSITION + PLAN_CONFIRM | Decision Layer |
 | 04a-execution-hydration.md | CONTEXT_HYDRATION + IMPLEMENTATION 规范 | Context -> Execution |
@@ -162,7 +162,8 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 |------|------|
 | \`governance/state-machine.yaml\` | 状态机定义（唯一真相源） |
 | \`governance/gates.yaml\` | Gate 定义（唯一真相源） |
-| \`skills/hybrid/gs-hybrid-v3/SKILL.md\` | 路由与加载策略入口 |
+| \`schema/skill-routes.yaml\` | 机器路由定义（唯一真相源） |
+| \`skills/hybrid/gs-hybrid-v3/SKILL.md\` | 入口、加载策略与路由摘要 |
 
 ---
 
@@ -200,7 +201,8 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 
 | 文档 | 角色 | 同步方式 |
 |:-----|:-----|:---------|
-| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | Hybrid 入口与路由真相源 | 手动维护 |
+| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | Hybrid 入口与加载策略 | 手动维护 |
+| [skill-routes.yaml](../schema/skill-routes.yaml) | 机器路由真相源 | 手动维护 |
 | 各技能 SKILL.md | 技能定义 | 上游同步/手动 |
 | **skills-reference.md** | 技能索引与对照 | **脚本自动生成** |
 

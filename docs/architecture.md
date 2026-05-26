@@ -60,12 +60,14 @@
 
 - 状态机：`governance/state-machine.yaml`
 - Gate：`governance/gates.yaml`
+- 路由：`schema/skill-routes.yaml`
 
 ### 执行入口
 
 - 状态机校验：`scripts/validate-state-machine.sh`
 - Gate 校验：`governance/check-gates.sh`
-- 路由检查：`scripts/check-skill-routes.sh`
+- 路由解析：`scripts/resolve-skill-routes.sh`
+- 路由摘要检查：`scripts/check-skill-routes.sh`
 
 ## 4. 状态机与 Gate 的关系
 
@@ -80,8 +82,10 @@
 
 ### 路由策略
 
-- 路由表只在 `skills/hybrid/gs-hybrid-v3/SKILL.md` 维护
-- `scripts/check-skill-routes.sh` 从该文件提取并核对本地技能目录
+- 机器路由表只在 `schema/skill-routes.yaml` 维护
+- `scripts/resolve-skill-routes.sh` 消费 `detect` 规则并输出实际命中技能
+- `skills/hybrid/gs-hybrid-v3/SKILL.md` 只保留可读摘要
+- `scripts/check-skill-routes.sh` 核对摘要引用与本地技能目录
 - 未注册技能记录为信息项（Info），不阻断
 
 ### 上下文策略
@@ -103,4 +107,6 @@
 - `governance/gates.yaml`
 - `governance/check-gates.sh`
 - `scripts/validate-state-machine.sh`
+- `scripts/resolve-skill-routes.sh`
 - `scripts/check-skill-routes.sh`
+- `schema/skill-routes.yaml`

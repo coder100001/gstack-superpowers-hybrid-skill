@@ -15,6 +15,7 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 ```bash
 ./scripts/validate-state-machine.sh
 ./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2
+./scripts/resolve-skill-routes.sh --category gstack --state QA --level L3 --json
 ./scripts/check-skill-routes.sh
 ./scripts/yaml2json.sh --check
 ```
@@ -27,9 +28,11 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 - 真相源：
   - `governance/state-machine.yaml`
   - `governance/gates.yaml`
+  - `schema/skill-routes.yaml`
 - 脚本入口：
   - `scripts/validate-state-machine.sh`
   - `governance/check-gates.sh`
+  - `scripts/resolve-skill-routes.sh`
   - `scripts/check-skill-routes.sh`
 
 ## 4. 主流程
@@ -48,7 +51,13 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L1
 ```
 
-### 生成路由健康报告
+### 解析实际路由
+
+```bash
+./scripts/resolve-skill-routes.sh --category gstack --state QA --level L3 --json
+```
+
+### 生成路由摘要健康报告
 
 ```bash
 ./scripts/check-skill-routes.sh
@@ -65,7 +74,8 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 
 - `plan-confirm` 失败：先确认计划文档中有明确确认标记
 - `decision-freeze` 失败：实现阶段不要改 ADR/spec，需回退决策层
-- 路由检查报错：优先检查 `SKILL.md` 路由表是否引用了不存在技能
+- 路由解析异常：优先检查 `schema/skill-routes.yaml` 和 `scripts/resolve-skill-routes.sh`
+- 路由摘要检查报错：检查 `SKILL.md` 摘要是否引用了不存在技能
 
 ## 7. 参考文档
 

@@ -7,9 +7,10 @@
 ## 真相源
 
 以下文件是唯一事实来源：
-- `skills/hybrid/gs-hybrid-v3/SKILL.md`（入口、路由、加载策略）
+- `skills/hybrid/gs-hybrid-v3/SKILL.md`（入口、加载策略、路由摘要）
 - `governance/state-machine.yaml`（状态机）
 - `governance/gates.yaml`（Gate 定义）
+- `schema/skill-routes.yaml`（机器路由）
 
 规则：任何说明文档与上述文件冲突时，以真相源为准。
 
@@ -21,6 +22,7 @@
 3. 运行一致性校验：
    - `./scripts/validate-state-machine.sh`
    - `./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2`
+   - `./scripts/resolve-skill-routes.sh --category gstack --state QA --level L3 --json`
    - `./scripts/check-skill-routes.sh`
    - `./scripts/yaml2json.sh --check`
 4. 最后再更新说明文档：
