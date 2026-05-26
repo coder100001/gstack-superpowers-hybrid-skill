@@ -164,7 +164,7 @@ RETRO:          复盘记录
 │   │ ◆ CONTEXT LAYER (上下文层) → 桥接                                             │       │
 │   ├───────────────────────────────────────────────────────────────────────────┤       │
 │   │ Context Hydration (强制) 🔴                                            │       │
-│   │ 加载: decision-to-context.md, context-to-execution.md                      │       │
+│   │ 加载: decision-to-context.md, context-hydration.md                        │       │
 │   │ - 加载所有 Spec 契约 → 进入 Execution Layer 必须完成                     │       │
 │   └───────────────────────────────────────────────────────────────────────────┘       │
 │      │                                                                                   │
@@ -384,9 +384,9 @@ shell: "bash/zsh"                           # Shell 类型
 | 层 | 职责 | 核心文件 | 激活的 Skills |
 |:---|:-----|:---------|:------------|
 | **Decision Layer** | 多角色审议、方案决策 | [architecture-review](../../../decision-layer/reviews/architecture-review.md) | `brainstorming`, `design`, `writing-plans`, `plan-verification`, `gstack:design-review`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
-| **Context Layer** | 上下文持久化、契约强制 | [project-spec](../../../context-layer/specs/project-spec.md), [hydration](../../../context-layer/hydration/hydration.md) | `context-save`, `context-restore`, `learn` |
+| **Context Layer** | 上下文持久化、契约强制 | [project-spec](../../../context-layer/specs/project-spec.md), [context-hydration](../../../bridges/context-hydration.md) | `context-save`, `context-restore`, `learn` |
 | **Execution Layer** | 受约束实现、验证 | [implementation](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `gstack:qa`, `gstack:cso`, `gstack:benchmark`, `gstack:codex` |
-| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-to-execution](../../../bridges/context-to-execution.md) | 无（纯协议层） |
+| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-hydration](../../../bridges/context-hydration.md) | 无（纯协议层） |
 | **Governance** | 跨层规则强制 | [decision-freeze](../../../governance/decision-freeze.md) | `gstack:ship`, `gstack:retro`, `gstack:investigate`, `freeze`, `guard`, `careful` |
 
 ---
@@ -426,7 +426,7 @@ shell: "bash/zsh"                           # Shell 类型
 8. coding-standards（编码规则定义）
 9. 当前工作流状态
 
-**详细协议**: [context-to-execution.md](../../../bridges/context-to-execution.md)
+**详细协议**: [context-hydration.md](../../../bridges/context-hydration.md)
 
 ---
 
