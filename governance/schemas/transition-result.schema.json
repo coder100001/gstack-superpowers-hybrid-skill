@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "transition-result.schema.json",
+  "title": "State Transition Result",
+  "description": "状态转换结果的标准输出格式",
+  "type": "object",
+  "required": ["status", "from", "to", "timestamp"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["success", "blocked", "invalid", "error"],
+      "description": "转换状态: success=成功, blocked=被Gate阻断, invalid=非法转换, error=错误"
+    },
+    "from": {
+      "type": "string",
+      "description": "起始状态"
+    },
+    "to": {
+      "type": "string",
+      "description": "目标状态"
+    },
+    "level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"],
+      "description": "复杂度级别"
+    },
+    "reason": {
+      "type": "string",
+      "description": "转换原因"
+    },
+    "gate_result": {
+      "$ref": "gate-result.schema.json",
+      "description": "Gate 检查结果（如果有）"
+    },
+    "journal_path": {
+      "type": "string",
+      "description": "审计日志路径"
+    },
+    "state_file": {
+      "type": "string",
+      "description": "状态持久化文件路径"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "转换时间戳 (ISO 8601)"
+    },
+    "error": {
+      "type": "object",
+      "description": "错误详情（如果失败）",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "错误码"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误消息"
+        },
+        "details": {
+          "type": "string",
+          "description": "错误详情"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

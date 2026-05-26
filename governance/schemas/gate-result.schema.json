@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gate-result.schema.json",
+  "title": "Gate Check Result",
+  "description": "Gate 检查结果的标准输出格式",
+  "type": "object",
+  "required": ["status", "gate_id", "gate_name", "timestamp"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["pass", "block", "error", "skip"],
+      "description": "Gate 检查状态: pass=通过, block=阻断, error=错误, skip=跳过"
+    },
+    "gate_id": {
+      "type": "string",
+      "pattern": "^G[0-9]{3}$",
+      "description": "Gate ID，如 G001, G002"
+    },
+    "gate_name": {
+      "type": "string",
+      "description": "Gate 名称，如 requirement-lock"
+    },
+    "message": {
+      "type": "string",
+      "description": "检查结果消息"
+    },
+    "fail_message": {
+      "type": "string",
+      "description": "阻断时的失败消息"
+    },
+    "remediation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "修复步骤列表"
+    },
+    "context": {
+      "type": "object",
+      "description": "检查时的上下文信息",
+      "properties": {
+        "from_state": {
+          "type": "string",
+          "description": "起始状态"
+        },
+        "to_state": {
+          "type": "string",
+          "description": "目标状态"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["L1", "L2", "L3"],
+          "description": "复杂度级别"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "检查时间戳 (ISO 8601)"
+    },
+    "duration_ms": {
+      "type": "number",
+      "description": "检查耗时（毫秒）"
+    }
+  },
+  "additionalProperties": false
+}

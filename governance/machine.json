@@ -6,7 +6,7 @@
     "description": "State machine for AI Engineering Governance System.\nDefines all valid states, transitions, and entry gates.\n",
     "canonical_source": "governance/state-machine.yaml",
     "backup_source": "governance/machine.json",
-    "generated_at": "2026-05-25T13:53:32Z",
+    "generated_at": "2026-05-26T01:09:50Z",
     "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/state-machine.yaml"
   },
   "states": {

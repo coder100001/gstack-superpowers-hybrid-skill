@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-output.schema.json",
+  "title": "Task Output",
+  "description": "任务产出物的标准输出格式",
+  "type": "object",
+  "required": ["task_id", "status", "outputs", "timestamp"],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "任务 ID"
+    },
+    "task_name": {
+      "type": "string",
+      "description": "任务名称"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "completed", "blocked", "failed", "skipped"],
+      "description": "任务状态"
+    },
+    "outputs": {
+      "type": "object",
+      "description": "产出物",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "文件路径"
+              },
+              "type": {
+                "type": "string",
+                "description": "文件类型"
+              },
+              "description": {
+                "type": "string",
+                "description": "文件描述"
+              }
+            }
+          },
+          "description": "产出的文件列表"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "产物名称"
+              },
+              "type": {
+                "type": "string",
+                "description": "产物类型"
+              },
+              "content": {
+                "type": "string",
+                "description": "产物内容（如果是文本）"
+              },
+              "path": {
+                "type": "string",
+                "description": "产物路径（如果是文件）"
+              }
+            }
+          },
+          "description": "产出的产物列表"
+        },
+        "metrics": {
+          "type": "object",
+          "description": "产出指标",
+          "additionalProperties": {
+            "type": ["number", "string", "boolean"]
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "依赖的任务 ID 列表"
+    },
+    "next_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "后续任务 ID 列表"
+    },
+    "notes": {
+      "type": "string",
+      "description": "备注"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "时间戳 (ISO 8601)"
+    }
+  },
+  "additionalProperties": false
+}

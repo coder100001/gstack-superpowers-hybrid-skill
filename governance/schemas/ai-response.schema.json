@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai-response.schema.json",
+  "title": "AI Response",
+  "description": "AI 响应的标准输出格式",
+  "type": "object",
+  "required": ["status_bar", "content", "timestamp"],
+  "properties": {
+    "status_bar": {
+      "type": "object",
+      "description": "状态栏",
+      "required": ["state", "progress"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "当前状态"
+        },
+        "progress": {
+          "type": "string",
+          "description": "任务进度"
+        },
+        "frozen_items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "冻结项列表"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "description": "响应内容",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "摘要"
+        },
+        "details": {
+          "type": "string",
+          "description": "详细内容（Markdown 格式）"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "章节标题"
+              },
+              "content": {
+                "type": "string",
+                "description": "章节内容"
+              }
+            }
+          },
+          "description": "分章节内容"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "description"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["confirm", "choice", "input", "review"],
+            "description": "动作类型"
+          },
+          "description": {
+            "type": "string",
+            "description": "动作描述"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "选项标签"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "选项值"
+                }
+              }
+            },
+            "description": "选项列表（用于 choice 类型）"
+          }
+        }
+      },
+      "description": "需要用户执行的动作"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "产物类型"
+          },
+          "path": {
+            "type": "string",
+            "description": "产物路径"
+          },
+          "description": {
+            "type": "string",
+            "description": "产物描述"
+          }
+        }
+      },
+      "description": "产出物列表"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "元数据",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["L1", "L2", "L3"],
+          "description": "复杂度级别"
+        },
+        "session_id": {
+          "type": "string",
+          "description": "会话 ID"
+        },
+        "task_id": {
+          "type": "string",
+          "description": "任务 ID"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "时间戳 (ISO 8601)"
+    }
+  },
+  "additionalProperties": false
+}

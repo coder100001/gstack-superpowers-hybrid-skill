@@ -301,15 +301,12 @@ copy_files() {
         "bridges"
         "governance"
         "gstack-skills"
-        "scripts"
         "docs"
         "specs"
         "commands"
         "hooks"
         "agents"
         "overrides"
-        "schema"
-        "artifacts"
         ".sync-filter.json"
         "CLAUDE.md"
         "project-config.yml"
@@ -385,21 +382,12 @@ validate_installation() {
         "execution-layer"
         "bridges"
         "governance"
-        "scripts"
     )
 
     local required_files=(
         "skills/hybrid/gs-hybrid-v3/SKILL.md"
         "CLAUDE.md"
         "project-config.yml"
-    )
-
-    local governance_files=(
-        "governance/state-machine.yaml"
-        "governance/gates.yaml"
-        "governance/check-gates.sh"
-        "scripts/validate-state-machine.sh"
-        "scripts/check-skill-routes.sh"
     )
 
     for dir in "${required_dirs[@]}"; do
@@ -417,14 +405,6 @@ validate_installation() {
             errors=$((errors + 1))
         else
             log_debug "✓ 文件存在: $file"
-        fi
-    done
-
-    for file in "${governance_files[@]}"; do
-        if [[ ! -f "$TARGET_DIR/$file" ]]; then
-            log_warn "缺少治理文件: $file (P0 加固产物)"
-        else
-            log_debug "✓ 治理文件存在: $file"
         fi
     done
 
