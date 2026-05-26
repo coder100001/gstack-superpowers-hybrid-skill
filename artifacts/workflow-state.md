@@ -11,6 +11,7 @@ level: L1
 previous: IDEA
 gate_passed: none
 reason: test-transition
+plan_confirmed: true
 ```
 
 ## State History

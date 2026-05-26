@@ -57,10 +57,12 @@ skills_dir = Path(sys.argv[3])
 
 errors = 0
 warnings = 0
+unregistered_info = 0
 info_count = 0
 
 errors_list = []
 warnings_list = []
+unregistered_list = []
 info_list = []
 skill_inventory = []
 
@@ -119,13 +121,13 @@ for skill_name in sorted(route_skills):
 for name, path in sorted(skill_paths.items()):
     found = (name in route_skills) or (f"gstack:{name}" in route_skills)
     if not found:
-        warnings_list.append(f"[WARN] 技能未注册到 SKILL.md 路由表: {name}")
-        warnings += 1
+        unregistered_list.append(f"[INFO] 技能未注册到 SKILL.md 路由表: {name}")
+        unregistered_info += 1
     skill_inventory.append({
         "category": path.split("/")[1] if "/" in path else "unknown",
         "name": name,
         "path": path,
-        "status": "✓" if found else "⚠ 未注册",
+        "status": "✓" if found else "ℹ 未注册",
     })
 
 print("")
@@ -151,6 +153,7 @@ report = f"""# Skill Routes Health Report
 | Skills in SKILL.md Routes | {len(route_skills)} |
 | Errors | {errors} |
 | Warnings | {warnings} |
+| Info (Unregistered) | {unregistered_info} |
 
 ---
 
@@ -172,6 +175,16 @@ report += """
 
 if warnings_list:
     report += "\n".join(f"- {w}" for w in warnings_list) + "\n"
+else:
+    report += "None\n"
+
+report += """
+### Info (Unregistered but present)
+
+"""
+
+if unregistered_list:
+    report += "\n".join(f"- {w}" for w in unregistered_list) + "\n"
 else:
     report += "None\n"
 
@@ -212,6 +225,8 @@ if errors > 0:
     report += "1. **Critical**: 修复 SKILL.md 路由中不存在的技能名\n2. 选择：修正文档路由名或补充缺失技能\n"
 elif warnings > 0:
     report += "1. **Warning**: 检查未注册技能是否应加入路由\n2. 若不应路由触发，可保留为未注册\n"
+elif unregistered_info > 0:
+    report += "1. **Info**: 存在未注册技能，这通常不阻断流程\n2. 如需自动触发可补充到 SKILL.md 路由表\n"
 else:
     report += "All skill routes are healthy. No action required.\n"
 
@@ -237,6 +252,7 @@ print("==========================================")
 print("")
 print(f"错误: {errors}")
 print(f"警告: {warnings}")
+print(f"信息: {unregistered_info}")
 print(f"通过: {info_count}")
 print("")
 

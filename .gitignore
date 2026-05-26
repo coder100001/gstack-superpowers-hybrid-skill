@@ -48,3 +48,6 @@ governance/state-journal/*.json
 # Runtime artifacts (auto-generated state files)
 artifacts/workflow-state.md
 artifacts/hydration-state.md
+
+# Generated route health report
+docs/route-health.md
