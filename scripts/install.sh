@@ -301,6 +301,7 @@ copy_files() {
         "bridges"
         "governance"
         "gstack-skills"
+        "scripts"
         "docs"
         "specs"
         "commands"
