@@ -1,32 +1,31 @@
 ---
 name: "gs-hybrid-v3"
-description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1 渐进式加载优化：从技能分类升级为职责分层系统，新增状态机、决策冻结、上下文注水机制。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1 渐进式加载优化与治理收敛版。"
 ---
 
-# AI Engineering Governance System v4.1 (三层架构正式版)
+# AI Engineering Governance System v4.1
 
-> 核心理念: 决策层 -> 桥接 -> 上下文层 -> 桥接 -> 执行层，思考与实现严格分离。
-> 本技能是流程入口与路由索引，详细规则以治理层机器可读文件为准。
+> 入口文档（薄层）：只保留流程入口、加载策略与技能路由。  
+> 状态机与 Gate 细则以治理层机器可读文件为唯一真相源。
 
 ## 快速开始
 
-完整流程:
+主流程：
 `IDEA -> DISCOVERY -> REQUIREMENT_LOCK -> ARCH_REVIEW -> TASK_DECOMPOSITION -> PLAN_CONFIRM -> CONTEXT_HYDRATION -> IMPLEMENTATION -> SELF_REVIEW -> QA -> SHIP_REVIEW -> RETRO`
 
 快捷指令见 [commands/README.md](../../../commands/README.md)。
 
-## 真相源
+## 真相源与校验入口
 
 - 状态机真相源: [governance/state-machine.yaml](../../../governance/state-machine.yaml)
 - Gate 真相源: [governance/gates.yaml](../../../governance/gates.yaml)
-- 路由真相源: [schema/skill-routes.yaml](../../../schema/skill-routes.yaml)
-- Schema 约束: [governance/schemas/](../../../governance/schemas/)
 - 状态机校验: `scripts/validate-state-machine.sh`
-- Gate 校验入口: `governance/check-gates.sh --from <state> --to <state> --level <L1|L2|L3>`
+- Gate 校验: `governance/check-gates.sh --from <state> --to <state> --level <L1|L2|L3>`
+- 路由健康检查: `scripts/check-skill-routes.sh`
 
-说明:
-- 本文件不再重复维护完整状态转换表和 Gate 细则。
-- 若本文件与真相源冲突，以 YAML 真相源为准。
+规则：
+- 本文件不再重复维护“状态转换明细表”和“Hard Gate 细则表”。
+- 若本文件与真相源冲突，以治理层 YAML 为准。
 
 ## 加载策略速查表
 
@@ -44,11 +43,11 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 | 指令触发 | [06-workflows.md](./modules/06-workflows.md) | — |
 | 异常/变更 | [07-handling.md](./modules/07-handling.md) | `governance/decision-freeze.md`（按需） |
 
-加载规则: 每阶段只加载对应模块与框架文件；进入下一阶段后释放前序上下文，仅保留契约摘要。
+加载规则：进入下一阶段后释放前序上下文，仅保留契约摘要。
 
-## 执行路由（唯一执行路由表）
+## 执行路由（唯一路由表）
 
-### Superpowers Skills 路由
+### Superpowers 路由
 
 | 状态 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
@@ -60,7 +59,7 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 | SELF_REVIEW | `requesting-code-review` | L2+ | 代码审查 |
 | SHIP_REVIEW | `verification-before-completion` | 所有任务 | 交付前验证 |
 
-### GStack Skills 路由
+### GStack 路由
 
 | 状态 | Skill | 触发条件 | 用途 |
 |------|-------|---------|------|
@@ -77,15 +76,15 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 
 ## 三层职责（摘要）
 
-- Decision Layer: 需求澄清、方案审议、决策记录（ADR）
-- Context Layer: Spec 契约、上下文注水、约束持久化
-- Execution Layer: 受约束实现、自审、QA、发布前验证
-- Bridges: 层间传递协议（Decision -> Context -> Execution）
-- Governance: 决策冻结、Gate 执行、状态校验
+- Decision Layer：需求澄清、方案审议、ADR 决策
+- Context Layer：Spec 契约、上下文注水、约束持久化
+- Execution Layer：受约束实现、自审、QA、发布前验证
+- Bridges：层间传递协议（Decision -> Context -> Execution）
+- Governance：状态机、Gate、冻结与变更控制
 
 ## 异常处理
 
-参考 [07-handling.md](./modules/07-handling.md):
+异常流程见 [07-handling.md](./modules/07-handling.md)：
 - 评审冲突
 - 流程回退
 - 方案变更

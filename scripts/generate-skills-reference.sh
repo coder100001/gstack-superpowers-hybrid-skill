@@ -7,11 +7,9 @@ OUTPUT_FILE="$PROJECT_ROOT/docs/skills-reference.md"
 
 echo "=== Generating skills-reference.md ==="
 
-# Count skills
 SUPERPOWERS_COUNT=$(find "$PROJECT_ROOT/skills/superpowers" -maxdepth 2 -name "SKILL.md" | wc -l | tr -d ' ')
 GSTACK_COUNT=$(find "$PROJECT_ROOT/skills/gstack" -maxdepth 2 -name "SKILL.md" | wc -l | tr -d ' ')
 
-# Start writing
 cat > "$OUTPUT_FILE" << HEADER
 # 技能参考手册
 
@@ -45,23 +43,18 @@ cat > "$OUTPUT_FILE" << HEADER
 |------|------|---------|
 HEADER
 
-# Extract Superpowers skills
 for skill_dir in "$PROJECT_ROOT/skills/superpowers"/*/; do
     if [[ -f "$skill_dir/SKILL.md" ]]; then
         skill_name=$(basename "$skill_dir")
-        # Get description from YAML front matter (single line format)
         description=$(grep "^description:" "$skill_dir/SKILL.md" 2>/dev/null | head -1 | sed 's/^description:[[:space:]]*//' | sed 's/^"//' | sed 's/"$//' | head -c 80 || true)
-        # Fallback to first # heading
         if [[ -z "$description" ]]; then
             description=$(grep "^# " "$skill_dir/SKILL.md" 2>/dev/null | head -1 | sed 's/^# //' | head -c 80 || echo "—")
         fi
-        # Clean up description
         description=$(echo "$description" | head -c 80)
         echo "| [$skill_name](../skills/superpowers/$skill_name/SKILL.md) | ${description}... | 自动/手动 |" >> "$OUTPUT_FILE"
     fi
 done
 
-# GStack section
 cat >> "$OUTPUT_FILE" << GSTACK_HEADER
 
 ---
@@ -82,18 +75,13 @@ cat >> "$OUTPUT_FILE" << GSTACK_HEADER
 |------|------|---------|
 GSTACK_HEADER
 
-# Extract GStack skills
 for skill_dir in "$PROJECT_ROOT/skills/gstack"/*/; do
     if [[ -f "$skill_dir/SKILL.md" ]]; then
         skill_name=$(basename "$skill_dir")
-        # Get description from multi-line YAML (starts with |)
-        # Read lines after "description: |" until we hit a line starting with a YAML key
         description=$(sed -n '/^description: *|/,/^[a-z-]*:/p' "$skill_dir/SKILL.md" 2>/dev/null | grep -v "^description:" | grep -v "^[a-z-]*:" | head -3 | tr '\n' ' ' | sed 's/^[[:space:]]*//' | head -c 80 || true)
-        # Fallback to single line format
         if [[ -z "$description" ]]; then
             description=$(grep "^description:" "$skill_dir/SKILL.md" 2>/dev/null | head -1 | sed 's/^description:[[:space:]]*//' | sed 's/^"//' | sed 's/"$//' | head -c 80 || true)
         fi
-        # Fallback to heading
         if [[ -z "$description" ]]; then
             description=$(grep "^# " "$skill_dir/SKILL.md" 2>/dev/null | head -1 | sed 's/^# //' | head -c 80 || echo "—")
         fi
@@ -102,7 +90,6 @@ for skill_dir in "$PROJECT_ROOT/skills/gstack"/*/; do
     fi
 done
 
-# Hybrid section
 cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 
 ---
@@ -115,18 +102,18 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 
 ### gs-hybrid-v3
 
-**主入口技能**，AI Engineering Governance System v4.0。
+**主入口技能（薄入口）**，AI Engineering Governance System v4.1。
 
 #### 核心特性
 
 - **三层架构**: Decision / Context / Execution 三层分离
-- **模块化设计**: 9个模块按需加载
+- **模块化设计**: 7个模块按需加载
 - **复杂度分级**: L1/L2/L3 三级流程
-- **强制确认机制**: REQUIREMENT_LOCK 和 TASK_DECOMPOSITION 强制用户确认
+- **强制确认机制**: REQUIREMENT_LOCK、TASK_DECOMPOSITION、PLAN_CONFIRM
 - **多角色审议**: 产品/架构/性能/安全/运维 5个维度审查
 - **决策冻结机制**: 执行层不允许更改架构和需求
 - **Context Hydration**: 执行前强制注入上下文契约
-- **Governance 层**: 状态机 + Gate 脚本 + CI Guard
+- **Governance 层**: 状态机 (13状态) + Gate 脚本 (7个) + CI Guard
 
 #### 模块列表
 
@@ -135,20 +122,28 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 | 01-intro.md | 三层架构介绍、项目配置 | 初始 |
 | 02-complexity.md | 复杂度分级 (L1/L2/L3) | Step 0 |
 | 03a-discovery-arch.md | DISCOVERY + REQUIREMENT_LOCK + ARCH_REVIEW | Decision Layer |
-| 03b-task-decomposition.md | TASK_DECOMPOSITION 任务拆分 | Decision Layer |
-| 04a-execution-hydration.md | Context Hydration + Execution 规范 | Context → Execution |
+| 03b-task-decomposition.md | TASK_DECOMPOSITION + PLAN_CONFIRM | Decision Layer |
+| 04a-execution-hydration.md | CONTEXT_HYDRATION + IMPLEMENTATION 规范 | Context -> Execution |
 | 04b-self-review.md | SELF_REVIEW + QA | Execution Layer |
-| 05-ship-review-retro.md | SHIP_REVIEW + RETRO | Execution → Governance |
+| 05-ship-review-retro.md | SHIP_REVIEW + RETRO | Execution -> Governance |
 | 06-workflows.md | 专用流程指令 | 指令触发 |
 | 07-handling.md | 异常处理和状态回滚 | 异常发生时 |
 
-#### 状态机流程
+#### 主流程（由状态机真相源定义）
 
-\`\`\`
-IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
-    → Context Hydration → IMPLEMENTATION → SELF_REVIEW → QA
-    → SHIP_REVIEW → RETRO
-\`\`\`
+\`IDEA -> DISCOVERY -> REQUIREMENT_LOCK -> ARCH_REVIEW -> TASK_DECOMPOSITION -> PLAN_CONFIRM -> CONTEXT_HYDRATION -> IMPLEMENTATION -> SELF_REVIEW -> QA -> SHIP_REVIEW -> RETRO\`
+
+#### Gate 检查点（7个）
+
+| Gate | 状态 | 检查内容 |
+|------|------|---------|
+| G001 requirement-lock | REQUIREMENT_LOCK | 用户确认需求 |
+| G002 arch-review-lock | ARCH_REVIEW | L2+ 有 ADR |
+| G003 task-decomposition-lock | TASK_DECOMPOSITION | plan 存在且无占位符 |
+| G004 plan-confirm | PLAN_CONFIRM | 用户确认执行计划 |
+| G005 context-hydration | CONTEXT_HYDRATION | Spec 文件存在 |
+| G006 decision-freeze | IMPLEMENTATION | 冻结项未修改 |
+| G007 test-presence | SELF_REVIEW | 测试文件存在 |
 
 #### 专用指令
 
@@ -161,6 +156,14 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 | \`/debug\` | 调试助手 |
 | \`/refactor\` | 重构建议 |
 
+#### 真相源
+
+| 文件 | 用途 |
+|------|------|
+| \`governance/state-machine.yaml\` | 状态机定义（唯一真相源） |
+| \`governance/gates.yaml\` | Gate 定义（唯一真相源） |
+| \`skills/hybrid/gs-hybrid-v3/SKILL.md\` | 路由与加载策略入口 |
+
 ---
 
 ## Custom 技能
@@ -169,20 +172,9 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 **用途**: 用户自定义扩展技能
 
-### 创建自定义技能
-
-\`\`\`
-skills/custom/
-└── my-custom-skill/
-    ├── SKILL.md
-    └── README.md
-\`\`\`
-
 ---
 
 ## 三层架构对比
-
-### Superpowers vs GStack vs Hybrid
 
 | 维度 | Superpowers | GStack | Hybrid |
 |------|-------------|--------|--------|
@@ -190,34 +182,32 @@ skills/custom/
 | **架构** | 单一流程 | 工具集 | Decision/Context/Execution三层 |
 | **数量** | ${SUPERPOWERS_COUNT}个 | ${GSTACK_COUNT}个 | 1个（融合两者） |
 | **重点** | 流程规范 | 决策审议 | 治理流程 |
-| **触发** | 自动+手动 | 手动 | 自动+手动 |
+| **触发** | 自动+手动 | 条件+手动 | 自动+条件+手动 |
 | **维护** | 上游同步 | 上游同步 | 手动维护 |
 
 ### 三层职责分配
 
 | 层 | 职责 | 激活的 Skills |
 |------|------|:-------------|
-| **Decision Layer** | 想清楚做什么 | \`brainstorming\`, \`writing-plans\`, \`gstack:plan-eng-review\`, \`gstack:plan-devex-review\` |
+| **Decision Layer** | 想清楚做什么 | \`brainstorming\`, \`design\`, \`writing-plans\`, \`plan-verification\`, \`gstack:plan-eng-review\`, \`gstack:plan-devex-review\` |
 | **Context Layer** | 固化共识、防遗忘 | \`context-save\`, \`context-restore\`, \`learn\` |
-| **Execution Layer** | 严格按契约做 | \`test-driven-development\`, \`requesting-code-review\`, \`gstack:qa\`, \`gstack:cso\` |
-| **Governance** | 决策冻结、状态机控制 | \`gstack:ship\`, \`gstack:retro\`, \`freeze\`, \`guard\`, \`careful\` |
+| **Execution Layer** | 严格按契约做 | \`test-driven-development\`, \`requesting-code-review\`, \`verification-before-completion\`, \`gstack:qa\`, \`gstack:cso\`, \`gstack:benchmark\`, \`gstack:codex\` |
+| **Governance** | 决策冻结、状态机控制 | \`gstack:ship\`, \`gstack:retro\`, \`gstack:investigate\`, \`freeze\`, \`guard\`, \`careful\` |
 
 ---
 
 ## 文档维护规则
 
-**本文档为自动生成层**，真相源为各技能的 SKILL.md 文件。
-
 | 文档 | 角色 | 同步方式 |
 |:-----|:-----|:---------|
-| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | Hybrid 唯一真相源 | 手动维护 |
+| [SKILL.md](../skills/hybrid/gs-hybrid-v3/SKILL.md) | Hybrid 入口与路由真相源 | 手动维护 |
 | 各技能 SKILL.md | 技能定义 | 上游同步/手动 |
-| **skills-reference.md** | 技能列表 | **自动生成** |
+| **skills-reference.md** | 技能索引与对照 | **脚本自动生成** |
 
 ---
 
 > **生成时间**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-> 
+>
 > **生成命令**: \`bash scripts/generate-skills-reference.sh\`
 HYBRID_SECTION
 
