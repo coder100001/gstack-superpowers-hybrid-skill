@@ -13,7 +13,7 @@
 #   backups     列出所有备份
 #
 # 选项:
-#   --target DIR        目标目录（默认: ~/.trae-cn/superpowers）
+#   --target DIR        目标目录（默认: ~/.codex/skills/gs-hybrid-v3）
 #   --no-backup         安装时不创建备份
 #   --dry-run           预览模式，不执行实际操作
 #   --force             强制安装，覆盖现有文件
@@ -23,7 +23,7 @@
 #
 # 示例:
 #   ./scripts/install.sh install                    # 安装到默认位置
-#   ./scripts/install.sh install --target ~/.claude/skills/gstack-hybrid
+#   ./scripts/install.sh install --target ~/.codex/skills/gs-hybrid-v3
 #   ./scripts/install.sh uninstall                  # 卸载
 #   ./scripts/install.sh rollback                   # 回滚到上一个版本
 #   ./scripts/install.sh validate                   # 验证安装
@@ -38,12 +38,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-VERSION="4.1.0"
+VERSION="$(awk '/^version:/ {print $2; exit}' "$PROJECT_ROOT/project-config.yml" 2>/dev/null | tr -d '"' || echo "unknown")"
 
 # 默认目标目录
-DEFAULT_TARGET="$HOME/.trae-cn/superpowers"
+DEFAULT_TARGET="$HOME/.codex/skills/gs-hybrid-v3"
 TARGET_DIR="$DEFAULT_TARGET"
-BACKUP_BASE="$HOME/.trae-cn/superpowers-backups"
+BACKUP_BASE="$HOME/.codex/skills/.gs-hybrid-v3-backups"
 
 # 颜色输出
 RED='\033[0;31m'
@@ -179,6 +179,17 @@ check_source_integrity() {
 # =============================================================================
 
 create_backup() {
+    if [[ "$DRY_RUN" == "true" ]]; then
+        if [[ -d "$TARGET_DIR" ]]; then
+            local timestamp
+            timestamp=$(date +%Y%m%d_%H%M%S)
+            log_info "[DRY-RUN] 将创建备份: $BACKUP_BASE/backup_$timestamp"
+        else
+            log_info "[DRY-RUN] 目标目录不存在，无需备份"
+        fi
+        return 0
+    fi
+
     if [[ "$NO_BACKUP" == "true" ]]; then
         log_info "跳过备份（--no-backup）"
         return 0
@@ -196,11 +207,6 @@ create_backup() {
     local backup_dir="$BACKUP_BASE/backup_$timestamp"
 
     mkdir -p "$BACKUP_BASE"
-
-    if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] 将创建备份: $backup_dir"
-        return 0
-    fi
 
     log_info "备份目录: $backup_dir"
     cp -r "$TARGET_DIR" "$backup_dir"
@@ -438,11 +444,11 @@ show_status() {
         echo ""
 
         local sp_count
-        sp_count=$(find "$TARGET_DIR/skills/superpowers" -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+        sp_count=$(find "$TARGET_DIR/skills/superpowers" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
         local gs_count
-        gs_count=$(find "$TARGET_DIR/skills/gstack" -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+        gs_count=$(find "$TARGET_DIR/skills/gstack" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
         local hybrid_count
-        hybrid_count=$(find "$TARGET_DIR/skills/hybrid" -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+        hybrid_count=$(find "$TARGET_DIR/skills/hybrid" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
 
         echo "技能统计:"
         echo "  - superpowers: $sp_count 个技能"
@@ -508,7 +514,7 @@ show_summary() {
 
     echo ""
     echo "下一步:"
-    echo "  1. 重启 Trae 或 Claude Code"
+    echo "  1. 重启 Codex（或新开会话）"
     echo "  2. 使用 'gs-hybrid-v3' 命令测试"
     echo "  3. 查看 README.md 了解更多功能"
     echo ""
