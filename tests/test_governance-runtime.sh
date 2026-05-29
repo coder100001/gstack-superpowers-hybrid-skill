@@ -606,6 +606,36 @@ YAML
   )
   local code=$?
   set -e
+  [[ "$code" -ne 0 ]]
+  grep -q "GATE_FAILED:requirement-structure" "$out"
+}
+
+test_requirement_structure_warns_but_passes_on_l1() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-requirement-structure-l1-soft.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-approval-only-spec.md" <<'MD'
+# Approval Only
+
+## Requirements
+- A
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-approval-only-spec.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L1 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
   [[ "$code" -eq 0 ]]
   grep -q "GATE_WARN:requirement-structure" "$out"
 }
@@ -748,6 +778,133 @@ YAML
   grep -q "GATE_WARN:requirement-design-coverage" "$out"
 }
 
+test_requirement_design_coverage_passes_with_req_ids() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-req-design-coverage-ids.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-coverage-id-spec.md" <<'MD'
+# Coverage ID Spec
+
+## Requirements
+- REQ-001: telemetry dashboard
+- REQ-002: export csv
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/specs/plans/2099-01-01-coverage-id-plan.md" <<'MD'
+# Coverage ID Plan
+
+## Tasks
+- implement REQ-001 backend aggregation
+- add REQ-002 export endpoint
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/artifacts/workflow-state.md" <<'MD'
+plan_confirmed: true
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-coverage-id-spec.md
+plan_file: specs/plans/2099-01-01-coverage-id-plan.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  ! grep -q "GATE_WARN:requirement-design-coverage" "$out"
+}
+
+test_measurable_acceptance_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-measurable-acceptance-soft.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-non-measurable-spec.md" <<'MD'
+# Non-measurable Spec
+
+## Problem
+- users need faster response
+
+## Scope
+- improve API
+
+## Non-Goals
+- no UI changes
+
+## Acceptance Criteria
+- user experience feels better
+
+## Option Comparison
+### Option A
+- Pros: simple
+- Cons: limited
+### Option B
+- Pros: robust
+- Cons: slower to build
+
+## Decision
+- Chosen Option: B
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-non-measurable-spec.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L1 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:measurable-acceptance" "$out"
+}
+
+test_discovery_risk_tags_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-discovery-risk-tags-soft.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-risk-tags-spec.md" <<'MD'
+# Risk Tags Spec
+
+## Risk Tags
+- business
+
+## Requirements
+- REQ-001: telemetry dashboard
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-risk-tags-spec.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from IDEA --to DISCOVERY --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:discovery-risk-tags" "$out"
+}
+
 echo "=== governance runtime tests ==="
 test_case "transition --json succeeds without gate" test_transition_json_without_gate
 test_case "transition executes gate and blocks on failure" test_transition_runs_gate_and_blocks
@@ -767,11 +924,15 @@ test_case "requirement-lock logs fallback when spec missing in context" test_req
 test_case "acceptance-check logs fallback when plan missing in context" test_acceptance_check_logs_fallback_when_plan_not_set
 test_case "context plan overrides workflow-state plan_file" test_context_plan_overrides_workflow_state_plan
 test_case "context level overrides workflow-state level" test_context_level_overrides_workflow_state_level
-test_case "requirement-structure soft gate warns but passes" test_requirement_structure_soft_gate_warns_but_passes
+test_case "requirement-structure blocks on L2" test_requirement_structure_soft_gate_warns_but_passes
+test_case "requirement-structure warns but passes on L1" test_requirement_structure_warns_but_passes_on_l1
 test_case "requirement-structure passes with option template" test_requirement_structure_passes_with_option_template
 test_case "design-tradeoff soft gate warns but passes" test_design_tradeoff_soft_gate_warns_but_passes
 test_case "design-tradeoff blocks on L3" test_design_tradeoff_blocks_on_l3
 test_case "requirement-design-coverage soft gate warns but passes" test_requirement_design_coverage_soft_gate_warns_but_passes
+test_case "requirement-design-coverage passes with REQ-ID mapping" test_requirement_design_coverage_passes_with_req_ids
+test_case "measurable-acceptance warns but passes" test_measurable_acceptance_warns_but_passes
+test_case "discovery-risk-tags warns but passes" test_discovery_risk_tags_warns_but_passes
 
 echo ""
 echo "结果: $passed passed, $failed failed"

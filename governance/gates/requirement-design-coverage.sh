@@ -3,6 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # requirement-design-coverage.sh — 检查需求是否在设计/计划中被覆盖（软门禁）
+# 优先规则: 使用 REQ-ID 显式映射；无 REQ-ID 时降级为弱匹配并告警
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -74,25 +75,35 @@ if [[ -z "${req_lines:-}" ]]; then
   exit 1
 fi
 
+req_ids=$(echo "$req_lines" | grep -oE 'REQ-[0-9]+' | sort -u || true)
 uncovered=0
-while IFS= read -r req; do
-  [[ -n "$req" ]] || continue
-  normalized=$(echo "$req" | tr '[:upper:]' '[:lower:]' | sed -E 's/^[[:space:]]*[-*][[:space:]]*//')
-  covered=false
 
-  # 使用 4+ 字符关键词做弱匹配（软门禁）
-  for token in $(echo "$normalized" | tr -cs '[:alnum:]' '\n' | awk 'length($0)>=4'); do
-    if grep -qiE "(^|[^[:alnum:]])${token}([^[:alnum:]]|$)" "$corpus_file"; then
-      covered=true
-      break
+if [[ -n "${req_ids:-}" ]]; then
+  while IFS= read -r req_id; do
+    [[ -n "$req_id" ]] || continue
+    if ! grep -q "$req_id" "$corpus_file"; then
+      echo "  ✗ 未覆盖需求ID: $req_id"
+      uncovered=$((uncovered + 1))
     fi
-  done
-
-  if [[ "$covered" != "true" ]]; then
-    echo "  ✗ 未覆盖需求: $normalized"
-    uncovered=$((uncovered + 1))
-  fi
-done <<< "$req_lines"
+  done <<< "$req_ids"
+else
+  gate_log_fallback "REQ-ID not found in spec; falling back to weak keyword coverage"
+  while IFS= read -r req; do
+    [[ -n "$req" ]] || continue
+    normalized=$(echo "$req" | tr '[:upper:]' '[:lower:]' | sed -E 's/^[[:space:]]*[-*][[:space:]]*//')
+    covered=false
+    for token in $(echo "$normalized" | tr -cs '[:alnum:]' '\n' | awk 'length($0)>=4'); do
+      if grep -qiE "(^|[^[:alnum:]])${token}([^[:alnum:]]|$)" "$corpus_file"; then
+        covered=true
+        break
+      fi
+    done
+    if [[ "$covered" != "true" ]]; then
+      echo "  ✗ 未覆盖需求: $normalized"
+      uncovered=$((uncovered + 1))
+    fi
+  done <<< "$req_lines"
+fi
 
 if [[ "$uncovered" -gt 0 ]]; then
   echo "✗ requirement-design-coverage: 存在未覆盖需求（$uncovered）"

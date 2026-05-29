@@ -87,13 +87,24 @@ content = skill_md_file.read_text(encoding="utf-8")
 route_skills = set()
 
 # 提取单行 `xxx` token，并过滤非技能 token（避免跨行代码块误匹配）
+non_skill_tokens = {
+    "L0", "L1", "L2", "L3",
+    "IDEA", "DISCOVERY", "ARCH_REVIEW", "TASK_DECOMPOSITION",
+    "PLAN_CONFIRM", "CONTEXT_HYDRATION", "IMPLEMENTATION",
+    "SELF_REVIEW", "QA", "SHIP_REVIEW", "RETRO", "ABORTED",
+    # context/runtime contract terms
+    "context", "workflow-state", "level", "state",
+    "plan_file", "spec_file", "evidence_dir", "adr_file",
+}
 for token in re.findall(r"`([^`\n]+)`", content):
     t = token.strip()
     if not t:
         continue
+    if t.startswith("--"):
+        continue
     if "/" in t or ".md" in t or t.startswith("[") or t.endswith("]"):
         continue
-    if t in {"L0", "L1", "L2", "L3", "IDEA", "DISCOVERY", "ARCH_REVIEW", "TASK_DECOMPOSITION", "PLAN_CONFIRM", "CONTEXT_HYDRATION", "IMPLEMENTATION", "SELF_REVIEW", "QA", "SHIP_REVIEW", "RETRO", "ABORTED"}:
+    if t in non_skill_tokens:
         continue
     # 仅保留看起来像 skill id 的 token
     if re.match(r"^[a-z0-9][a-z0-9:-]*[a-z0-9]$", t):

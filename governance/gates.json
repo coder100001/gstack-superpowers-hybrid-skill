@@ -6,7 +6,7 @@
     "description": "Gate definitions for AI Engineering Governance System.\nEach gate defines a hard blocking condition that must be satisfied\nbefore transitioning to the target state.\n",
     "canonical_source": "governance/gates.yaml",
     "backup_source": "governance/gates.json",
-    "generated_at": "2026-05-29T08:04:40Z",
+    "generated_at": "2026-05-29T08:36:24Z",
     "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/gates.yaml"
   },
   "gates": {
@@ -41,6 +41,11 @@
         "REQUIREMENT_LOCK"
       ],
       "severity": "soft",
+      "severity_by_level": {
+        "L1": "soft",
+        "L2": "hard",
+        "L3": "hard"
+      },
       "l1_exempt": false,
       "fail_message": "REQUIREMENT_LOCK 质量告警：需求结构不完整，建议补充后继续",
       "exit_codes": {
@@ -51,6 +56,27 @@
       "remediation": [
         "补齐需求文档结构：问题定义、范围、非目标、验收标准、方案对比、决策结论",
         "确保各章节有明确可执行内容"
+      ]
+    },
+    "measurable-acceptance": {
+      "id": "G012",
+      "name": "measurable-acceptance",
+      "description": "验收标准是否具备可测性（可观测指标或阈值）",
+      "script": "governance/gates/measurable-acceptance.sh",
+      "applies_to": [
+        "REQUIREMENT_LOCK"
+      ],
+      "severity": "soft",
+      "l1_exempt": false,
+      "fail_message": "REQUIREMENT_LOCK 质量告警：验收项不可测，建议补充可观测指标后继续",
+      "exit_codes": {
+        "pass": 0,
+        "block": 1,
+        "infra_error": 2
+      },
+      "remediation": [
+        "将验收项改写为可测标准（阈值、时延、成功率、错误率等）",
+        "避免'体验更好'等不可观测描述"
       ]
     },
     "arch-review-lock": {
@@ -165,7 +191,29 @@
       "remediation": [
         "优先在 ADR 中补充对未覆盖需求的设计响应（单一设计产物）",
         "plan 仅补充执行拆解，不新增平行设计文档",
+        "建议在 spec 中使用 REQ-ID（如 REQ-001）并在 ADR/plan 显式映射",
         "确保关键需求在 ADR 与 plan 中可追踪"
+      ]
+    },
+    "discovery-risk-tags": {
+      "id": "G013",
+      "name": "discovery-risk-tags",
+      "description": "DISCOVERY 输出是否包含最小风险标签集合",
+      "script": "governance/gates/discovery-risk-tags.sh",
+      "applies_to": [
+        "DISCOVERY"
+      ],
+      "severity": "soft",
+      "l1_exempt": false,
+      "fail_message": "DISCOVERY 质量告警：风险标签不完整，建议补齐后继续",
+      "exit_codes": {
+        "pass": 0,
+        "block": 1,
+        "infra_error": 2
+      },
+      "remediation": [
+        "在 spec 中补充 Risk Tags 章节",
+        "至少包含 business / technical / dependency 三类标签"
       ]
     },
     "context-hydration": {
