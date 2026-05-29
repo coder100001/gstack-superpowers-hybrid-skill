@@ -103,6 +103,7 @@
 - 任何流程描述冲突时，以脚本行为和 YAML 为准
 - 单一设计产物：ADR 是唯一设计决策载体；plan 只承担执行拆解，不维护平行设计文档
 - 增强策略：优先增强既有 Superpowers 产物（spec/ADR/plan）的质量审查，不新增产物类型
+- 提交信息规范：在 `SHIP_REVIEW` 通过 `commit-message-format` gate 进行格式一致性检查（Phase A 为 soft）
 
 ## 7. 相关文件
 

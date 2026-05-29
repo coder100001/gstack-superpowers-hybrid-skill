@@ -36,6 +36,7 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
   - `scripts/resolve-skill-routes.sh`
   - `scripts/check-skill-routes.sh`
 - Gate 上下文优先级：`context > workflow-state（secondary） > fallback`
+- 提交信息格式建议：`type(scope): summary`（由 `SHIP_REVIEW` 的 soft gate 提示一致性）
 
 ## 4. 主流程
 

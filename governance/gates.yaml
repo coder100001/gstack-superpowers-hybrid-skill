@@ -270,6 +270,25 @@ gates:
       - "在 artifacts/acceptance/ 目录下补充证据文件"
       - "或更新 plan 调整验收标准"
 
+  commit-message-format:
+    id: "G014"
+    name: "commit-message-format"
+    description: "最近提交信息是否符合统一格式 type(scope): summary"
+    script: "governance/gates/commit-message-format.sh"
+    applies_to:
+      - SHIP_REVIEW
+    severity: "soft"
+    l1_exempt: false
+    fail_message: "SHIP_REVIEW 质量告警：提交信息格式不统一，建议规范后继续"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "使用格式: type(scope): summary（scope 可选）"
+      - "允许 type: feat|fix|refactor|docs|test|chore|perf|ci|build|revert"
+      - "建议在提交前自检最近提交信息格式一致性"
+
 validation_rules:
   gate_uniqueness: true
   script_existence: true

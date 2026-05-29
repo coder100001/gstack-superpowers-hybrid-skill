@@ -45,6 +45,7 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - `workflow-state` 中的 `plan_file` / `level` 仅作为 secondary hints，不应覆盖 context。
 - 设计产物约束：ADR 为唯一设计决策产物；plan 仅用于执行拆解，不维护平行设计文档。
 - 优化策略：优先增强既有 Superpowers 产物（spec/ADR/plan）质量，不新增产物类型。
+- 提交信息规范由 SHIP_REVIEW Gate 执行：建议统一 `type(scope): summary`（scope 可选）。
 
 ## 加载策略速查表
 

@@ -905,6 +905,90 @@ YAML
   grep -q "GATE_WARN:discovery-risk-tags" "$out"
 }
 
+test_commit_message_format_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-commit-message-format-warn.out"
+
+  (
+    cd "$repo"
+    git init -q
+    git config user.email "test@example.com"
+    git config user.name "Test User"
+    git checkout -q -b main
+    git add .
+    git commit -q -m "baseline"
+  )
+
+  mkdir -p "$repo/specs/plans" "$repo/context-layer/specs" "$repo/artifacts/acceptance-commit-msg"
+  cat > "$repo/context-layer/specs/contract-summary.md" <<'MD'
+# Contract Summary
+MD
+  cat > "$repo/specs/plans/2099-01-01-commit-msg-check.md" <<'MD'
+# Plan
+
+## Acceptance Criteria
+- API health endpoint returns 200
+MD
+  touch "$repo/artifacts/acceptance-commit-msg/api-health-endpoint-returns-200.txt"
+  cat > "$repo/context.yml" <<'YAML'
+plan_file: specs/plans/2099-01-01-commit-msg-check.md
+evidence_dir: artifacts/acceptance-commit-msg
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from QA --to SHIP_REVIEW --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:commit-message-format" "$out"
+}
+
+test_commit_message_format_passes_with_conventional_style() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-commit-message-format-pass.out"
+
+  (
+    cd "$repo"
+    git init -q
+    git config user.email "test@example.com"
+    git config user.name "Test User"
+    git checkout -q -b main
+    git add .
+    git commit -q -m "chore(test): baseline"
+  )
+
+  mkdir -p "$repo/specs/plans" "$repo/context-layer/specs" "$repo/artifacts/acceptance-commit-msg-pass"
+  cat > "$repo/context-layer/specs/contract-summary.md" <<'MD'
+# Contract Summary
+MD
+  cat > "$repo/specs/plans/2099-01-01-commit-msg-pass.md" <<'MD'
+# Plan
+
+## Acceptance Criteria
+- API health endpoint returns 200
+MD
+  touch "$repo/artifacts/acceptance-commit-msg-pass/api-health-endpoint-returns-200.txt"
+  cat > "$repo/context.yml" <<'YAML'
+plan_file: specs/plans/2099-01-01-commit-msg-pass.md
+evidence_dir: artifacts/acceptance-commit-msg-pass
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from QA --to SHIP_REVIEW --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  ! grep -q "GATE_WARN:commit-message-format" "$out"
+}
+
 echo "=== governance runtime tests ==="
 test_case "transition --json succeeds without gate" test_transition_json_without_gate
 test_case "transition executes gate and blocks on failure" test_transition_runs_gate_and_blocks
@@ -933,6 +1017,8 @@ test_case "requirement-design-coverage soft gate warns but passes" test_requirem
 test_case "requirement-design-coverage passes with REQ-ID mapping" test_requirement_design_coverage_passes_with_req_ids
 test_case "measurable-acceptance warns but passes" test_measurable_acceptance_warns_but_passes
 test_case "discovery-risk-tags warns but passes" test_discovery_risk_tags_warns_but_passes
+test_case "commit-message-format warns but passes" test_commit_message_format_warns_but_passes
+test_case "commit-message-format passes with conventional style" test_commit_message_format_passes_with_conventional_style
 
 echo ""
 echo "结果: $passed passed, $failed failed"
