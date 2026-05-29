@@ -19,9 +19,13 @@ keys:
   evidence_dir:
     aliases: ["acceptance_evidence_dir"]
     example: "artifacts/acceptance"
+  adr_file:
+    aliases: ["design_file"]
+    example: "decision-layer/adr/ADR-012-some-decision.md"
 
 rules:
   - "Gates must prefer context keys over implicit discovery."
   - "When context and workflow-state conflict, context wins."
   - "workflow-state plan_file/level are secondary hints only."
+  - "Design decision source of truth is ADR; avoid parallel design documents."
   - "Implicit discovery is allowed only as fallback and must log 'fallback used: ...'."

@@ -175,6 +175,9 @@ for gate in applicable_gates:
     gate_script = gate.get('script', '')
     l1_exempt = gate.get('l1_exempt', False)
     severity = gate.get('severity', 'hard')
+    severity_by_level = gate.get('severity_by_level', {})
+    if isinstance(severity_by_level, dict):
+        severity = severity_by_level.get(level, severity)
     fail_message = gate.get('fail_message', 'Gate 检查失败')
     remediation = gate.get('remediation', [])
     
@@ -236,6 +239,8 @@ for gate in applicable_gates:
             env=env,
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=60
         )
         
@@ -260,24 +265,44 @@ for gate in applicable_gates:
                 "duration_ms": duration_ms
             })
         elif result.returncode == 1:
-            if not output_json:
-                print(f"  ✗ 阻断: GATE_FAILED:{gate_name} {fail_message}")
-                if result.stdout:
-                    for line in result.stdout.strip().split('\n'):
-                        if line:
-                            print(f"     {line}")
-            errors += 1
-            gate_results.append({
-                "status": "block",
-                "gate_id": gate_id,
-                "gate_name": gate_name,
-                "message": fail_message,
-                "fail_message": fail_message,
-                "remediation": remediation,
-                "context": {"from_state": from_state, "to_state": to_state, "level": level},
-                "timestamp": start_time.isoformat(),
-                "duration_ms": duration_ms
-            })
+            if severity == 'hard':
+                if not output_json:
+                    print(f"  ✗ 阻断: GATE_FAILED:{gate_name} {fail_message}")
+                    if result.stdout:
+                        for line in result.stdout.strip().split('\n'):
+                            if line:
+                                print(f"     {line}")
+                errors += 1
+                gate_results.append({
+                    "status": "block",
+                    "gate_id": gate_id,
+                    "gate_name": gate_name,
+                    "message": fail_message,
+                    "fail_message": fail_message,
+                    "remediation": remediation,
+                    "context": {"from_state": from_state, "to_state": to_state, "level": level},
+                    "timestamp": start_time.isoformat(),
+                    "duration_ms": duration_ms
+                })
+            else:
+                if not output_json:
+                    print(f"  ⚠ 告警: GATE_WARN:{gate_name} {fail_message}")
+                    if result.stdout:
+                        for line in result.stdout.strip().split('\n'):
+                            if line:
+                                print(f"     {line}")
+                skipped += 1
+                gate_results.append({
+                    "status": "skip",
+                    "gate_id": gate_id,
+                    "gate_name": gate_name,
+                    "message": f"{severity} gate failed but non-blocking: {fail_message}",
+                    "fail_message": fail_message,
+                    "remediation": remediation,
+                    "context": {"from_state": from_state, "to_state": to_state, "level": level},
+                    "timestamp": start_time.isoformat(),
+                    "duration_ms": duration_ms
+                })
         else:
             if not output_json:
                 print(f"  ⚠ 基础设施错误: GATE_FAILED:{gate_name} (exit code: {result.returncode})")

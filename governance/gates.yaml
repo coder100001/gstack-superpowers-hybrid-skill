@@ -35,6 +35,24 @@ gates:
       - "确认需求后运行 /plan"
       - "或手动创建 spec 文件并添加 ## Approval 章节"
 
+  requirement-structure:
+    id: "G009"
+    name: "requirement-structure"
+    description: "需求文档是否包含问题定义/范围/非目标/验收标准 + 多方案对比 + 决策结论"
+    script: "governance/gates/requirement-structure.sh"
+    applies_to:
+      - REQUIREMENT_LOCK
+    severity: "soft"
+    l1_exempt: false
+    fail_message: "REQUIREMENT_LOCK 质量告警：需求结构不完整，建议补充后继续"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "补齐需求文档结构：问题定义、范围、非目标、验收标准、方案对比、决策结论"
+      - "确保各章节有明确可执行内容"
+
   arch-review-lock:
     id: "G002"
     name: "arch-review-lock"
@@ -53,6 +71,29 @@ gates:
       - "创建 ADR 文件: decision-layer/adr/ADR-NNN-title.md"
       - "确保 ADR 包含 Status、Context、Decision 章节"
       - "L1 任务可豁免此 Gate"
+
+  design-tradeoff:
+    id: "G010"
+    name: "design-tradeoff"
+    description: "方案设计是否包含备选方案、权衡分析与最终决策"
+    script: "governance/gates/design-tradeoff.sh"
+    applies_to:
+      - ARCH_REVIEW
+    severity: "soft"
+    severity_by_level:
+      L2: "soft"
+      L3: "hard"
+    l1_exempt: true
+    fail_message: "ARCH_REVIEW 质量告警：设计权衡信息不完整，建议补充后继续"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "在 ADR 中至少列出两个备选方案"
+      - "补充 trade-off（复杂度/风险/成本/性能）"
+      - "明确最终决策与理由"
+      - "ADR 是唯一设计产物，不维护平行设计文档"
 
   task-decomposition-lock:
     id: "G003"
@@ -91,6 +132,25 @@ gates:
       - "向用户展示完整执行计划"
       - "获取用户明确确认（口头或书面）"
       - "确认范围、拆解、风险、验收标准"
+
+  requirement-design-coverage:
+    id: "G011"
+    name: "requirement-design-coverage"
+    description: "需求条目是否在设计/计划中得到覆盖"
+    script: "governance/gates/requirement-design-coverage.sh"
+    applies_to:
+      - PLAN_CONFIRM
+    severity: "soft"
+    l1_exempt: false
+    fail_message: "PLAN_CONFIRM 质量告警：存在未覆盖需求，建议补齐映射后继续"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "优先在 ADR 中补充对未覆盖需求的设计响应（单一设计产物）"
+      - "plan 仅补充执行拆解，不新增平行设计文档"
+      - "确保关键需求在 ADR 与 plan 中可追踪"
 
   context-hydration:
     id: "G005"
@@ -182,3 +242,5 @@ validation_rules:
     - applies_to
     - severity
     - fail_message
+  optional_fields:
+    - severity_by_level

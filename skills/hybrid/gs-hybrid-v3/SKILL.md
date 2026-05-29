@@ -43,6 +43,8 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - 若本文件状态/Gate 摘要与治理层 YAML 冲突，以治理层 YAML 为准。
 - Gate 读取优先级：`context 文件 > workflow-state（secondary source） > 自动发现（fallback）`。
 - `workflow-state` 中的 `plan_file` / `level` 仅作为 secondary hints，不应覆盖 context。
+- 设计产物约束：ADR 为唯一设计决策产物；plan 仅用于执行拆解，不维护平行设计文档。
+- 优化策略：优先增强既有 Superpowers 产物（spec/ADR/plan）质量，不新增产物类型。
 
 ## 加载策略速查表
 

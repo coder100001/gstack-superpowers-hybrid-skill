@@ -580,6 +580,174 @@ YAML
   [[ "$code" -eq 0 ]]
 }
 
+test_requirement_structure_soft_gate_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-requirement-structure-soft.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-approval-only-spec.md" <<'MD'
+# Approval Only
+
+## Requirements
+- A
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-approval-only-spec.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:requirement-structure" "$out"
+}
+
+test_requirement_structure_passes_with_option_template() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-requirement-structure-pass.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-structured-spec.md" <<'MD'
+# Structured Requirement
+
+## Problem
+- Current onboarding is slow.
+
+## Scope
+- Improve first-run flow.
+
+## Non-Goals
+- No billing changes.
+
+## Acceptance Criteria
+- New user reaches first success in under 2 minutes.
+
+## Option Comparison
+### Option A
+- Pros: quick
+- Cons: limited
+### Option B
+- Pros: scalable
+- Cons: more dev effort
+
+## Decision
+- Chosen Option: B
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-structured-spec.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  ! grep -q "GATE_WARN:requirement-structure" "$out"
+}
+
+test_design_tradeoff_soft_gate_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-design-tradeoff-soft.out"
+
+  cat > "$repo/decision-layer/adr/ADR-999-soft-gate-test.md" <<'MD'
+# ADR-999 Soft Gate Test
+
+Status: Approved
+Decision: proceed
+MD
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from REQUIREMENT_LOCK --to ARCH_REVIEW --level L2 >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:design-tradeoff" "$out"
+}
+
+test_design_tradeoff_blocks_on_l3() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-design-tradeoff-l3.out"
+
+  cat > "$repo/decision-layer/adr/ADR-998-l3-hard-test.md" <<'MD'
+# ADR-998 L3 Hard Test
+
+Status: Approved
+Decision: proceed
+MD
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from REQUIREMENT_LOCK --to ARCH_REVIEW --level L3 >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -ne 0 ]]
+  grep -q "GATE_FAILED:design-tradeoff" "$out"
+}
+
+test_requirement_design_coverage_soft_gate_warns_but_passes() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-req-design-coverage-soft.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-coverage-spec.md" <<'MD'
+# Coverage Spec
+
+## Requirements
+- unicorn telemetry panel
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/specs/plans/2099-01-01-coverage-plan.md" <<'MD'
+# Coverage Plan
+
+## Tasks
+- [x] implement dashboard endpoint
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/artifacts/workflow-state.md" <<'MD'
+plan_confirmed: true
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+spec_file: context-layer/specs/2099-01-01-coverage-spec.md
+plan_file: specs/plans/2099-01-01-coverage-plan.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "GATE_WARN:requirement-design-coverage" "$out"
+}
+
 echo "=== governance runtime tests ==="
 test_case "transition --json succeeds without gate" test_transition_json_without_gate
 test_case "transition executes gate and blocks on failure" test_transition_runs_gate_and_blocks
@@ -599,6 +767,11 @@ test_case "requirement-lock logs fallback when spec missing in context" test_req
 test_case "acceptance-check logs fallback when plan missing in context" test_acceptance_check_logs_fallback_when_plan_not_set
 test_case "context plan overrides workflow-state plan_file" test_context_plan_overrides_workflow_state_plan
 test_case "context level overrides workflow-state level" test_context_level_overrides_workflow_state_level
+test_case "requirement-structure soft gate warns but passes" test_requirement_structure_soft_gate_warns_but_passes
+test_case "requirement-structure passes with option template" test_requirement_structure_passes_with_option_template
+test_case "design-tradeoff soft gate warns but passes" test_design_tradeoff_soft_gate_warns_but_passes
+test_case "design-tradeoff blocks on L3" test_design_tradeoff_blocks_on_l3
+test_case "requirement-design-coverage soft gate warns but passes" test_requirement_design_coverage_soft_gate_warns_but_passes
 
 echo ""
 echo "结果: $passed passed, $failed failed"
