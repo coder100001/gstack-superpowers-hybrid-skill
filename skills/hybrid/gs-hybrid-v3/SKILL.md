@@ -47,76 +47,36 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - 优化策略：优先增强既有 Superpowers 产物（spec/ADR/plan）质量，不新增产物类型。
 - 提交信息规范由 SHIP_REVIEW Gate 执行：建议统一 `type(scope): summary`（scope 可选）。
 
-## 加载策略速查表
+## 模块入口（按阶段加载）
 
-| 阶段 | 模块 | 关联框架文件 |
-|:-----|:-----|:-------------|
-| IDEA / Step 0 | [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md) | — |
-| DISCOVERY | [03a-discovery-arch.md](./modules/03a-discovery-arch.md) | `reviews/product-review.md`, `reviews/risk-review.md` |
-| ARCH_REVIEW | 03a-discovery-arch.md | `reviews/architecture-review.md`, `reviews/tradeoff-review.md` |
-| TASK_DECOMPOSITION | [03b-task-decomposition.md](./modules/03b-task-decomposition.md) | — |
-| PLAN_CONFIRM | 03b-task-decomposition.md | — |
-| CONTEXT_HYDRATION | [04a-execution-hydration.md](./modules/04a-execution-hydration.md) | `bridges/context-hydration.md`, `specs/*`, `bridges/decision-to-context.md` |
-| IMPLEMENTATION | 04a-execution-hydration.md | `execution-layer/implementation.md`, `testing.md`, `governance/decision-freeze.md` |
-| SELF_REVIEW | [04b-self-review.md](./modules/04b-self-review.md) | `execution-layer/review.md`, `validation.md` |
-| QA / SHIP_REVIEW / RETRO | 04b-self-review.md, [05-ship-review-retro.md](./modules/05-ship-review-retro.md) | `governance/decision-freeze.md` |
-| 指令触发 | [06-workflows.md](./modules/06-workflows.md) | — |
-| 异常/变更 | [07-handling.md](./modules/07-handling.md) | `governance/decision-freeze.md`（按需） |
+- IDEA / Step 0： [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md)
+- DISCOVERY / ARCH_REVIEW： [03a-discovery-arch.md](./modules/03a-discovery-arch.md)
+- TASK_DECOMPOSITION / PLAN_CONFIRM： [03b-task-decomposition.md](./modules/03b-task-decomposition.md)
+- CONTEXT_HYDRATION / IMPLEMENTATION： [04a-execution-hydration.md](./modules/04a-execution-hydration.md)
+- SELF_REVIEW / QA / SHIP_REVIEW / RETRO： [04b-self-review.md](./modules/04b-self-review.md), [05-ship-review-retro.md](./modules/05-ship-review-retro.md)
+- 指令触发： [06-workflows.md](./modules/06-workflows.md)
+- 异常/变更： [07-handling.md](./modules/07-handling.md)
 
 加载规则：进入下一阶段后释放前序上下文，仅保留契约摘要。
 
-## 执行路由（可读摘要）
+## 路由与职责（摘要）
 
-### Superpowers 路由
+- 执行路由机器真相源：`schema/skill-routes.yaml`
+- 路由可读说明：`docs/skills-reference.md`
+- 路由解析与体检：`scripts/resolve-skill-routes.sh` / `scripts/check-skill-routes.sh`
+- 三层职责与治理说明：`docs/architecture.md`
 
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| DISCOVERY | `brainstorming` | L2+ | 需求澄清、方案探索 |
-| ARCH_REVIEW | `design` | L2+ | 设计文档与决策说明 |
-| TASK_DECOMPOSITION | `writing-plans` | 所有任务 | 结构化计划拆解 |
-| PLAN_CONFIRM | `plan-verification` | 所有任务 | 计划完整性与确认校验 |
-| IMPLEMENTATION | `test-driven-development` | 所有任务 | TDD 实现 |
-| SELF_REVIEW | `requesting-code-review` | L2+ | 代码审查 |
-| SHIP_REVIEW | `verification-before-completion` | 所有任务 | 交付前验证 |
+最小路由锚点（用于保持入口可读性与路由体检价值）：
+- Decision：`brainstorming`, `design`, `writing-plans`, `plan-verification`
+- Execution：`test-driven-development`, `requesting-code-review`, `verification-before-completion`
+- GStack：`gstack:plan-eng-review`, `gstack:qa`, `gstack:ship`, `gstack:investigate`
 
-### GStack 路由
+## 文档与校验索引
 
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| ARCH_REVIEW | `gstack:design-review` | 涉及前端 UI/UX | 视觉设计审查 |
-| ARCH_REVIEW | `gstack:plan-eng-review` | L2+ | 工程可行性审查 |
-| ARCH_REVIEW | `gstack:plan-devex-review` | L2+ | 开发体验审查 |
-| QA | `gstack:qa` | L3 | QA 测试验证 |
-| QA | `gstack:cso` | 安全相关变更 | 安全扫描 |
-| QA | `gstack:benchmark` | L3 + 性能敏感 | 性能基准 |
-| SELF_REVIEW | `gstack:codex` | L3 | 跨模型审查 |
-| SHIP_REVIEW | `gstack:ship` | 需要发布/部署 | 发布检查 |
-| RETRO | `gstack:retro` | L3 | 复盘 |
-| 异常处理 | `gstack:investigate` | 调试/根因分析 | 根因调查 |
-
-## 三层职责（摘要）
-
-- Decision Layer：需求澄清、方案审议、ADR 决策
-- Context Layer：Spec 契约、上下文注水、约束持久化
-- Execution Layer：受约束实现、自审、QA、发布前验证
-- Bridges：层间传递协议（Decision -> Context -> Execution）
-- Governance：状态机、Gate、冻结与变更控制
-
-## 异常处理
-
-异常流程见 [07-handling.md](./modules/07-handling.md)：
-- 评审冲突
-- 流程回退
-- 方案变更
-- 阻断问题修复
-
-## 文档索引
-
-- [README.md](../../../README.md)
-- [docs/getting-started.md](../../../docs/getting-started.md)
-- [docs/architecture.md](../../../docs/architecture.md)
-- [docs/skills-reference.md](../../../docs/skills-reference.md)
-- [skills/README.md](../../../skills/README.md)
+- 项目总览： [README.md](../../../README.md)
+- 快速上手： [docs/getting-started.md](../../../docs/getting-started.md)
+- 架构说明： [docs/architecture.md](../../../docs/architecture.md)
+- 技能索引： [docs/skills-reference.md](../../../docs/skills-reference.md)
 
 版本: v4.1.1
 最后更新: 2026-05-29

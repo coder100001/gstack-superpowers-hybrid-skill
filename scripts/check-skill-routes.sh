@@ -85,6 +85,17 @@ print("-------------------------------------------")
 
 content = skill_md_file.read_text(encoding="utf-8")
 route_skills = set()
+required_anchor_skills = {
+    "brainstorming",
+    "design",
+    "writing-plans",
+    "plan-verification",
+    "test-driven-development",
+    "requesting-code-review",
+    "verification-before-completion",
+    "gstack:qa",
+    "gstack:ship",
+}
 
 # 提取单行 `xxx` token，并过滤非技能 token（避免跨行代码块误匹配）
 non_skill_tokens = {
@@ -111,6 +122,15 @@ for token in re.findall(r"`([^`\n]+)`", content):
         route_skills.add(t)
 
 print(f"✓ 从 SKILL.md 提取到 {len(route_skills)} 个技能引用")
+
+if len(route_skills) == 0:
+    errors_list.append("[ERROR] SKILL.md 未提取到任何技能引用（路由体检信号丢失）")
+    errors += 1
+else:
+    missing_anchors = sorted(required_anchor_skills - route_skills)
+    for skill_name in missing_anchors:
+        errors_list.append(f"[ERROR] 缺少必选路由锚点: {skill_name}")
+        errors += 1
 
 print("")
 print("-------------------------------------------")
@@ -233,7 +253,7 @@ report += """
 """
 
 if errors > 0:
-    report += "1. **Critical**: 修复 SKILL.md 路由中不存在的技能名\n2. 选择：修正文档路由名或补充缺失技能\n"
+    report += "1. **Critical**: 修复 SKILL.md 路由摘要（存在缺失/无效技能引用）\n2. 确保最小路由锚点完整，避免体检信号丢失\n"
 elif warnings > 0:
     report += "1. **Warning**: 检查未注册技能是否应加入路由\n2. 若不应路由触发，可保留为未注册\n"
 elif unregistered_info > 0:
