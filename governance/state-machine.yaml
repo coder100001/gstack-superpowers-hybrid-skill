@@ -1,10 +1,10 @@
 # State Machine Definition
-# AI Engineering Governance System v4.1
+# AI Engineering Governance System v4.1.1
 # This is the SINGLE SOURCE OF TRUTH for state machine definitions.
 # Do NOT duplicate this content in SKILL.md or other documents.
 
-version: "4.1"
-updated: "2026-05-25"
+version: "4.1.1"
+updated: "2026-05-29"
 adr_ref: "ADR-009"
 
 metadata:

@@ -11,11 +11,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$SCRIPT_DIR/common-context.sh"
 
-context_spec="$(gate_context_value "spec_file")"
+context_spec="$(gate_context_get "spec_file" "requirement_spec_file")"
 
 if [[ -n "$context_spec" ]]; then
   latest="$(gate_context_path "$context_spec" "$PROJECT_ROOT")"
 else
+  gate_log_fallback "spec_file not set; discovering latest spec"
   specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/"$TODAY"-*-spec.md 2>/dev/null || true)
   if [[ -z "$specs" ]]; then
     specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/*-spec.md 2>/dev/null | tail -3 || true)

@@ -1,9 +1,9 @@
 ---
 name: "gs-hybrid-v3"
-description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1 渐进式加载优化与治理收敛版。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1.1 渐进式加载优化与治理收敛版。"
 ---
 
-# AI Engineering Governance System v4.1
+# AI Engineering Governance System v4.1.1
 
 > 入口文档（薄层）：只保留流程入口、加载策略与技能路由。  
 > 状态机与 Gate 细则以治理层机器可读文件为唯一真相源。
@@ -35,11 +35,14 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - Gate 校验: `governance/check-gates.sh --from <state> --to <state> --level <L0|L1|L2|L3>`
 - 路由解析: `scripts/resolve-skill-routes.sh --category <category> --state <state> --level <L0|L1|L2|L3>`
 - 路由摘要健康检查: `scripts/check-skill-routes.sh`
+- 运行时上下文契约: `governance/context-contract.yaml`
 
 规则：
 - 本文件不再重复维护“状态转换明细表”和“Hard Gate 细则表”。
 - 若本文件路由摘要与 `schema/skill-routes.yaml` 冲突，以 `schema/skill-routes.yaml` 为准。
 - 若本文件状态/Gate 摘要与治理层 YAML 冲突，以治理层 YAML 为准。
+- Gate 读取优先级：`context 文件 > workflow-state（secondary source） > 自动发现（fallback）`。
+- `workflow-state` 中的 `plan_file` / `level` 仅作为 secondary hints，不应覆盖 context。
 
 ## 加载策略速查表
 
@@ -112,5 +115,5 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - [docs/skills-reference.md](../../../docs/skills-reference.md)
 - [skills/README.md](../../../skills/README.md)
 
-版本: v4.1  
-最后更新: 2026-05-26
+版本: v4.1.1
+最后更新: 2026-05-29

@@ -11,10 +11,11 @@ PLANS_DIR="$PROJECT_ROOT/specs/plans"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 source "$SCRIPT_DIR/common-context.sh"
 
-context_plan="$(gate_context_value "plan_file")"
+context_plan="$(gate_context_get "plan_file" "current_plan_file")"
 if [[ -n "$context_plan" ]]; then
   latest_plan="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
 else
+  gate_log_fallback "plan_file not set; selecting newest plan file"
   latest_plan=$(ls -t "$PLANS_DIR"/*.md 2>/dev/null | head -1 || true)
 fi
 

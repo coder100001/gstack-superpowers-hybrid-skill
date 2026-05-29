@@ -446,6 +446,140 @@ YAML
   [[ "$code" -ne 0 ]]
 }
 
+test_requirement_lock_logs_fallback_when_context_missing_spec() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-req-fallback.out"
+
+  cat > "$repo/context-layer/specs/2099-01-01-approved-spec.md" <<'MD'
+# Approved
+
+## Requirements
+- A
+
+## Approval
+- [x] confirmed
+MD
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from DISCOVERY --to REQUIREMENT_LOCK --level L2 >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "fallback used: spec_file not set; discovering latest spec" "$out"
+}
+
+test_acceptance_check_logs_fallback_when_plan_not_set() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-acceptance-fallback.out"
+
+  mkdir -p "$repo/specs/plans" "$repo/context-layer/specs"
+  cat > "$repo/context-layer/specs/contract-summary.md" <<'MD'
+# Contract Summary
+MD
+
+  cat > "$repo/specs/plans/2099-01-01-covered.md" <<'MD'
+# Plan
+
+## Acceptance Criteria
+- Login works
+MD
+  mkdir -p "$repo/artifacts/acceptance"
+  touch "$repo/artifacts/acceptance/login-works.txt"
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from QA --to SHIP_REVIEW --level L2 >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+  grep -q "fallback used: plan_file not set; selecting newest plan file" "$out"
+}
+
+test_context_plan_overrides_workflow_state_plan() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-context-overrides-plan.out"
+
+  cat > "$repo/specs/plans/2000-01-01-bad.md" <<'MD'
+# Bad Plan
+
+## Tasks
+- TBD fill this
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/specs/plans/2099-01-01-good.md" <<'MD'
+# Good Plan
+
+## Tasks
+- [x] done
+
+## Approval
+- [x] confirmed
+MD
+
+  cat > "$repo/artifacts/workflow-state.md" <<'MD'
+plan_file: specs/plans/2000-01-01-bad.md
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+plan_file: specs/plans/2099-01-01-good.md
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from ARCH_REVIEW --to TASK_DECOMPOSITION --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+}
+
+test_context_level_overrides_workflow_state_level() {
+  local repo out
+  repo="$(make_fixture)"
+  out="/tmp/gstack-context-overrides-level.out"
+
+  mkdir -p "$repo/context-layer/specs"
+  cat > "$repo/context-layer/specs/project-spec.md" <<'MD'
+# project
+MD
+  cat > "$repo/context-layer/specs/architecture-spec.md" <<'MD'
+# architecture
+MD
+  rm -f "$repo/context-layer/specs/api-spec.md"
+  rm -f "$repo/context-layer/specs/test-spec.md"
+  rm -f "$repo/context-layer/specs/constraints-spec.md"
+  rm -f "$repo/context-layer/specs/domain-boundaries.md"
+
+  cat > "$repo/artifacts/workflow-state.md" <<'MD'
+level: L2
+MD
+
+  cat > "$repo/context.yml" <<'YAML'
+level: L1
+YAML
+
+  set +e
+  (
+    cd "$repo" &&
+      ./governance/check-gates.sh --from PLAN_CONFIRM --to CONTEXT_HYDRATION --level L2 --context context.yml >"$out" 2>&1
+  )
+  local code=$?
+  set -e
+  [[ "$code" -eq 0 ]]
+}
+
 echo "=== governance runtime tests ==="
 test_case "transition --json succeeds without gate" test_transition_json_without_gate
 test_case "transition executes gate and blocks on failure" test_transition_runs_gate_and_blocks
@@ -461,6 +595,10 @@ test_case "acceptance-check uses context plan/evidence" test_acceptance_check_us
 test_case "check-gates rejects invalid level" test_check_gates_rejects_invalid_level
 test_case "check-gates rejects missing context file" test_check_gates_rejects_missing_context_file
 test_case "plan-confirm blocks missing context plan" test_plan_confirm_blocks_when_context_plan_missing
+test_case "requirement-lock logs fallback when spec missing in context" test_requirement_lock_logs_fallback_when_context_missing_spec
+test_case "acceptance-check logs fallback when plan missing in context" test_acceptance_check_logs_fallback_when_plan_not_set
+test_case "context plan overrides workflow-state plan_file" test_context_plan_overrides_workflow_state_plan
+test_case "context level overrides workflow-state level" test_context_level_overrides_workflow_state_level
 
 echo ""
 echo "结果: $passed passed, $failed failed"

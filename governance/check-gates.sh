@@ -245,6 +245,10 @@ for gate in applicable_gates:
         if result.returncode == 0:
             if not output_json:
                 print(f"  ✓ 通过")
+                if result.stdout:
+                    for line in result.stdout.strip().split('\n'):
+                        if line and "fallback used:" in line:
+                            print(f"     {line}")
             passed += 1
             gate_results.append({
                 "status": "pass",

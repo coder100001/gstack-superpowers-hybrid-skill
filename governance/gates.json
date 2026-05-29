@@ -1,12 +1,12 @@
 {
-  "version": "4.1",
-  "updated": "2026-05-25",
+  "version": "4.1.1",
+  "updated": "2026-05-29",
   "adr_ref": "ADR-009",
   "metadata": {
     "description": "Gate definitions for AI Engineering Governance System.\nEach gate defines a hard blocking condition that must be satisfied\nbefore transitioning to the target state.\n",
     "canonical_source": "governance/gates.yaml",
     "backup_source": "governance/gates.json",
-    "generated_at": "2026-05-29T06:42:01Z",
+    "generated_at": "2026-05-29T07:26:11Z",
     "generated_from": "/Users/liunian/Desktop/dnmp/gstack-superpowers-hybrid-skill/governance/gates.yaml"
   },
   "gates": {

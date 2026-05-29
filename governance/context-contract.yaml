@@ -1,0 +1,27 @@
+version: "1.0"
+description: "Runtime context contract consumed by governance gates"
+
+source_precedence:
+  - "context file (primary source)"
+  - "artifacts/workflow-state.md (secondary source)"
+  - "implicit discovery (last resort; must log fallback used)"
+
+keys:
+  level:
+    aliases: ["complexity"]
+    example: "L2"
+  plan_file:
+    aliases: ["current_plan_file"]
+    example: "specs/plans/2026-05-25-example-plan.md"
+  spec_file:
+    aliases: ["requirement_spec_file"]
+    example: "context-layer/specs/2026-05-25-example-spec.md"
+  evidence_dir:
+    aliases: ["acceptance_evidence_dir"]
+    example: "artifacts/acceptance"
+
+rules:
+  - "Gates must prefer context keys over implicit discovery."
+  - "When context and workflow-state conflict, context wins."
+  - "workflow-state plan_file/level are secondary hints only."
+  - "Implicit discovery is allowed only as fallback and must log 'fallback used: ...'."

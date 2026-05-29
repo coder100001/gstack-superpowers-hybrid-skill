@@ -33,7 +33,7 @@ fi
 recent_plans=()
 
 # 优先使用 context 指定 plan
-context_plan="$(gate_context_value "plan_file")"
+context_plan="$(gate_context_get "plan_file" "current_plan_file")"
 if [[ -n "$context_plan" ]]; then
   resolved_context_plan="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
   if [[ -f "$resolved_context_plan" ]]; then
@@ -43,6 +43,7 @@ fi
 
 # 尝试从 workflow-state.md 获取当前 plan 文件
 if [[ ${#recent_plans[@]} -eq 0 && -f "$STATE_FILE" ]]; then
+  gate_log_fallback "plan_file not set; reading plan from workflow-state"
   current_plan=$(grep -i "current.plan\|current_plan\|plan_file" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' || true)
   if [[ -n "$current_plan" ]] && [[ -f "$PROJECT_ROOT/$current_plan" ]]; then
     recent_plans+=("$PROJECT_ROOT/$current_plan")
@@ -51,6 +52,7 @@ fi
 
 # 如果没有记录，使用最新修改的 plan 文件
 if [[ ${#recent_plans[@]} -eq 0 ]]; then
+  gate_log_fallback "workflow-state has no usable plan; selecting newest plan file"
   latest_plan=$(ls -t "$PLANS_DIR"/*.md 2>/dev/null | head -1 || true)
   if [[ -n "$latest_plan" ]]; then
     recent_plans=("$latest_plan")

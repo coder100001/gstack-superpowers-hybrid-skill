@@ -17,14 +17,14 @@ PLAN_FILE="${1:-$PROJECT_ROOT/specs/plans/*.md}"
 EVIDENCE_DIR="${2:-$PROJECT_ROOT/artifacts/acceptance}"
 CONTRACT_FILE="$PROJECT_ROOT/context-layer/specs/contract-summary.md"
 
-context_plan="$(gate_context_value "plan_file")"
+context_plan="$(gate_context_get "plan_file" "current_plan_file")"
 if [[ -n "$context_plan" ]]; then
     PLAN_FILE="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
 fi
 
-context_evidence="$(gate_context_value "evidence_dir")"
+context_evidence="$(gate_context_get "evidence_dir" "acceptance_evidence_dir")"
 if [[ -z "$context_evidence" ]]; then
-    context_evidence="$(gate_context_value "acceptance_evidence_dir")"
+    gate_log_fallback "evidence_dir not set; using default artifacts/acceptance"
 fi
 if [[ -n "$context_evidence" ]]; then
     EVIDENCE_DIR="$(gate_context_path "$context_evidence" "$PROJECT_ROOT")"
@@ -47,6 +47,7 @@ fi
 
 # 仅在未明确指定 plan 时，查找最新 plan 文件
 if [[ "$PLAN_FILE" == *"*"* ]] && [[ -d "$PROJECT_ROOT/specs/plans" ]]; then
+    gate_log_fallback "plan_file not set; selecting newest plan file"
     LATEST_PLAN=$(find "$PROJECT_ROOT/specs/plans" -name "*.md" -type f -exec stat -f "%m %N" {} \; 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)
     if [[ -n "$LATEST_PLAN" ]]; then
         PLAN_FILE="$LATEST_PLAN"

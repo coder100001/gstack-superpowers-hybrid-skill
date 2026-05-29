@@ -1,6 +1,6 @@
 # AI Engineering Governance System
 
-> gs-hybrid-v3 v4.1（治理收敛版）
+> gs-hybrid-v3 v4.1.1（治理收敛版）
 > 三层架构：Decision / Context / Execution + Bridges + Governance
 
 ## 这是什么
@@ -11,12 +11,14 @@
 - Execution Layer：在约束内实现、验证、交付
 - Governance：用状态机和 Gate 阻断违规流程
 
-## 当前设计原则（v4.1）
+## 当前设计原则（v4.1.1）
 
 - `SKILL.md` 是薄入口，不重复大表
 - `governance/state-machine.yaml` 是状态机真相源
 - `governance/gates.yaml` 是 Gate 真相源
 - `schema/skill-routes.yaml` 是机器路由真相源
+- `governance/context-contract.yaml` 是运行时 context 契约真相源
+- Gate 读取优先级：`context > workflow-state（secondary） > fallback`
 - 文档描述若与 YAML 冲突，以 YAML 为准
 
 ## 快速开始
@@ -77,5 +79,5 @@ docs/architecture.md                         # 架构说明
 ## 版本
 
 - Skill: `gs-hybrid-v3`
-- 架构版本: `v4.1`
-- 更新时间: `2026-05-26`
+- 架构版本: `v4.1.1`
+- 更新时间: `2026-05-29`

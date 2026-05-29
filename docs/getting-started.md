@@ -1,4 +1,4 @@
-# 快速开始（v4.1）
+# 快速开始（v4.1.1）
 
 > 面向 gs-hybrid-v3 当前版本的最小可用指南。
 
@@ -29,11 +29,13 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
   - `governance/state-machine.yaml`
   - `governance/gates.yaml`
   - `schema/skill-routes.yaml`
+  - `governance/context-contract.yaml`
 - 脚本入口：
   - `scripts/validate-state-machine.sh`
   - `governance/check-gates.sh`
   - `scripts/resolve-skill-routes.sh`
   - `scripts/check-skill-routes.sh`
+- Gate 上下文优先级：`context > workflow-state（secondary） > fallback`
 
 ## 4. 主流程
 

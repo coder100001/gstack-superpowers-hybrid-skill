@@ -19,10 +19,11 @@ p1_required=("api-spec" "test-spec" "constraints-spec" "domain-boundaries")
 
 # 读取复杂度级别
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
-complexity="$(gate_context_value "level")"
+complexity="$(gate_context_get "level" "complexity")"
 complexity="${complexity,,}"
 if [[ -f "$STATE_FILE" ]]; then
   if [[ -z "$complexity" ]]; then
+    gate_log_fallback "level not set; reading complexity from workflow-state"
     complexity=$(grep -iE "^(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
   fi
   if [[ -z "$complexity" ]]; then

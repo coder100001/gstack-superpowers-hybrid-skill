@@ -1,4 +1,4 @@
-# 架构说明（v4.1）
+# 架构说明（v4.1.1）
 
 > 本文档描述 gs-hybrid-v3 当前生效架构。详细状态和 Gate 以 YAML 真相源为准。
 
@@ -61,6 +61,7 @@
 - 状态机：`governance/state-machine.yaml`
 - Gate：`governance/gates.yaml`
 - 路由：`schema/skill-routes.yaml`
+- 运行时上下文契约：`governance/context-contract.yaml`
 
 ### 执行入口
 
@@ -93,6 +94,7 @@
 - `SKILL.md` 保持薄层，避免重复大表
 - 进入下一阶段后释放前序细节，仅保留契约摘要
 - 细节由模块文档与治理 YAML 承担
+- Gate 读取优先级：`context > workflow-state（secondary source） > fallback`
 
 ## 6. 设计约束
 
