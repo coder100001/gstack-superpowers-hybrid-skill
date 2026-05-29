@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # validate-project.sh — CI validation tool
-# Checks version consistency, file references, and directory completeness.
+# Checks version consistency, file references, directory completeness, and generated runtime files.
 #
 # Usage: ./scripts/validate-project.sh
 # Returns: 0 (pass) / 1 (fail)
@@ -34,7 +34,7 @@ check_exists() {
 # ── Check 1: Version consistency ─────────────────────
 
 check_version_consistency() {
-  echo "=== [1/6] 版本一致性检查 ==="
+  echo "=== [1/7] 版本一致性检查 ==="
   local e=0
 
   # 从 project-config.yml 动态读取版本号
@@ -76,7 +76,7 @@ check_version_consistency() {
 # ── Check 2: references in bridges/ + execution-layer/ ──
 
 check_refs() {
-  echo "=== [2/6] bridges/ + execution-layer/ references ==="
+  echo "=== [2/7] bridges/ + execution-layer/ references ==="
   local e=0 total=0
 
   for dir in "bridges" "execution-layer"; do
@@ -103,7 +103,7 @@ check_refs() {
 # ── Check 3: "关联文件" references ────────────────────
 
 check_linked() {
-  echo "=== [3/6] linked file references ==="
+  echo "=== [3/7] linked file references ==="
   local e=0 total=0
 
   for link_dir in "bridges" "decision-layer" "context-layer" "execution-layer"; do
@@ -130,7 +130,7 @@ check_linked() {
 # ── Check 4: bridges count ──────────────────────────
 
 check_bridges() {
-  echo "=== [4/6] bridges/ count ==="
+  echo "=== [4/7] bridges/ count ==="
   local e=0 files=()
   for f in "$PROJECT_ROOT/bridges"/*.md; do
     [[ -f "$f" ]] && files+=("$(basename "$f")")
@@ -155,7 +155,7 @@ check_bridges() {
 # ── Check 5: decision-layer/reviews/ ─────────────────
 
 check_reviews() {
-  echo "=== [5/6] decision-layer/reviews/ ==="
+  echo "=== [5/7] decision-layer/reviews/ ==="
   local e=0 files=()
   for f in "$PROJECT_ROOT/decision-layer/reviews"/*.md; do
     [[ -f "$f" ]] && files+=("$(basename "$f")")
@@ -180,7 +180,7 @@ check_reviews() {
 # ── Check 6: context-layer/specs/ ───────────────────
 
 check_specs() {
-  echo "=== [6/6] context-layer/specs/ ==="
+  echo "=== [6/7] context-layer/specs/ ==="
   local e=0 files=()
   for f in "$PROJECT_ROOT/context-layer/specs"/*.md; do
     [[ -f "$f" ]] && files+=("$(basename "$f")")
@@ -213,6 +213,26 @@ check_specs() {
   return $e
 }
 
+# ── Check 7: generated YAML/JSON runtime files ─────────
+
+check_yaml_json_sync() {
+  echo "=== [7/7] YAML/JSON runtime sync ==="
+  local e=0
+
+  if "$PROJECT_ROOT/scripts/yaml2json.sh" --check >/tmp/gs-hybrid-yaml2json-check.out 2>&1; then
+    cat /tmp/gs-hybrid-yaml2json-check.out
+    echo "  => YAML/JSON runtime files in sync"
+  else
+    cat /tmp/gs-hybrid-yaml2json-check.out
+    echo "  [FAIL] YAML/JSON runtime files drifted; run scripts/yaml2json.sh"
+    e=$((e + 1))
+  fi
+  rm -f /tmp/gs-hybrid-yaml2json-check.out
+
+  echo ""
+  return $e
+}
+
 # ── Main ────────────────────────────────────────────
 
 echo "=================================================="
@@ -227,11 +247,12 @@ check_linked;              ERRORS=$((ERRORS + $?))
 check_bridges;             ERRORS=$((ERRORS + $?))
 check_reviews;             ERRORS=$((ERRORS + $?))
 check_specs;               ERRORS=$((ERRORS + $?))
+check_yaml_json_sync;      ERRORS=$((ERRORS + $?))
 set -e
 
 echo "=================================================="
 if [[ $ERRORS -eq 0 ]]; then
-  echo "All 6 checks passed"
+  echo "All 7 checks passed"
   exit 0
 else
   echo "$ERRORS check(s) failed"

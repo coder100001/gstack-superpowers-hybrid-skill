@@ -24,9 +24,9 @@ if [[ -z "$MERGE_BASE" ]]; then
   changed_test=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=A HEAD~1 -- \
     '*_test*' '*.test.*' 2>/dev/null || true)
 else
-  src_files=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM HEAD..."$MERGE_BASE" -- \
+  src_files=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM "$MERGE_BASE"...HEAD -- \
     '*.py' '*.js' '*.ts' '*.go' '*.rs' '*.sh' 2>/dev/null || true)
-  changed_test=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=A HEAD..."$MERGE_BASE" -- \
+  changed_test=$(git -C "$PROJECT_ROOT" diff --name-only --diff-filter=AM "$MERGE_BASE"...HEAD -- \
     '*_test*' '*.test.*' 2>/dev/null || true)
 fi
 

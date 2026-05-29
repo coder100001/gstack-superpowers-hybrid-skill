@@ -120,7 +120,13 @@ transitions:
   - from: REQUIREMENT_LOCK
     to: ARCH_REVIEW
     precondition: "User confirmed requirements"
-    complexity_scope: [L1, L2, L3]
+    complexity_scope: [L2, L3]
+    change_flow_required: false
+
+  - from: REQUIREMENT_LOCK
+    to: TASK_DECOMPOSITION
+    precondition: "L1 task confirmed; architecture review not required"
+    complexity_scope: [L1]
     change_flow_required: false
     
   - from: ARCH_REVIEW
@@ -137,7 +143,12 @@ transitions:
   - from: PLAN_CONFIRM
     to: CONTEXT_HYDRATION
     precondition: "User confirmed plan"
-    complexity_scope: [L1, L2, L3]
+    complexity_scope: [L2, L3]
+
+  - from: PLAN_CONFIRM
+    to: IMPLEMENTATION
+    precondition: "L1 plan confirmed; context hydration is implicit"
+    complexity_scope: [L1]
     
   - from: CONTEXT_HYDRATION
     to: IMPLEMENTATION
@@ -149,26 +160,31 @@ transitions:
     to: SELF_REVIEW
     precondition: "Implementation complete"
     complexity_scope: [L1, L2, L3]
+
+  - from: IMPLEMENTATION
+    to: SHIP_REVIEW
+    precondition: "L0/L1 task implementation complete"
+    complexity_scope: [L0, L1]
     
   - from: SELF_REVIEW
     to: QA
     precondition: "Self-review passed"
-    complexity_scope: [L1, L2, L3]
+    complexity_scope: [L3]
+
+  - from: SELF_REVIEW
+    to: SHIP_REVIEW
+    precondition: "Self-review passed; QA not required for L1/L2"
+    complexity_scope: [L1, L2]
     
   - from: QA
     to: SHIP_REVIEW
     precondition: "QA passed"
-    complexity_scope: [L1, L2, L3]
-
-  - from: IMPLEMENTATION
-    to: SHIP_REVIEW
-    precondition: "L0 task implementation complete"
-    complexity_scope: [L0]
+    complexity_scope: [L3]
     
   - from: SHIP_REVIEW
     to: RETRO
     precondition: "Ship review passed"
-    complexity_scope: [L1, L2, L3]
+    complexity_scope: [L3]
 
   # Rollback flows (Execution -> Decision)
   - from: IMPLEMENTATION

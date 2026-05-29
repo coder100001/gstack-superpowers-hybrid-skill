@@ -49,7 +49,7 @@
         },
         "level": {
           "type": "string",
-          "enum": ["L1", "L2", "L3"],
+          "enum": ["L0", "L1", "L2", "L3"],
           "description": "复杂度级别"
         }
       }

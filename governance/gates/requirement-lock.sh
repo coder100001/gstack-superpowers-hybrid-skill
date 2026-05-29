@@ -9,13 +9,21 @@ SPEC_DIR="context-layer/specs"
 TODAY=$(date +%Y-%m-%d)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/common-context.sh"
 
-specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/"$TODAY"-*-spec.md 2>/dev/null || true)
-if [[ -z "$specs" ]]; then
-  specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/*-spec.md 2>/dev/null | tail -3 || true)
+context_spec="$(gate_context_value "spec_file")"
+
+if [[ -n "$context_spec" ]]; then
+  latest="$(gate_context_path "$context_spec" "$PROJECT_ROOT")"
+else
+  specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/"$TODAY"-*-spec.md 2>/dev/null || true)
+  if [[ -z "$specs" ]]; then
+    specs=$(ls "$PROJECT_ROOT/$SPEC_DIR"/*-spec.md 2>/dev/null | tail -3 || true)
+  fi
+  latest=$(echo "$specs" | tail -1)
 fi
 
-if [[ -z "$specs" ]]; then
+if [[ -z "${latest:-}" ]] || [[ ! -f "$latest" ]]; then
   echo ""
   echo "✗ REQUIREMENT_LOCK 未通过：未找到 spec 文件"
   echo ""
@@ -41,7 +49,6 @@ if [[ -z "$specs" ]]; then
   exit 1
 fi
 
-latest=$(echo "$specs" | tail -1)
 if grep -qi "^##.*确认\|^##.*Approval\|^##.*approved" "$latest" 2>/dev/null; then
   echo "✓ REQUIREMENT_LOCK 通过"
   echo "  确认文件: $latest"

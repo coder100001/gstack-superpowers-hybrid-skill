@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PLANS_DIR="$PROJECT_ROOT/specs/plans"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
+source "$SCRIPT_DIR/common-context.sh"
 
 # 检查 plan 文件是否存在
 plan_files=$(ls "$PLANS_DIR"/*.md 2>/dev/null || true)
@@ -31,8 +32,17 @@ fi
 # 策略：优先使用 workflow-state.md 中记录的当前 plan，否则使用最新修改的 plan
 recent_plans=()
 
+# 优先使用 context 指定 plan
+context_plan="$(gate_context_value "plan_file")"
+if [[ -n "$context_plan" ]]; then
+  resolved_context_plan="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
+  if [[ -f "$resolved_context_plan" ]]; then
+    recent_plans+=("$resolved_context_plan")
+  fi
+fi
+
 # 尝试从 workflow-state.md 获取当前 plan 文件
-if [[ -f "$STATE_FILE" ]]; then
+if [[ ${#recent_plans[@]} -eq 0 && -f "$STATE_FILE" ]]; then
   current_plan=$(grep -i "current.plan\|current_plan\|plan_file" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' || true)
   if [[ -n "$current_plan" ]] && [[ -f "$PROJECT_ROOT/$current_plan" ]]; then
     recent_plans+=("$PROJECT_ROOT/$current_plan")
@@ -58,10 +68,11 @@ for plan_file in "${recent_plans[@]}"; do
       has_placeholder=true
     fi
   done
-  # TODO 单独检查：仅在行首或作为独立标记时才算占位符（避免代码示例中的 TODO 被误判）
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^[[:space:]]*[-*\[]*[[:space:]]*TODO ]] || [[ "$line" =~ ^[[:space:]]*TODO ]]; then
-      echo "  ✗ $(basename "$plan_file") 包含占位符: TODO (行: $line)"
+  # TODO 单独检查：仅匹配任务/条目语义，避免代码示例误判
+  while IFS=: read -r line_no line_text; do
+    [[ -n "${line_text:-}" ]] || continue
+    if [[ "$line_text" =~ ^[[:space:]]*[-*][[:space:]]*(\[.\][[:space:]]*)?TODO([[:space:]:]|$) ]] || [[ "$line_text" =~ ^[[:space:]]*TODO([[:space:]:]|$) ]]; then
+      echo "  ✗ $(basename "$plan_file") 包含占位符: TODO (行 $line_no: $line_text)"
       has_placeholder=true
     fi
   done < <(grep -ni "TODO" "$plan_file" 2>/dev/null || true)

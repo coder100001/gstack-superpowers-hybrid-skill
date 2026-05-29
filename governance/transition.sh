@@ -8,7 +8,7 @@ IFS=$'\n\t'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MACHINE_FILE="$SCRIPT_DIR/machine.json"
-GATES_FILE="$SCRIPT_DIR/gates.json"
+CHECK_GATES="$SCRIPT_DIR/check-gates.sh"
 JOURNAL_DIR="$SCRIPT_DIR/state-journal"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -74,43 +74,35 @@ output_json_result() {
   local ts
   ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
   
-  if [[ -n "$error_code" ]]; then
-    python3 -c "
+  python3 - "$status" "$from" "$to" "$level" "$reason" "$ts" "$gate_result" "$journal_path" "$state_file" "$error_code" "$error_msg" << 'PY'
 import json
+import sys
+
+status, from_state, to_state, level, reason, ts, gate_result, journal_path, state_file, error_code, error_msg = sys.argv[1:12]
+
 result = {
-    'status': '$status',
-    'from': '$from',
-    'to': '$to',
-    'level': '$level',
-    'reason': '$reason',
-    'timestamp': '$ts',
-    'error': {
-        'code': '$error_code',
-        'message': '''${error_msg}'''
+    "status": status,
+    "from": from_state,
+    "to": to_state,
+    "level": level,
+    "reason": reason,
+    "timestamp": ts,
+}
+
+if gate_result:
+    result["gate_result"] = json.loads(gate_result)
+if journal_path:
+    result["journal_path"] = journal_path
+if state_file:
+    result["state_file"] = state_file
+if error_code:
+    result["error"] = {
+        "code": error_code,
+        "message": error_msg,
     }
-}
+
 print(json.dumps(result, indent=2))
-"
-  else
-    python3 -c "
-import json
-result = {
-    'status': '$status',
-    'from': '$from',
-    'to': '$to',
-    'level': '$level',
-    'reason': '$reason',
-    'timestamp': '$ts'
-}
-if '$gate_result':
-    result['gate_result'] = $gate_result
-if '$journal_path':
-    result['journal_path'] = '$journal_path'
-if '$state_file':
-    result['state_file'] = '$state_file'
-print(json.dumps(result, indent=2))
-"
-  fi
+PY
 }
 
 if [[ $# -lt 2 ]]; then
@@ -194,80 +186,90 @@ if [[ "$is_valid" != true ]]; then
   exit 1
 fi
 
-# 2. 检查目标状态是否有 gate
-gate_name=""
-gate_id=""
-if [[ -f "$GATES_FILE" ]]; then
-  gate_count=$(json_get "$GATES_FILE" '.gates | length')
-  gate_count=${gate_count:-0}
-  for ((i=0; i<gate_count; i++)); do
-    applies=$(json_get "$GATES_FILE" ".gates[$i].applies_to")
-    if [[ "$applies" == *"$TO"* ]]; then
-      gate_name=$(json_get "$GATES_FILE" ".gates[$i].name")
-      gate_id=$(json_get "$GATES_FILE" ".gates[$i].id")
-      break
-    fi
-  done
-fi
-
-# 3. 如果有 gate，执行对应脚本
+# 2. 执行目标状态 Gate。check-gates.sh 消费 gates.yaml（Gate 真相源）。
 gates_passed=""
-gate_result_json="null"
-if [[ -n "$gate_name" ]]; then
-  gate_script="$SCRIPT_DIR/gates/$gate_name.sh"
-  if [[ -f "$gate_script" ]]; then
-    if ! $OUTPUT_JSON; then
-      echo "→ 门禁检查: $gate_name"
-    fi
-    if ! bash "$gate_script"; then
-      gate_result_json='{"status":"block","gate_id":"'$gate_id'","gate_name":"'$gate_name'","message":"Gate 检查失败"}'
-      
-      if $OUTPUT_JSON; then
-        output_json_result "blocked" "$FROM" "$TO" "$LEVEL" "$REASON" "$gate_result_json" "" "" "GATE_BLOCKED" "Gate $gate_name 阻断跃迁"
-      else
-        echo ""
-        echo "✗ 跃迁被阻断: $FROM → $TO (gate: $gate_name)"
-        echo ""
-        echo "修复步骤:"
-        remediation_found=false
-        if [[ -f "$GATES_FILE" ]]; then
-          g_count=$(json_get "$GATES_FILE" '.gates | length')
-          g_count=${g_count:-0}
-          for ((i=0; i<g_count; i++)); do
-            gname=$(json_get "$GATES_FILE" ".gates[$i].name")
-            if [[ "$gname" == "$gate_name" ]]; then
-              rem_count=$(json_get "$GATES_FILE" ".gates[$i].remediation | length")
-              rem_count=${rem_count:-0}
-              for ((j=0; j<rem_count; j++)); do
-                step=$(json_get "$GATES_FILE" ".gates[$i].remediation[$j]")
-                if [[ -n "$step" ]]; then
-                  echo "  $step"
-                  remediation_found=true
-                fi
-              done
-              break
-            fi
-          done
-        fi
-        if ! $remediation_found; then
-          echo "  （无自动修复步骤，请检查 gates.yaml 中的 remediation 定义）"
-        fi
-      fi
-      exit 1
-    fi
-    if ! $OUTPUT_JSON; then
-      echo "  ✓ Gate 通过: $gate_name"
-    fi
-    gates_passed="$gate_name"
-    gate_result_json='{"status":"pass","gate_id":"'$gate_id'","gate_name":"'$gate_name'","message":"Gate 检查通过"}'
+gate_result_json=""
+
+if [[ ! -x "$CHECK_GATES" ]]; then
+  if $OUTPUT_JSON; then
+    output_json_result "error" "$FROM" "$TO" "$LEVEL" "$REASON" "" "" "" "MISSING_CHECK_GATES" "check-gates.sh 不存在或不可执行"
   else
-    if ! $OUTPUT_JSON; then
-      echo "  ! Gate 脚本不存在: $gate_name.sh（跳过）"
-    fi
+    echo "错误: check-gates.sh 不存在或不可执行（期望路径: $CHECK_GATES）"
   fi
+  exit 1
 fi
 
-# 4. 解析路由（消费 schema/skill-routes.yaml detect 规则）
+gate_check_json=""
+if ! gate_check_json=$(bash "$CHECK_GATES" --from "$FROM" --to "$TO" --level "$LEVEL" --json); then
+  gate_result_json=$(python3 - "$gate_check_json" << 'PY'
+import json
+import sys
+
+try:
+    data = json.loads(sys.argv[1])
+except Exception:
+    print(json.dumps({
+        "status": "error",
+        "gate_id": "G000",
+        "gate_name": "check-gates",
+        "message": "Gate 检查输出不是有效 JSON",
+    }, ensure_ascii=False))
+    raise SystemExit(0)
+
+for item in data.get("gate_results", []):
+    if item.get("status") in {"block", "error"}:
+        print(json.dumps(item, ensure_ascii=False))
+        break
+else:
+    print(json.dumps({
+        "status": data.get("status", "block"),
+        "gate_id": data.get("gate_id", "G000"),
+        "gate_name": data.get("gate_name", "check-gates"),
+        "message": data.get("message", "Gate 检查失败"),
+    }, ensure_ascii=False))
+PY
+  )
+  if $OUTPUT_JSON; then
+    output_json_result "blocked" "$FROM" "$TO" "$LEVEL" "$REASON" "$gate_result_json" "" "" "GATE_BLOCKED" "Gate 阻断跃迁"
+  else
+    echo "$gate_check_json"
+    echo ""
+    echo "✗ 跃迁被阻断: $FROM → $TO"
+  fi
+  exit 1
+fi
+
+gate_result_json=$(python3 - "$gate_check_json" << 'PY'
+import json
+import sys
+
+data = json.loads(sys.argv[1])
+for item in data.get("gate_results", []):
+    if item.get("status") == "pass":
+        print(json.dumps(item, ensure_ascii=False))
+        break
+PY
+)
+
+gates_passed=$(python3 - "$gate_check_json" << 'PY'
+import json
+import sys
+
+data = json.loads(sys.argv[1])
+names = [
+    item.get("gate_name", "")
+    for item in data.get("gate_results", [])
+    if item.get("status") == "pass" and item.get("gate_name")
+]
+print(",".join(names))
+PY
+)
+
+if [[ -n "$gates_passed" ]] && ! $OUTPUT_JSON; then
+  echo "  ✓ Gate 通过: $gates_passed"
+fi
+
+# 3. 解析路由（消费 schema/skill-routes.yaml detect 规则）
 ROUTE_RESOLVER="$PROJECT_ROOT/scripts/resolve-skill-routes.sh"
 resolved_routes="none"
 resolved_routes_json="[]"

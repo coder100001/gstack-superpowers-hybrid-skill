@@ -20,8 +20,8 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 | 级别 | 可跳过状态 | 必须状态 | 典型场景 |
 |------|-----------|---------|---------|
 | L0 | 全部 | IDEA → IMPLEMENTATION → SHIP_REVIEW | 单文件修改、配置调整 |
-| L1 | DISCOVERY, ARCH_REVIEW, RETRO | IDEA → REQUIREMENT_LOCK → TASK_DECOMPOSITION → PLAN_CONFIRM → IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW | 小功能、bugfix |
-| L2 | 无 | 完整流程 | 新功能、重构 |
+| L1 | DISCOVERY, ARCH_REVIEW, CONTEXT_HYDRATION, SELF_REVIEW, QA, RETRO | IDEA → REQUIREMENT_LOCK → TASK_DECOMPOSITION → PLAN_CONFIRM → IMPLEMENTATION → SHIP_REVIEW | 小功能、bugfix |
+| L2 | QA, RETRO | IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW → SHIP_REVIEW | 新功能、重构 |
 | L3 | 无 | 完整流程 + 全量 Gate | 架构变更、跨模块影响 |
 
 快速路径触发条件见 [02-complexity.md](./modules/02-complexity.md)。

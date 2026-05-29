@@ -9,8 +9,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PLANS_DIR="$PROJECT_ROOT/specs/plans"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
+source "$SCRIPT_DIR/common-context.sh"
 
-latest_plan=$(ls -t "$PLANS_DIR"/*.md 2>/dev/null | head -1 || true)
+context_plan="$(gate_context_value "plan_file")"
+if [[ -n "$context_plan" ]]; then
+  latest_plan="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
+else
+  latest_plan=$(ls -t "$PLANS_DIR"/*.md 2>/dev/null | head -1 || true)
+fi
+
 if [[ -z "${latest_plan:-}" ]]; then
   echo "✗ PLAN_CONFIRM 未通过：未找到 plan 文件"
   echo "  期望路径: specs/plans/*.md"

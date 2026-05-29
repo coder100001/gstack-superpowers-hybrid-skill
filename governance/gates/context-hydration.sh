@@ -10,6 +10,7 @@ IFS=$'\n\t'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HYDRATION_STATE="$PROJECT_ROOT/artifacts/hydration-state.md"
+source "$SCRIPT_DIR/common-context.sh"
 
 # P0 必需文件（所有级别必须存在）
 p0_required=("project-spec" "architecture-spec")
@@ -18,9 +19,12 @@ p1_required=("api-spec" "test-spec" "constraints-spec" "domain-boundaries")
 
 # 读取复杂度级别
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
-complexity=""
+complexity="$(gate_context_value "level")"
+complexity="${complexity,,}"
 if [[ -f "$STATE_FILE" ]]; then
-  complexity=$(grep -iE "^(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  if [[ -z "$complexity" ]]; then
+    complexity=$(grep -iE "^(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
+  fi
   if [[ -z "$complexity" ]]; then
     complexity=$(grep -iE "^- *(level|complexity|级别):" "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' | tr '[:upper:]' '[:lower:]' || true)
   fi

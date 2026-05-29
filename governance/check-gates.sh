@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # check-gates.sh — Gate 执行入口
-# 用法: ./governance/check-gates.sh --from <state> --to <state> --level <L1|L2|L3> [--json] [--context <path>]
+# 用法: ./governance/check-gates.sh --from <state> --to <state> --level <L0|L1|L2|L3> [--json] [--context <path>]
 # 示例: ./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L3 --json
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,7 +25,7 @@ while [[ $# -gt 0 ]]; do
     --context) CONTEXT="$2"; shift 2 ;;
     --json) OUTPUT_JSON=true; shift ;;
     --help)
-      echo "用法: check-gates.sh --from <state> --to <state> --level <L1|L2|L3> [--json] [--context <path>]"
+      echo "用法: check-gates.sh --from <state> --to <state> --level <L0|L1|L2|L3> [--json] [--context <path>]"
       echo ""
       echo "参数:"
       echo "  --from    当前状态（可选，推荐传入）"
@@ -47,6 +47,25 @@ if [[ -z "$TO_STATE" ]]; then
   echo "✗ 错误: 必须指定 --to 参数"
   echo "运行 --help 查看用法"
   exit 1
+fi
+
+case "$LEVEL" in
+  L0|L1|L2|L3) ;;
+  *)
+    echo "✗ 错误: --level 仅支持 L0|L1|L2|L3，当前为: $LEVEL"
+    exit 1
+    ;;
+esac
+
+if [[ -n "$CONTEXT" ]]; then
+  context_path="$CONTEXT"
+  if [[ "$context_path" != /* ]]; then
+    context_path="$PROJECT_ROOT/$context_path"
+  fi
+  if [[ ! -f "$context_path" ]]; then
+    echo "✗ 错误: --context 文件不存在: $context_path"
+    exit 1
+  fi
 fi
 
 if ! $OUTPUT_JSON; then
@@ -72,11 +91,12 @@ if ! command -v python3 &>/dev/null; then
   exit 1
 fi
 
-python3 - "$GATES_YAML" "$GATES_DIR" "$TO_STATE" "$LEVEL" "$PROJECT_ROOT" "$OUTPUT_JSON" "$FROM_STATE" << 'EOF'
+python3 - "$GATES_YAML" "$GATES_DIR" "$TO_STATE" "$LEVEL" "$PROJECT_ROOT" "$OUTPUT_JSON" "$FROM_STATE" "$CONTEXT" << 'EOF'
 import yaml
 import sys
 import subprocess
 import json
+import os
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -87,6 +107,7 @@ level = sys.argv[4]
 project_root = sys.argv[5]
 output_json = sys.argv[6].lower() == 'true'
 from_state = sys.argv[7] if len(sys.argv) > 7 else ''
+context_path = sys.argv[8] if len(sys.argv) > 8 else ''
 
 errors = 0
 passed = 0
@@ -202,9 +223,17 @@ for gate in applicable_gates:
         continue
     
     try:
+        env = os.environ.copy()
+        if context_path:
+            context_file = Path(context_path)
+            if not context_file.is_absolute():
+                context_file = Path(project_root) / context_file
+            env["GSTACK_GATE_CONTEXT"] = str(context_file)
+
         result = subprocess.run(
             ['bash', str(script_path)],
             cwd=project_root,
+            env=env,
             capture_output=True,
             text=True,
             timeout=60

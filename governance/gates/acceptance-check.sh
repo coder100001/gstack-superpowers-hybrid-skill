@@ -11,10 +11,24 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/common-context.sh"
 
 PLAN_FILE="${1:-$PROJECT_ROOT/specs/plans/*.md}"
 EVIDENCE_DIR="${2:-$PROJECT_ROOT/artifacts/acceptance}"
 CONTRACT_FILE="$PROJECT_ROOT/context-layer/specs/contract-summary.md"
+
+context_plan="$(gate_context_value "plan_file")"
+if [[ -n "$context_plan" ]]; then
+    PLAN_FILE="$(gate_context_path "$context_plan" "$PROJECT_ROOT")"
+fi
+
+context_evidence="$(gate_context_value "evidence_dir")"
+if [[ -z "$context_evidence" ]]; then
+    context_evidence="$(gate_context_value "acceptance_evidence_dir")"
+fi
+if [[ -n "$context_evidence" ]]; then
+    EVIDENCE_DIR="$(gate_context_path "$context_evidence" "$PROJECT_ROOT")"
+fi
 
 echo "=========================================="
 echo "Acceptance Check Gate (G008)"
@@ -31,8 +45,8 @@ if [[ ! -f "$CONTRACT_FILE" ]]; then
     exit 2
 fi
 
-# 查找最新的 plan 文件
-if [[ -d "$PROJECT_ROOT/specs/plans" ]]; then
+# 仅在未明确指定 plan 时，查找最新 plan 文件
+if [[ "$PLAN_FILE" == *"*"* ]] && [[ -d "$PROJECT_ROOT/specs/plans" ]]; then
     LATEST_PLAN=$(find "$PROJECT_ROOT/specs/plans" -name "*.md" -type f -exec stat -f "%m %N" {} \; 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)
     if [[ -n "$LATEST_PLAN" ]]; then
         PLAN_FILE="$LATEST_PLAN"
@@ -94,7 +108,7 @@ while IFS= read -r item; do
     # 检查测试文件作为证据
     if [[ "$evidence_found" == false ]]; then
         # 检查是否有相关测试
-        if grep -rq "$item" "$PROJECT_ROOT/tests" 2>/dev/null || grep -rq "$item" "$PROJECT_ROOT/spec" 2>/dev/null; then
+        if grep -rq "$item" "$PROJECT_ROOT/tests" 2>/dev/null || grep -rq "$item" "$PROJECT_ROOT/specs" 2>/dev/null; then
             evidence_found=true
         fi
     fi
