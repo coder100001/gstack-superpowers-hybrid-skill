@@ -13,7 +13,8 @@
 #   backups     列出所有备份
 #
 # 选项:
-#   --target DIR        目标目录（默认: ~/.codex/skills/gs-hybrid-v3）
+#   --agent NAME        安装目标 agent: codex|claude|trae（默认: codex）
+#   --target DIR        目标目录（显式覆盖 --agent 推导路径）
 #   --no-backup         安装时不创建备份
 #   --dry-run           预览模式，不执行实际操作
 #   --force             强制安装，覆盖现有文件
@@ -23,6 +24,8 @@
 #
 # 示例:
 #   ./scripts/install.sh install                    # 安装到默认位置
+#   ./scripts/install.sh install --agent codex
+#   ./scripts/install.sh install --agent claude
 #   ./scripts/install.sh install --target ~/.codex/skills/gs-hybrid-v3
 #   ./scripts/install.sh uninstall                  # 卸载
 #   ./scripts/install.sh rollback                   # 回滚到上一个版本
@@ -44,6 +47,8 @@ VERSION="$(awk '/^version:/ {print $2; exit}' "$PROJECT_ROOT/project-config.yml"
 DEFAULT_TARGET="$HOME/.codex/skills/gs-hybrid-v3"
 TARGET_DIR="$DEFAULT_TARGET"
 BACKUP_BASE="$HOME/.codex/skills/.gs-hybrid-v3-backups"
+TARGET_AGENT="codex"
+TARGET_EXPLICIT=false
 
 # 颜色输出
 RED='\033[0;31m'
@@ -91,6 +96,30 @@ confirm() {
 usage() {
     sed -n '/^# 用法:/,/^# 示例:/s/^# \{0,1\}//p' "$0"
     exit "${1:-0}"
+}
+
+resolve_paths_by_agent() {
+    case "$TARGET_AGENT" in
+        codex)
+            DEFAULT_TARGET="$HOME/.codex/skills/gs-hybrid-v3"
+            BACKUP_BASE="$HOME/.codex/skills/.gs-hybrid-v3-backups"
+            ;;
+        claude)
+            DEFAULT_TARGET="$HOME/.claude/skills/gs-hybrid-v3"
+            BACKUP_BASE="$HOME/.claude/skills/.gs-hybrid-v3-backups"
+            ;;
+        trae)
+            DEFAULT_TARGET="$HOME/.trae-cn/superpowers"
+            BACKUP_BASE="$HOME/.trae-cn/superpowers-backups"
+            ;;
+        *)
+            die "未知 agent: $TARGET_AGENT（支持: codex|claude|trae）"
+            ;;
+    esac
+
+    if [[ "$TARGET_EXPLICIT" != "true" ]]; then
+        TARGET_DIR="$DEFAULT_TARGET"
+    fi
 }
 
 # =============================================================================
@@ -435,6 +464,7 @@ show_status() {
     echo "=========================================="
     echo ""
     echo "版本: $VERSION"
+    echo "目标 Agent: $TARGET_AGENT"
     echo "源目录: $PROJECT_ROOT"
     echo "目标目录: $TARGET_DIR"
     echo ""
@@ -600,6 +630,11 @@ parse_args() {
                 ;;
             --target)
                 TARGET_DIR="$2"
+                TARGET_EXPLICIT=true
+                shift 2
+                ;;
+            --agent)
+                TARGET_AGENT="$2"
                 shift 2
                 ;;
             --no-backup)
@@ -639,6 +674,7 @@ parse_args() {
 
 main() {
     parse_args "$@"
+    resolve_paths_by_agent
 
     echo ""
     echo "=========================================="
