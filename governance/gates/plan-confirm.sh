@@ -3,13 +3,40 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # plan-confirm.sh — 检查 PLAN_CONFIRM 是否已通过
-# 验证条件：存在已确认的 plan（Approval/确认标记）且 workflow-state 记录已确认
+# 验证条件：
+# - L2/L3: 存在已确认的 plan 且 workflow-state 记录已确认
+# - L1: 允许通过 workflow-state/context 记录的对话式计划确认
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PLANS_DIR="$PROJECT_ROOT/specs/plans"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 source "$SCRIPT_DIR/common-context.sh"
+level="$(gate_context_level "$PROJECT_ROOT")"
+plan_confirmed="$(gate_context_get "plan_confirmed")"
+approval_mode="$(gate_context_get "approval_mode")"
+
+if [[ -f "$STATE_FILE" ]] && [[ -z "$plan_confirmed" ]]; then
+  plan_confirmed="$(gate_workflow_state_value "plan_confirmed" "$STATE_FILE")"
+fi
+if [[ -f "$STATE_FILE" ]] && [[ -z "$approval_mode" ]]; then
+  approval_mode="$(gate_workflow_state_value "approval_mode" "$STATE_FILE")"
+fi
+
+if [[ "$level" == "L1" ]] && gate_is_truthy "$plan_confirmed"; then
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
+  if [[ -f "$STATE_FILE" ]]; then
+    gate_workflow_state_append "$STATE_FILE" "Plan Confirm" \
+      "- Timestamp: $ts" \
+      "- Status: passed" \
+      "- Confirmation: ${approval_mode:-conversation}" \
+      "- Mode: L1 quick path"
+  fi
+  echo "✓ PLAN_CONFIRM 通过"
+  echo "  确认方式: ${approval_mode:-conversation}"
+  [[ -f "$STATE_FILE" ]] && echo "  State: $STATE_FILE"
+  exit 0
+fi
 
 context_plan="$(gate_context_get "plan_file" "current_plan_file")"
 if [[ -n "$context_plan" ]]; then

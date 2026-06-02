@@ -6,7 +6,7 @@
 
 | 指令 | 触发状态 | 执行流程 | 输出 | 详细模块 |
 |------|---------|---------|------|---------|
-| `/plan` | IDEA | DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM | PLAN.md, ADR | [03a](./03a-discovery-arch.md), [03b](./03b-task-decomposition.md) |
+| `/plan` | IDEA | DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM | PLAN.md, ADR, Requirement Mapping | [03a](./03a-discovery-arch.md), [03b](./03b-task-decomposition.md) |
 | `/review` | SELF_REVIEW | SELF_REVIEW → QA → SHIP_REVIEW | 自审报告, QA 报告 | [04b](./04b-self-review.md), [05](./05-ship-review-retro.md) |
 | `/test` | Context Hydration | Context Hydration → IMPLEMENTATION → SELF_REVIEW | 测试代码, 实现代码 | [04a](./04a-execution-hydration.md), [04b](./04b-self-review.md) |
 | `/qa` | QA | QA → SHIP_REVIEW | QA 报告, 发布检查清单 | [04b](./04b-self-review.md), [05](./05-ship-review-retro.md) |

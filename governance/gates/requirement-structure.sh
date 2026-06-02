@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # requirement-structure.sh — 检查需求文档结构完整性（软门禁）
-# 最小结构: 问题定义/范围/非目标/验收标准 + 多方案对比 + 决策结论
+# 最小结构: 问题定义/问题证据/范围/非目标/验收标准/Risk Tags
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -37,11 +37,11 @@ check_section() {
 }
 
 check_section "问题定义" "^##.*(Problem|问题|背景)"
+check_section "问题证据" "^##.*(Problem Evidence|Evidence|问题证据|现状|现有行为)"
 check_section "范围" "^##.*(Scope|范围)"
 check_section "非目标" "^##.*(Non-Goals?|非目标|不做)"
 check_section "验收标准" "^##.*(Acceptance|验收)"
-check_section "方案对比" "^##.*(Option Comparison|Options?|方案对比|方案比较)"
-check_section "决策结论" "^##.*(Decision|决策)"
+check_section "Risk Tags" "^##.*(Risk Tags|风险标签|风险)"
 
 if [[ ${#missing[@]} -gt 0 ]]; then
   echo "✗ requirement-structure: 需求结构不完整"

@@ -113,6 +113,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 - **多角色审议**: 产品/架构/性能/安全/运维 5个维度审查
 - **决策冻结机制**: 执行层不允许更改架构和需求
 - **Context Hydration**: 执行前强制注入上下文契约
+- **需求追踪**: REQ/NFR/OUT 显式映射到 ADR 与 Plan，避免弱匹配覆盖
 - **Governance 层**: 状态机 (13状态) + Gate 脚本 (7个) + CI Guard
 
 #### 模块列表
@@ -121,7 +122,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 |------|------|---------|
 | 01-intro.md | 三层架构介绍、项目配置 | 初始 |
 | 02-complexity.md | 复杂度分级 (L0/L1/L2/L3) | Step 0 |
-| 03a-discovery-arch.md | DISCOVERY + REQUIREMENT_LOCK + ARCH_REVIEW | Decision Layer |
+| 03a-discovery-arch.md | DISCOVERY（候选方向） + REQUIREMENT_LOCK + ARCH_REVIEW（方案对比） | Decision Layer |
 | 03b-task-decomposition.md | TASK_DECOMPOSITION + PLAN_CONFIRM | Decision Layer |
 | 04a-execution-hydration.md | CONTEXT_HYDRATION + IMPLEMENTATION 规范 | Context -> Execution |
 | 04b-self-review.md | SELF_REVIEW + QA | Execution Layer |
@@ -140,7 +141,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 | G001 requirement-lock | REQUIREMENT_LOCK | 用户确认需求 |
 | G002 arch-review-lock | ARCH_REVIEW | L2+ 有 ADR |
 | G003 task-decomposition-lock | TASK_DECOMPOSITION | plan 存在且无占位符 |
-| G004 plan-confirm | PLAN_CONFIRM | 用户确认执行计划 |
+| G004 plan-confirm | PLAN_CONFIRM | 用户确认执行计划 + Requirement Mapping 摘要 |
 | G005 context-hydration | CONTEXT_HYDRATION | Spec 文件存在 |
 | G006 decision-freeze | IMPLEMENTATION | 冻结项未修改 |
 | G007 test-presence | SELF_REVIEW | 测试文件存在 |

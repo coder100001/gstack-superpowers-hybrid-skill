@@ -22,10 +22,23 @@ keys:
   adr_file:
     aliases: ["design_file"]
     example: "decision-layer/adr/ADR-012-some-decision.md"
+  requirements_confirmed:
+    aliases: ["requirement_confirmed"]
+    example: "true"
+  plan_confirmed:
+    aliases: ["execution_plan_confirmed"]
+    example: "true"
+  plan_summary_confirmed:
+    aliases: ["task_summary_confirmed"]
+    example: "true"
+  approval_mode:
+    aliases: ["approval_source"]
+    example: "conversation"
 
 rules:
   - "Gates must prefer context keys over implicit discovery."
   - "When context and workflow-state conflict, context wins."
   - "workflow-state plan_file/level are secondary hints only."
+  - "L1 quick path may record approvals in context/workflow-state without independent spec/plan files."
   - "Design decision source of truth is ADR; avoid parallel design documents."
   - "Implicit discovery is allowed only as fallback and must log 'fallback used: ...'."

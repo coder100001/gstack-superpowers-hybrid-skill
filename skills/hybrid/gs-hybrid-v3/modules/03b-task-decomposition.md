@@ -4,7 +4,7 @@
 
 ## TASK_DECOMPOSITION 状态
 
-**触发条件**: ARCH_REVIEW 状态用户确认方案后 | **适用级别**: ✅ 所有级别必须
+**触发条件**: L2/L3 在 ARCH_REVIEW 用户确认 ADR 后进入；L1 在 REQUIREMENT_LOCK 确认后直接进入 | **适用级别**: ✅ 所有级别必须
 
 **调用 Skill**: `writing-plans`
 
@@ -16,7 +16,7 @@
 ### TASK_DECOMPOSITION 执行流程
 
 ```
-ARCH_REVIEW 方案确认
+ARCH_REVIEW / REQUIREMENT_LOCK 确认
   │
   ▼
 ┌──────────────────────────────────────────────────────────────┐
@@ -35,7 +35,7 @@ ARCH_REVIEW 方案确认
 └──────────────────────────────────────────────────────────────┘
   │
   ▼
-Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
+Plan 产出: `specs/plans/YYYY-MM-DD-<feature>.md`（L1 可退化为对话摘要 + `workflow-state/context` 记录）
   │
   ▼
 ┌──────────────────────────────────────────────────────────────┐
@@ -48,7 +48,8 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 │  范围/风险/验收/回滚 验证 → 用户硬阻断确认                     │
 └──────────────────────────────────────────────────────────────┘
   │
-  ▼ Context Hydration → IMPLEMENTATION
+  ▼ L1: IMPLEMENTATION
+    L2/L3: Context Hydration → IMPLEMENTATION
     → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
@@ -58,7 +59,7 @@ Plan 产出: specs/plans/YYYY-MM-DD-<feature>.md
 
 ### 1. Scope Check (最终防线)
 
-ARCH_REVIEW 状态已用结构化标准做过多子系统检测。这里作为**最后防线**：
+ARCH_REVIEW 状态已用结构化标准做过多子系统检测。L1 场景则沿用 REQUIREMENT_LOCK 的范围判断。这里作为**最后防线**：
 
 - 如果 spec 仍覆盖多个独立子系统 → **在此提出拆**，不继续
 - 一个 plan 只产出可独立运行、可测试的软件
@@ -84,12 +85,16 @@ ARCH_REVIEW 状态已用结构化标准做过多子系统检测。这里作为**
 
 这是 plan 最核心的环节——从 spec 的需求列表映射到可执行的 task 列表。
 
+**前提**: 先提取 spec 中全部 `REQ-*` / `NFR-*` / `OUT-*` 标识，plan 必须对这些标识建立显式追踪关系。
+
 #### 分解步骤
 
 ```
 Step A: 列出 spec 中每个可验证的需求
   ↓
-Step B: 对每个需求判断性质
+Step B: 为每个需求保留原始 ID（REQ/NFR/OUT）
+  ↓
+Step C: 对每个需求判断性质
   ├─ 纯函数/类实现 → Feature Task
   ├─ Bug 修复       → Bugfix Task
   ├─ 配置/常量      → Config Task
@@ -97,12 +102,12 @@ Step B: 对每个需求判断性质
   ├─ 多组件集成     → Integration Task
   └─ 项目初始化     → Setup Task
   ↓
-Step C: 判断边界
+Step D: 判断边界
   ├─ 单文件可实现？→ 1 个 Task
   ├─ 多文件但紧密耦合？→ 1 个 Task，列出所有文件
   └─ 多文件且可独立？→ 拆为多个 Task
   ↓
-Step D: 排序
+Step E: 排序
   ├─ 识别依赖：Task X 必须在 Task Y 之前完成
   ├─ 识别并行：Task A 和 Task B 可同时进行
   └─ 识别阻塞：Task C 必须等所有前置 Task 完成
@@ -117,6 +122,27 @@ Step D: 排序
 | **向前兼容** | Task 5 修改 Task 2 的签名 → 不合理，应在 Task 2 就定义好 |
 | **最小上下文** | 每个 Task 的实现者只需理解该 Task 涉及的文件 |
 | **自然的原子性** | 一个 Task 应该是一个完整的功能增量，不是随意切分的碎片 |
+| **需求可追踪** | 每个 `REQ-*` / `NFR-*` / `OUT-*` 都能在 plan 中定位到对应 Task 或边界说明 |
+
+#### Requirement→Task Mapping 表
+
+在正式 task 列表前，必须先写一个映射表：
+
+```markdown
+## Requirement Mapping
+
+| Requirement ID | Summary | Covered By | Notes |
+|---------------|---------|------------|-------|
+| REQ-001 | 用户可重试失败操作 | Task 1, Task 3 | Task 1 实现重试接口；Task 3 覆盖集成流 |
+| REQ-002 | 成功后展示最终状态 | Task 2 | UI 状态更新 |
+| NFR-001 | p95 <= 800ms | Task 4 | 压测与缓存策略 |
+| OUT-001 | 不修改批处理导入流程 | No task | Scope boundary only |
+```
+
+规则：
+- `Covered By` 必须引用实际存在的 Task 编号
+- `OUT-*` 也必须出现，且通常标记为 `No task`
+- 若一个 requirement 由多个 Task 共同完成，必须全部列出
 
 ---
 
@@ -132,6 +158,7 @@ Step D: 排序
 ### Task N: [Component Name] [Feature]
 
 **Dependencies:** [Task X, Task Y] | **Parallel with:** [Task Z] | **Estimate:** ~10min
+**Covers:** REQ-001, NFR-001
 
 **Files:**
 - Create: `src/path/to/component.ext`
@@ -178,6 +205,7 @@ git commit -m "feat(scope): add specific feature"
 ### Task N: [Bug Description] [Bugfix]
 
 **Dependencies:** None | **Estimate:** ~8min
+**Covers:** REQ-001
 
 **Files:**
 - Modify: `src/path/to/buggy.ext:45-67`
@@ -231,6 +259,7 @@ git commit -m "fix(scope): describe the bug fix"
 ### Task N: [Config Description] [Setup]
 
 **Dependencies:** None | **Parallel with:** [Any unrelated Task] | **Estimate:** ~5min
+**Covers:** NFR-001
 
 **Files:**
 - Create: `config/xxx.yaml`
@@ -274,6 +303,7 @@ git commit -m "feat(scope): add feature configuration"
 ### Task N: [Refactor Description] [Refactor]
 
 **Dependencies:** [Task X (定义原代码的 Task)] | **Estimate:** ~10min
+**Covers:** REQ-002
 
 **Files:**
 - Move from: `src/path/old_location.ext:100-150`
@@ -324,6 +354,7 @@ git commit -m "refactor(scope): move function to new location"
 ### Task N: [Integration Description] [Integration]
 
 **Dependencies:** [Task A, Task B, Task C (被集成的组件)] | **Estimate:** ~15min
+**Covers:** REQ-001, REQ-003
 
 **Files:**
 - Create: `src/path/integration.ext`
@@ -509,11 +540,13 @@ Step 7: Commit                       ← 1min
 写完完整 plan 后，用全新眼光检查：
 
 1. **Spec coverage**: 逐个浏览 spec 的每个章节/需求。能否指出一个 task 实现了它？列出任何缺口。
+   优先按 `REQ-*` / `NFR-*` / `OUT-*` 逐条核对，而不是只按自然语言大意核对。
 2. **Placeholder scan**: 搜索 plan 中的占位符模式。修复。
 3. **Type consistency**: 后文 task 中使用的类型、方法签名、属性名是否与前文 task 定义的完全一致？`clearLayers()` 在 Task 3 但 `clearFullLayers()` 在 Task 7 就是 bug。
 4. **依赖完整性**: 每个 Task 的 Dependencies 中引用的 Task 是否都存在？是否有循环依赖？
 5. **跨切面完整性**: 共享基础设施是否由明确的 Task 负责？集成测试是否覆盖？
 6. **模板正确性**: 每个 Task 是否使用了正确的模板类型？
+7. **Requirement mapping 完整性**: `Requirement Mapping` 表中的每个 ID 是否都指向真实 Task 或明确边界说明？
 
 发现问题 → 立即修复 → 无需重复审查。发现 spec 需求无对应 task → 添加 task。
 
@@ -583,9 +616,9 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 **触发条件**: TASK_DECOMPOSITION 状态 plan 完成后 | **适用级别**: 🔴 所有级别必须执行
 
 <HARD-GATE>
-**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能进入 Context Hydration 状态。
+**这是强制阻断点！** 用户必须明确确认 PLAN，AI 才能继续。
 
-**L1 快速通道规则**: L1 任务通过对话确认即可，不强制产出独立 plan 文件。AI 必须在对话中向用户展示变更摘要（涉及文件、预估耗时、验收标准），获得用户明确回复后方可继续。
+**L1 快速通道规则**: L1 任务通过对话确认即可，不强制产出独立 plan 文件。AI 必须在对话中向用户展示变更摘要（涉及文件、预估耗时、验收标准、回滚方式），获得用户明确回复后，在 `context` 或 `workflow-state` 中记录 `plan_summary_confirmed: true`、`plan_confirmed: true`、`approval_mode: conversation` 后方可继续。
 </HARD-GATE>
 
 ### 验证清单（按级别分级）
@@ -596,14 +629,18 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - [ ] 回滚方案可行？
 
 #### L2 标准验证
-- [ ] 任务清单是否完整覆盖 spec 的所有需求？
+- [ ] `Requirement Mapping` 是否列出全部 `REQ-*` / `NFR-*` / `OUT-*`？
+- [ ] 每个 `REQ-*` / `NFR-*` 是否映射到真实 Task？
+- [ ] 每个 `OUT-*` 是否明确标记为边界而非 Task？
 - [ ] 文件清单是否准确（每个 task 的 Files 段）？
 - [ ] 每个 Task 是否使用了正确的模板类型？
 - [ ] 验收标准清晰可测？
 - [ ] 回滚方案可行？
 
 #### L3 完整验证
-- [ ] 任务清单是否完整覆盖 spec 的所有需求？
+- [ ] `Requirement Mapping` 是否列出全部 `REQ-*` / `NFR-*` / `OUT-*`？
+- [ ] 每个 `REQ-*` / `NFR-*` 是否映射到真实 Task？
+- [ ] 每个 `OUT-*` 是否明确标记为边界而非 Task？
 - [ ] 文件清单是否准确（每个 task 的 Files 段）？
 - [ ] 是否有遗漏的边界条件？
 - [ ] 每个 Task 是否使用了正确的模板类型（Feature/Bugfix/Config/Refactor/Integration）？
@@ -629,6 +666,16 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - **涉及文件**: X 个
 - **复杂度**: L1 / L2 / L3
 
+### Requirement Mapping 摘要
+| 类型 | 总数 | 已覆盖 | 未覆盖 | 说明 |
+|------|-----:|------:|------:|------|
+| REQ | X | X | 0 | 功能需求全部映射到 Task |
+| NFR | X | X | 0 | 非功能需求全部映射到 Task 或验证项 |
+| OUT | X | X | 0 | 范围外边界全部标记为 No task |
+
+### 未覆盖项
+- 无
+
 ### 依赖图
 [简要依赖图 — 关键路径 Task 序列]
 
@@ -638,14 +685,16 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - 低风险: X 个
 
 ### 验证清单
-1. 任务范围是否完整覆盖需求？
-2. 每个 Task 模板类型是否正确？
-3. 依赖图是否完整且无循环依赖？
-4. 边界条件是否充分？
-5. 验收标准是否清晰可测？
-6. 风险评估是否准确？
-7. 回滚方案是否可行？
-8. Plan 是否有占位符或模糊描述？
+1. `Requirement Mapping` 是否完整覆盖 `REQ/NFR/OUT`？
+2. 每个 `REQ/NFR` 是否都映射到真实 Task？
+3. 每个 `OUT` 是否都作为范围边界保留？
+4. 每个 Task 模板类型是否正确？
+5. 依赖图是否完整且无循环依赖？
+6. 边界条件是否充分？
+7. 验收标准是否清晰可测？
+8. 风险评估是否准确？
+9. 回滚方案是否可行？
+10. Plan 是否有占位符或模糊描述？
 
 ---
 
@@ -653,13 +702,14 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 
 请确认 Plan 完整无误，可以进入下一状态：
 - [ ] 范围确认
+- [ ] Requirement Mapping 覆盖确认
 - [ ] Task 拆解方式认可
 - [ ] 风险接受
 - [ ] 验收标准认可
 - [ ] 回滚方案确认
 
 **确认后请回复**:
-> "Plan 验证通过，请进入 Context Hydration"
+> "Plan 验证通过，请进入下一状态"
 
 **⚠️ 阻断规则**: 未收到用户明确确认前，不得进入 Context Hydration 或 IMPLEMENTATION 状态
 ```
@@ -670,12 +720,15 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 ## ✅ 需求与 Plan 合并确认
 
 ### 变更摘要
+- **需求覆盖**: REQ-001 -> 本次变更；OUT-001 -> 不涉及
 - **涉及文件**: X 个
 - **预估耗时**: X 分钟
 - **验收标准**: [一句话]
+- **回滚方式**: [一句话]
 
 ### 快速检查
 - [ ] 变更范围符合预期？
+- [ ] 需求覆盖关系清晰？
 - [ ] 回滚方案可行？
 
 **确认后请回复**:
@@ -689,7 +742,7 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - ❌ 用户未回复 → 等待
 - ❌ 用户要求修改 → 修改后重新验证
 - ❌ 用户放弃 → 回到 TASK_DECOMPOSITION 状态
-- ✅ 用户确认 → 继续 Context Hydration 状态
+- ✅ 用户确认 → L1 进入 IMPLEMENTATION；L2/L3 进入 Context Hydration
 
 ### 输出要求
 
@@ -698,4 +751,5 @@ writing-plans 产出标准 plan 后，gs-hybrid 追加以下章节：
 - 确认时的 PLAN 版本
 - 任何修改意见
 - 风险接受声明
-- **L1 快速通道**: 在对话中记录即可，不强制文件化
+- Requirement Mapping 确认摘要
+- **L1 快速通道**: 在对话中记录即可，不强制文件化；但必须写入 `plan_summary_confirmed: true`、`plan_confirmed: true`

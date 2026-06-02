@@ -75,7 +75,7 @@ if [[ -z "${req_lines:-}" ]]; then
   exit 1
 fi
 
-req_ids=$(echo "$req_lines" | grep -oE 'REQ-[0-9]+' | sort -u || true)
+req_ids=$(echo "$req_lines" | grep -oE '(REQ|NFR|OUT)-[0-9]+' | sort -u || true)
 uncovered=0
 
 if [[ -n "${req_ids:-}" ]]; then
@@ -87,7 +87,7 @@ if [[ -n "${req_ids:-}" ]]; then
     fi
   done <<< "$req_ids"
 else
-  gate_log_fallback "REQ-ID not found in spec; falling back to weak keyword coverage"
+  gate_log_fallback "requirement IDs not found in spec; falling back to weak keyword coverage"
   while IFS= read -r req; do
     [[ -n "$req" ]] || continue
     normalized=$(echo "$req" | tr '[:upper:]' '[:lower:]' | sed -E 's/^[[:space:]]*[-*][[:space:]]*//')
@@ -110,6 +110,7 @@ if [[ "$uncovered" -gt 0 ]]; then
   echo "  spec: $target_spec"
   echo "  plan: $target_plan"
   [[ -n "${target_adr:-}" ]] && echo "  adr: $target_adr"
+  echo "  建议: 在 spec 中使用 REQ/NFR/OUT 编号，并在 ADR 的 Requirement Mapping 与 plan 的 Requirement Mapping / Task Covers 中显式引用"
   exit 1
 fi
 

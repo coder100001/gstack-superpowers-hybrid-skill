@@ -114,6 +114,13 @@ passed = 0
 skipped = 0
 gate_results = []
 
+def print_fallback_lines(text):
+    if not text:
+        return
+    for line in text.strip().split('\n'):
+        if line and "fallback used:" in line:
+            print(f"     {line}")
+
 try:
     with open(gates_yaml) as f:
         data = yaml.safe_load(f)
@@ -250,10 +257,8 @@ for gate in applicable_gates:
         if result.returncode == 0:
             if not output_json:
                 print(f"  ✓ 通过")
-                if result.stdout:
-                    for line in result.stdout.strip().split('\n'):
-                        if line and "fallback used:" in line:
-                            print(f"     {line}")
+                print_fallback_lines(result.stdout)
+                print_fallback_lines(result.stderr)
             passed += 1
             gate_results.append({
                 "status": "pass",
@@ -272,6 +277,7 @@ for gate in applicable_gates:
                         for line in result.stdout.strip().split('\n'):
                             if line:
                                 print(f"     {line}")
+                    print_fallback_lines(result.stderr)
                 errors += 1
                 gate_results.append({
                     "status": "block",
@@ -291,6 +297,7 @@ for gate in applicable_gates:
                         for line in result.stdout.strip().split('\n'):
                             if line:
                                 print(f"     {line}")
+                    print_fallback_lines(result.stderr)
                 skipped += 1
                 gate_results.append({
                     "status": "skip",

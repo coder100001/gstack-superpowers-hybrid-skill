@@ -19,6 +19,10 @@
 - `schema/skill-routes.yaml` 是机器路由真相源
 - `governance/context-contract.yaml` 是运行时 context 契约真相源
 - Gate 读取优先级：`context > workflow-state（secondary） > fallback`
+- `L1` 快速通道可在 `workflow-state/context` 中记录对话式确认，不强制独立 spec/plan 文件
+- spec 只承载需求、约束、验收与候选方向；最终设计决策只写入 ADR
+- `DISCOVERY` 负责候选方向探索，`ARCH_REVIEW` 负责方案对比与最终决策
+- `REQ/NFR/OUT` 是需求追踪主键，ADR / plan / PLAN_CONFIRM 围绕它做显式映射
 - 文档描述若与 YAML 冲突，以 YAML 为准
 
 ## 快速开始
@@ -54,6 +58,10 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 
 回退与异常流转请以状态机 YAML 为准。
 
+补充说明：
+- `L1` 默认走快速通道：需求确认和计划确认可在对话中完成，并写入 `workflow-state/context`
+- `PLAN_CONFIRM` 会展示 Requirement Mapping 摘要，确认 `REQ/NFR/OUT` 是否都已被任务或边界说明接住
+
 ## 关键目录
 
 ```text
@@ -67,6 +75,7 @@ scripts/check-skill-routes.sh                # 路由健康检查
 schema/skill-routes.yaml                     # 机器路由真相源
 docs/getting-started.md                      # 上手说明
 docs/architecture.md                         # 架构说明
+docs/skills-reference.md                    # 自动生成的技能索引
 ```
 
 ## 文档

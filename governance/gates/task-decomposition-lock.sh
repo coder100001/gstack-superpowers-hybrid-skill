@@ -3,14 +3,46 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # task-decomposition-lock.sh — 检查 TASK_DECOMPOSITION 是否已通过
-# 验证条件：plan 文件存在且不含 TBD/TODO/PLACEHOLDER
-# 记录确认状态到 artifacts/workflow-state.md
+# 验证条件：
+# - L2/L3: plan 文件存在且不含 TBD/TODO/PLACEHOLDER，且已确认
+# - L1: 允许通过 workflow-state/context 记录的变更摘要式确认
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PLANS_DIR="$PROJECT_ROOT/specs/plans"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
 source "$SCRIPT_DIR/common-context.sh"
+level="$(gate_context_level "$PROJECT_ROOT")"
+plan_confirmed="$(gate_context_get "plan_confirmed")"
+plan_summary_confirmed="$(gate_context_get "plan_summary_confirmed")"
+approval_mode="$(gate_context_get "approval_mode")"
+
+if [[ -f "$STATE_FILE" ]]; then
+  if [[ -z "$plan_confirmed" ]]; then
+    plan_confirmed="$(gate_workflow_state_value "plan_confirmed" "$STATE_FILE")"
+  fi
+  if [[ -z "$plan_summary_confirmed" ]]; then
+    plan_summary_confirmed="$(gate_workflow_state_value "plan_summary_confirmed" "$STATE_FILE")"
+  fi
+  if [[ -z "$approval_mode" ]]; then
+    approval_mode="$(gate_workflow_state_value "approval_mode" "$STATE_FILE")"
+  fi
+fi
+
+if [[ "$level" == "L1" ]] && { gate_is_truthy "$plan_summary_confirmed" || gate_is_truthy "$plan_confirmed"; }; then
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
+  if [[ -f "$STATE_FILE" ]]; then
+    gate_workflow_state_append "$STATE_FILE" "Task Decomposition Lock" \
+      "- Timestamp: $ts" \
+      "- Status: passed" \
+      "- Confirmation: ${approval_mode:-conversation}" \
+      "- Mode: L1 quick path"
+  fi
+  echo "✓ TASK_DECOMPOSITION 通过"
+  echo "  确认方式: ${approval_mode:-conversation}"
+  [[ -f "$STATE_FILE" ]] && echo "  状态文件: $STATE_FILE"
+  exit 0
+fi
 
 # 检查 plan 文件是否存在
 plan_files=$(ls "$PLANS_DIR"/*.md 2>/dev/null || true)
@@ -25,6 +57,7 @@ if [[ -z "$plan_files" ]]; then
   echo "  1. 运行 /plan 生成任务分解文档"
   echo "  2. 或手动创建 plan 文件到 specs/plans/ 目录"
   echo "  3. 确保 plan 文件中不包含 TBD/TODO/PLACEHOLDER"
+  echo "  4. L1 快速通道可在 workflow-state/context 中记录 plan_summary_confirmed: true"
   exit 1
 fi
 

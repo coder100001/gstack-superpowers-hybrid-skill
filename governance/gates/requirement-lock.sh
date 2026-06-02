@@ -3,7 +3,9 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # requirement-lock.sh — 检查 REQUIREMENT_LOCK 是否已通过
-# 验证条件：context-layer/specs/ 下最新 spec 文件包含确认标记
+# 验证条件：
+# - L2/L3: spec 文件存在且包含确认标记
+# - L1: 允许通过 workflow-state/context 记录的对话式确认
 
 SPEC_DIR="context-layer/specs"
 TODAY=$(date +%Y-%m-%d)
@@ -12,6 +14,36 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$SCRIPT_DIR/common-context.sh"
 
 context_spec="$(gate_context_get "spec_file" "requirement_spec_file")"
+state_file="$(gate_workflow_state_file "$SCRIPT_DIR" "$PROJECT_ROOT")"
+level="$(gate_context_level "$PROJECT_ROOT")"
+requirements_confirmed="$(gate_context_get "requirements_confirmed")"
+approval_mode="$(gate_context_get "approval_mode")"
+
+if [[ -n "$state_file" ]]; then
+  if [[ -z "$requirements_confirmed" ]]; then
+    requirements_confirmed="$(gate_workflow_state_value "requirements_confirmed" "$state_file")"
+  fi
+  if [[ -z "$approval_mode" ]]; then
+    approval_mode="$(gate_workflow_state_value "approval_mode" "$state_file")"
+  fi
+fi
+
+if [[ "$level" == "L1" ]] && gate_is_truthy "$requirements_confirmed"; then
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
+  if [[ -n "$state_file" ]]; then
+    gate_workflow_state_append "$state_file" "Requirement Lock" \
+      "- Timestamp: $ts" \
+      "- Status: passed" \
+      "- Confirmation: ${approval_mode:-conversation}" \
+      "- Mode: L1 quick path"
+  fi
+  echo "✓ REQUIREMENT_LOCK 通过"
+  echo "  确认方式: ${approval_mode:-conversation}"
+  if [[ -n "$state_file" ]]; then
+    echo "  状态文件: $state_file"
+  fi
+  exit 0
+fi
 
 if [[ -n "$context_spec" ]]; then
   latest="$(gate_context_path "$context_spec" "$PROJECT_ROOT")"
@@ -33,7 +65,8 @@ if [[ -z "${latest:-}" ]] || [[ ! -f "$latest" ]]; then
   echo "修复步骤:"
   echo "  1. 运行 /brainstorm 生成需求文档"
   echo "  2. 确认需求后运行 /plan"
-  echo "  3. 或手动创建 spec 文件并添加 ## Approval 章节"
+  echo "  3. L1 快速通道可在 workflow-state/context 中记录 requirements_confirmed: true"
+  echo "  4. 或手动创建 spec 文件并添加 ## Approval 章节"
   echo ""
   echo "示例 spec 文件格式:"
   echo "  ---"

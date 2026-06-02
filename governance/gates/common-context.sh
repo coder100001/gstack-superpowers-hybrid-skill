@@ -46,5 +46,66 @@ gate_context_path() {
 
 gate_log_fallback() {
   local reason="$1"
-  echo "fallback used: $reason"
+  echo "fallback used: $reason" >&2
+}
+
+gate_workflow_state_file() {
+  local script_dir="${1:-}"
+  local project_root="${2:-}"
+  if [[ -n "$script_dir" && -f "$project_root/artifacts/workflow-state.md" ]]; then
+    printf '%s\n' "$project_root/artifacts/workflow-state.md"
+  fi
+}
+
+gate_workflow_state_value() {
+  local key="$1"
+  local state_file="$2"
+  [[ -n "$state_file" && -f "$state_file" ]] || return 0
+  grep -iE "^${key}:" "$state_file" 2>/dev/null | head -1 | sed 's/^[^:]*:[[:space:]]*//' | sed 's/^["'\'']//; s/["'\'']$//' || true
+}
+
+gate_context_level() {
+  local project_root="$1"
+  local state_file
+  local level
+
+  level="$(gate_context_get "level" "complexity")"
+  if [[ -n "$level" ]]; then
+    printf '%s\n' "$level"
+    return 0
+  fi
+
+  state_file="$(gate_workflow_state_file "$SCRIPT_DIR" "$project_root")"
+  level="$(gate_workflow_state_value "level" "$state_file")"
+  if [[ -n "$level" ]]; then
+    gate_log_fallback "level not set in context; reading level from workflow-state"
+    printf '%s\n' "$level"
+  fi
+}
+
+gate_is_truthy() {
+  local value="${1:-}"
+  [[ "$value" =~ ^([Tt][Rr][Uu][Ee]|[Yy][Ee]?[Ss]?|1|confirmed|approved|passed)$ ]]
+}
+
+gate_workflow_state_append() {
+  local state_file="$1"
+  local section="$2"
+  shift 2
+
+  mkdir -p "$(dirname "$state_file")"
+  if [[ ! -f "$state_file" ]]; then
+    cat > "$state_file" <<'EOF'
+# Workflow State
+
+> **Auto-updated by gate quick path**
+EOF
+  fi
+  {
+    echo ""
+    echo "### $section"
+    for line in "$@"; do
+      echo "$line"
+    done
+  } >> "$state_file"
 }

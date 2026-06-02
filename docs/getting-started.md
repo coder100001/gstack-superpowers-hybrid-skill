@@ -36,6 +36,9 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
   - `scripts/resolve-skill-routes.sh`
   - `scripts/check-skill-routes.sh`
 - Gate 上下文优先级：`context > workflow-state（secondary） > fallback`
+- `L1` 快速通道可以把确认写进 `workflow-state/context`，不强制独立 spec/plan 文件
+- `REQ/NFR/OUT` 是需求追踪主键，`PLAN_CONFIRM` 会展示 Requirement Mapping 摘要
+- `DISCOVERY` 负责用 brainstorming 方法探索候选方向；`ARCH_REVIEW` 负责对候选方向做正式多方案对比并落 ADR 决策
 - 提交信息格式建议：`type(scope): summary`（由 `SHIP_REVIEW` 的 soft gate 提示一致性）
 
 ## 4. 主流程
@@ -75,7 +78,7 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
 
 ## 6. 排错建议
 
-- `plan-confirm` 失败：先确认计划文档中有明确确认标记
+- `plan-confirm` 失败：先确认计划文档中有明确确认标记，或检查 `workflow-state/context` 是否写入 `plan_confirmed: true`
 - `decision-freeze` 失败：实现阶段不要改 ADR/spec，需回退决策层
 - 路由解析异常：优先检查 `schema/skill-routes.yaml` 和 `scripts/resolve-skill-routes.sh`
 - 路由摘要检查报错：检查 `SKILL.md` 摘要是否引用了不存在技能

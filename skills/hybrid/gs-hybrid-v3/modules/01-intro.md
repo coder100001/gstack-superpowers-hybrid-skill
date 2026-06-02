@@ -8,7 +8,7 @@
 
 | 指令 | 流程 | 说明 |
 |------|------|------|
-| `/plan` 或 `hybrid plan` | 规划流程 | IDEA → TASK_DECOMPOSITION |
+| `/plan` 或 `hybrid plan` | 规划流程 | IDEA → DISCOVERY / REQUIREMENT_LOCK / ARCH_REVIEW / TASK_DECOMPOSITION / PLAN_CONFIRM |
 | `/review` 或 `hybrid review` | 自审/代码审查 | SELF_REVIEW 流程 |
 | `/test` 或 `hybrid test` | 测试驱动 | 进入 IMPLEMENTATION（确保 Context Hydration） |
 | `/qa` 或 `hybrid qa` | 质量保证 | QA 阶段验证 |
@@ -24,7 +24,7 @@ AI: [状态: Step 0 | 进度: 复杂度评估 | 冻结项: 无]
 
 收到。我将按照 AI Engineering Governance System v4.1 执行：
 
-Step 0:     评估任务复杂度 (L1/L2/L3)
+Step 0:     评估任务复杂度 (L0/L1/L2/L3)
 
 ◆ DECISION LAYER (决策层)
 IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
@@ -43,6 +43,11 @@ TDD编码      自审对照    QA验证     发布检查    复盘记录
 <HARD-GATE>
 在用户确认需求、确认执行计划、完成上下文注水之前，不要进入下一阶段。这适用于 L2/L3 所有任务。
 </HARD-GATE>
+
+补充规则：
+- `L1` 允许在对话中完成需求确认与计划确认，但必须把确认结果写入 `workflow-state/context`
+- `PLAN_CONFIRM` 阶段应展示 Requirement Mapping 摘要，确认 `REQ/NFR/OUT` 覆盖完整
+- `DISCOVERY` 只负责用 brainstorming 方法收敛候选方向，不在此阶段定稿；`ARCH_REVIEW` 才对候选方向做正式多方案对比并产出 ADR 决策
 
 ---
 
@@ -126,12 +131,12 @@ concurrency:
 
 | 原阶段 | 新状态 | 用途 |
 |-------|-------|------|
-| Phase 0.5a | DISCOVERY | 需求澄清 (brainstorming) |
-| Phase 0.5b | ARCH_REVIEW | 架构审议 (architecture-review) |
+| Phase 0.5a | DISCOVERY | 需求澄清与候选方向探索 (brainstorming) |
+| Phase 0.5b | ARCH_REVIEW | 多方案对比与架构审议 (architecture-review) |
 | Phase 0.6 | REQUIREMENT_LOCK | 需求确认 |
 | Phase 1 | TASK_DECOMPOSITION | 任务拆解 (writing-plans) |
-| Phase 1.5 | TASK_DECOMPOSITION 确认 | 用户确认执行计划 |
-| Phase 2-3 | ARCH_REVIEW 已包含 | 架构评审已合并到多角色审议 |
+| Phase 1.5 | PLAN_CONFIRM | 用户确认执行计划与 Requirement Mapping |
+| Phase 2-3 | ARCH_REVIEW 已包含 | 多方案对比与架构评审已合并到多角色审议 |
 | Phase 4-5 | QA | QA 验证 (GStack qa) |
 | Phase 6 | IMPLEMENTATION | TDD 编码 (test-driven-development) |
 | Phase 7 | SELF_REVIEW/SHIP_REVIEW | 自审、发布检查 |
@@ -144,7 +149,7 @@ concurrency:
 |------|------|
 | [02-complexity.md](./02-complexity.md) | 复杂度分级、适用矩阵 |
 | [03a-discovery-arch.md](./03a-discovery-arch.md) | IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW |
-| [03b-task-decomposition.md](./03b-task-decomposition.md) | TASK_DECOMPOSITION |
+| [03b-task-decomposition.md](./03b-task-decomposition.md) | TASK_DECOMPOSITION → PLAN_CONFIRM |
 | [04a-execution-hydration.md](./04a-execution-hydration.md) | Context Hydration → IMPLEMENTATION |
 | [04b-self-review.md](./04b-self-review.md) | SELF_REVIEW → QA |
 | [05-ship-review-retro.md](./05-ship-review-retro.md) | SHIP_REVIEW → RETRO |

@@ -19,7 +19,7 @@ gates:
   requirement-lock:
     id: "G001"
     name: "requirement-lock"
-    description: "用户是否明确确认了需求清单"
+    description: "用户是否明确确认了需求清单；L1 可使用 workflow-state/context 的对话确认记录"
     script: "governance/gates/requirement-lock.sh"
     applies_to:
       - REQUIREMENT_LOCK
@@ -33,12 +33,13 @@ gates:
     remediation:
       - "运行 /brainstorm 生成需求文档"
       - "确认需求后运行 /plan"
+      - "L1 快速通道可写入 requirements_confirmed: true 与 approval_mode: conversation"
       - "或手动创建 spec 文件并添加 ## Approval 章节"
 
   requirement-structure:
     id: "G009"
     name: "requirement-structure"
-    description: "需求文档是否包含问题定义/范围/非目标/验收标准 + 多方案对比 + 决策结论"
+    description: "需求文档是否包含问题定义/问题证据/范围/非目标/验收标准/Risk Tags"
     script: "governance/gates/requirement-structure.sh"
     applies_to:
       - REQUIREMENT_LOCK
@@ -47,14 +48,14 @@ gates:
       L1: "soft"
       L2: "hard"
       L3: "hard"
-    l1_exempt: false
+    l1_exempt: true
     fail_message: "REQUIREMENT_LOCK 质量告警：需求结构不完整，建议补充后继续"
     exit_codes:
       pass: 0
       block: 1
       infra_error: 2
     remediation:
-      - "补齐需求文档结构：问题定义、范围、非目标、验收标准、方案对比、决策结论"
+      - "补齐需求文档结构：问题定义、问题证据、范围、非目标、验收标准、Risk Tags"
       - "确保各章节有明确可执行内容"
 
   measurable-acceptance:
@@ -65,7 +66,7 @@ gates:
     applies_to:
       - REQUIREMENT_LOCK
     severity: "soft"
-    l1_exempt: false
+    l1_exempt: true
     fail_message: "REQUIREMENT_LOCK 质量告警：验收项不可测，建议补充可观测指标后继续"
     exit_codes:
       pass: 0
@@ -120,7 +121,7 @@ gates:
   task-decomposition-lock:
     id: "G003"
     name: "task-decomposition-lock"
-    description: "plan 文件存在且不含 TBD/TODO/PLACEHOLDER，用户已确认"
+    description: "L2/L3 需 plan 文件存在且不含占位符并已确认；L1 可使用 workflow-state/context 的摘要确认"
     script: "governance/gates/task-decomposition-lock.sh"
     applies_to:
       - TASK_DECOMPOSITION
@@ -134,12 +135,13 @@ gates:
     remediation:
       - "运行 /plan 生成执行计划"
       - "确保 plan 文件无 TBD/TODO/PLACEHOLDER"
+      - "L1 快速通道可写入 plan_summary_confirmed: true"
       - "用户确认执行计划"
 
   plan-confirm:
     id: "G004"
     name: "plan-confirm"
-    description: "用户已明确确认执行计划，范围/拆解/风险/验收标准无异议"
+    description: "用户已明确确认执行计划；L1 可使用 workflow-state/context 的对话确认"
     script: "governance/gates/plan-confirm.sh"
     applies_to:
       - PLAN_CONFIRM
@@ -152,18 +154,20 @@ gates:
       infra_error: 2
     remediation:
       - "向用户展示完整执行计划"
+      - "展示 Requirement Mapping 摘要，确认 REQ/NFR/OUT 覆盖无缺口"
       - "获取用户明确确认（口头或书面）"
+      - "L1 快速通道可写入 plan_confirmed: true 与 approval_mode: conversation"
       - "确认范围、拆解、风险、验收标准"
 
   requirement-design-coverage:
     id: "G011"
     name: "requirement-design-coverage"
-    description: "需求条目是否在设计/计划中得到覆盖"
+    description: "spec 中的 REQ/NFR/OUT 条目是否在 ADR 和 plan 中得到显式覆盖"
     script: "governance/gates/requirement-design-coverage.sh"
     applies_to:
       - PLAN_CONFIRM
     severity: "soft"
-    l1_exempt: false
+    l1_exempt: true
     fail_message: "PLAN_CONFIRM 质量告警：存在未覆盖需求，建议补齐映射后继续"
     exit_codes:
       pass: 0
@@ -172,7 +176,8 @@ gates:
     remediation:
       - "优先在 ADR 中补充对未覆盖需求的设计响应（单一设计产物）"
       - "plan 仅补充执行拆解，不新增平行设计文档"
-      - "建议在 spec 中使用 REQ-ID（如 REQ-001）并在 ADR/plan 显式映射"
+      - "在 spec 中使用 REQ/NFR/OUT 编号（如 REQ-001, NFR-001, OUT-001）"
+      - "在 ADR 中补充 Requirement Mapping，在 plan 中补充 Requirement Mapping / Task Covers"
       - "确保关键需求在 ADR 与 plan 中可追踪"
 
   discovery-risk-tags:
@@ -183,7 +188,7 @@ gates:
     applies_to:
       - DISCOVERY
     severity: "soft"
-    l1_exempt: false
+    l1_exempt: true
     fail_message: "DISCOVERY 质量告警：风险标签不完整，建议补齐后继续"
     exit_codes:
       pass: 0

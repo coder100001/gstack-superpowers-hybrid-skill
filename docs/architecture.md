@@ -95,6 +95,7 @@
 - 进入下一阶段后释放前序细节，仅保留契约摘要
 - 细节由模块文档与治理 YAML 承担
 - Gate 读取优先级：`context > workflow-state（secondary source） > fallback`
+- `L1` 可在 `context/workflow-state` 中记录对话式确认，不强制独立 spec/plan 文件
 
 ## 6. 设计约束
 
@@ -102,6 +103,9 @@
 - 文档不复制机器规则，避免双写漂移
 - 任何流程描述冲突时，以脚本行为和 YAML 为准
 - 单一设计产物：ADR 是唯一设计决策载体；plan 只承担执行拆解，不维护平行设计文档
+- spec 只回答需求与约束，不承载最终设计决策；ADR 回答方案对比、trade-off 与最终决策
+- `DISCOVERY` 只探索候选方向与问题证据，不做最终定稿；`ARCH_REVIEW` 才对这些候选方向做正式多方案比较并落 ADR
+- 需求追踪使用显式 ID：spec 中的 `REQ/NFR/OUT` 必须在 ADR 与 plan 中出现，避免依赖弱关键词匹配
 - 增强策略：优先增强既有 Superpowers 产物（spec/ADR/plan）的质量审查，不新增产物类型
 - 提交信息规范：在 `SHIP_REVIEW` 通过 `commit-message-format` gate 进行格式一致性检查（Phase A 为 soft）
 

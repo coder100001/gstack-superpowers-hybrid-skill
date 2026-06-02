@@ -43,7 +43,10 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 - 若本文件状态/Gate 摘要与治理层 YAML 冲突，以治理层 YAML 为准。
 - Gate 读取优先级：`context 文件 > workflow-state（secondary source） > 自动发现（fallback）`。
 - `workflow-state` 中的 `plan_file` / `level` 仅作为 secondary hints，不应覆盖 context。
+- `L1` 快速通道允许在 `context/workflow-state` 中记录 `requirements_confirmed`、`plan_summary_confirmed`、`plan_confirmed`、`approval_mode: conversation`，无需强制独立 spec/plan 文件。
 - 设计产物约束：ADR 为唯一设计决策产物；plan 仅用于执行拆解，不维护平行设计文档。
+- spec 只承载 `what / why / constraints / acceptance / candidate directions`；最终设计决策、trade-off 与 requirement mapping 只写入 ADR。
+- 需求追踪约束：spec 使用 `REQ/NFR/OUT` 编号；ADR 与 plan 必须显式映射这些编号，避免弱匹配覆盖。
 - 优化策略：优先增强既有 Superpowers 产物（spec/ADR/plan）质量，不新增产物类型。
 - 提交信息规范由 SHIP_REVIEW Gate 执行：建议统一 `type(scope): summary`（scope 可选）。
 
