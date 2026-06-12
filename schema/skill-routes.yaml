@@ -25,7 +25,7 @@ routes:
     ARCH_REVIEW:
       - name: design
         trigger: "L2+ tasks"
-        purpose: "Design Doc 编写 (方案对比/设计决策存档)"
+        purpose: "ADR 编写 (方案对比/设计决策存档)"
 
     TASK_DECOMPOSITION:
       - name: writing-plans
@@ -79,7 +79,7 @@ routes:
     EXCEPTION:
       - name: systematic-debugging
         trigger: "bugs, test failures, unexpected behavior"
-        purpose: "root cause analysis before fixing"
+        purpose: "原生根因调试主流程；先复现、查证据、锁定根因，再修复"
         manual: true
 
   # ==== Hybrid Skills ====
@@ -157,7 +157,7 @@ routes:
         trigger: "debugging, root cause analysis"
         detect:
           keywords: ["error", "bug", "fail", "exception", "crash", "debug"]
-        purpose: "根因调试"
+        purpose: "对 systematic-debugging 的治理增强：证据记录、冻结检查、回退决策、验证摘要"
 
     SAFETY:
       - name: gstack:careful

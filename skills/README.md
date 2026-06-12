@@ -6,7 +6,7 @@
 
 ```
 skills/
-├── superpowers/          # Superpowers 官方技能 (14个)
+├── superpowers/          # Superpowers 官方技能 (16个)
 ├── gstack/               # GStack 工程技能 (16个)
 ├── hybrid/               # 混合流程技能 (1个)
 └── custom/               # 自定义扩展技能
@@ -18,10 +18,12 @@ skills/
 
 来自 [Superpowers](https://github.com/obra/superpowers) 官方的技能，提供成熟的方法论指导。
 
-**包含技能 (14个)**:
+**包含技能 (16个)**:
 - `brainstorming` - 需求澄清、方案对比
+- `design` - 方案对比、权衡分析与 ADR 记录
 - `writing-plans` - 编写实施计划
 - `executing-plans` - 批量执行计划
+- `plan-verification` - 计划验证确认（范围/拆解/风险/验收）
 - `subagent-driven-development` - 子代理驱动开发
 - `test-driven-development` - TDD 编码
 - `systematic-debugging` - 系统调试
@@ -148,7 +150,7 @@ custom/
   "superpowers": {
     "version": "x.x.x",
     "last_sync": "2026-05-15",
-    "skill_count": 14,
+    "skill_count": 16,
     "path": "skills/superpowers/"
   },
   "gstack": {

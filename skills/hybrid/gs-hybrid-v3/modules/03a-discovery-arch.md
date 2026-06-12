@@ -18,7 +18,7 @@ DISCOVERY:  需求澄清 (Superpowers brainstorming - 渐进式提问)
 REQUIREMENT_LOCK: 需求确认 (用户必须确认)
              ↓
 ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
-             ↓ 产出：架构设计 + ADR
+             ↓ 产出：ADR
 ```
 
 ---
@@ -31,7 +31,7 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
 
 ### 目标
 
-先通过 brainstorming 方法论澄清需求，沉淀问题定义、范围、约束、验收标准和候选方向，然后保存为 spec 文件。正式设计决策不在此阶段定稿，由 ARCH_REVIEW 的 ADR 承载。
+先通过 brainstorming 方法论澄清需求，沉淀问题定义、范围、约束、验收标准和候选方向，然后保存为 spec 文件。正式设计决策不在此阶段定稿，也不输出平行设计文档，最终取舍只由 ARCH_REVIEW 的 ADR 承载。
 
 ### Step 0: Announce at Start
 
@@ -171,6 +171,7 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
 ```
 
 **过渡协议**: 需求澄清完成后，只应建议进入 REQUIREMENT_LOCK 状态，不直接跳转到编码实现。spec 回答 `what / why / constraints`，ADR 回答 `how / trade-offs / decision`。
+**边界提醒**: DISCOVERY 阶段可以提出 2-3 个候选方向，但这些方向只用于帮助锁定需求边界与决策准则，不作为最终方案结论。
 
 ---
 

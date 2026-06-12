@@ -10,7 +10,7 @@
 | `/review` | SELF_REVIEW | SELF_REVIEW → QA → SHIP_REVIEW | 自审报告, QA 报告 | [04b](./04b-self-review.md), [05](./05-ship-review-retro.md) |
 | `/test` | Context Hydration | Context Hydration → IMPLEMENTATION → SELF_REVIEW | 测试代码, 实现代码 | [04a](./04a-execution-hydration.md), [04b](./04b-self-review.md) |
 | `/qa` | QA | QA → SHIP_REVIEW | QA 报告, 发布检查清单 | [04b](./04b-self-review.md), [05](./05-ship-review-retro.md) |
-| `/debug` | ABORTED | 问题理解 → 根因分析 → 修复验证 | 问题分析报告 | [07-handling.md](./07-handling.md) |
+| `/debug` | EXCEPTION | systematic-debugging → RCA 证据锁定 → 最小修复 → 回归验证 | RCA 报告, 回归证据 | [07-handling.md](./07-handling.md) |
 | `/refactor` | IMPLEMENTATION | 代码分析 → 方案确认 → 重构验证 | 重构代码 | [04a](./04a-execution-hydration.md) |
 
 ---
@@ -45,7 +45,7 @@ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 | 场景 | 指令组合 |
 |------|---------|
 | 完整开发流程 | `/plan` → `/test` → `/review` → `/qa` → SHIP_REVIEW → RETRO |
-| 快速修复流程 | `/debug` → `/test` → `/qa` |
+| 快速修复流程 | `/debug` → 回归验证 → SHIP_REVIEW |
 | 代码优化流程 | `/review` → `/refactor` → `/test` → `/qa` |
 
 ---

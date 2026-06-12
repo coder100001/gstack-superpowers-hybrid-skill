@@ -15,6 +15,74 @@
 
 ---
 
+## Debug Exception Subflow
+
+`/debug` 不定义一套新的调试方法。调试主流程必须依赖 Superpowers 原生 `systematic-debugging`，gs-hybrid 只增加治理增强：证据记录、冻结项检查、回退决策和验证摘要。
+
+### 职责分工
+
+| 能力 | 负责人 | 说明 |
+|------|--------|------|
+| 根因调查方法 | `systematic-debugging` | 复现、读错误、查最近变更、形成单一假设、最小验证 |
+| 调试会话治理 | `gstack:investigate` | 记录证据、检查冻结项、判断是否回退 Decision Layer、输出 RCA 摘要 |
+| 修复执行 | `test-driven-development` / 现有计划 | 只在根因明确后执行最小修复 |
+| 完成验证 | `verification-before-completion` | 证明原问题消失、回归测试通过、无新增失败 |
+
+### Debug 流程
+
+```
+问题进入 → systematic-debugging Phase 1-3 → RCA 证据锁定
+       → 判断是否触碰冻结项
+       → 最小修复计划
+       → regression test / reproduction command
+       → 修复实现
+       → 验证原问题与回归测试
+       → SHIP_REVIEW 或回退 Decision Layer
+```
+
+### RCA 最小记录
+
+每次 debug 至少记录以下字段，可写入 `workflow-state`、自审报告或调试摘要；L2/L3 建议保存到 `artifacts/debug/YYYY-MM-DD-<topic>-rca.md`。
+
+```markdown
+## RCA Summary
+
+- Observed: [实际现象、错误信息、失败命令]
+- Expected: [期望行为]
+- Reproduction: [稳定复现步骤；不可稳定复现时写明已收集的证据]
+- Recent Changes: [相关 diff / commit / 配置变化]
+- Hypothesis: [单一根因假设]
+- Evidence: [支持该假设的具体证据]
+- Root Cause: [确认的根因]
+- Fix Plan: [最小修复，不含顺手重构]
+- Regression Evidence: [失败先于修复、修复后通过的测试或命令]
+- Freeze Impact: [是否触碰架构/需求/API/领域边界]
+```
+
+### Root Cause Lock
+
+在进入修复前必须满足：
+
+- [ ] 已完成 `systematic-debugging` 的根因调查与假设验证
+- [ ] 有稳定复现，或有足够证据解释为什么不可稳定复现
+- [ ] 根因是单一、具体、可验证的，不是泛泛描述
+- [ ] 修复计划只针对根因，不包含无关重构
+- [ ] bugfix 至少有 regression evidence；无测试时必须说明替代验证命令和风险
+- [ ] 若修复需要改变冻结项，必须回退 Decision Layer，不能在 IMPLEMENTATION 中直接修改
+
+### 失败重试规则
+
+- 第 1-2 次假设失败：回到 `systematic-debugging` Phase 1，补证据后重新形成假设
+- 第 3 次修复失败：暂停实现，判断是否为架构/计划问题
+- 若根因涉及 ADR、需求范围、API 契约或领域边界：回退到 `ARCH_REVIEW` 或 `TASK_DECOMPOSITION`
+- 若只是实现细节错误：回到 `IMPLEMENTATION` 执行最小修复
+
+### QA / Review 失败接入
+
+当 SELF_REVIEW、QA 或 SHIP_REVIEW 发现失败时，不应直接叠加补丁。先进入本 Debug Exception Subflow，完成 RCA 记录后再决定回到 `IMPLEMENTATION`、`TASK_DECOMPOSITION` 或 `ARCH_REVIEW`。
+
+---
+
 ## Decision Freeze 变更流程
 
 > **单一真相源**: 冻结范围、变更流程、禁止路径、例外条款、违规处理、变更评估矩阵的完整定义均在 [governance/decision-freeze.md](../../../../governance/decision-freeze.md)。本节仅保留摘要，详细内容以 decision-freeze.md 为准。

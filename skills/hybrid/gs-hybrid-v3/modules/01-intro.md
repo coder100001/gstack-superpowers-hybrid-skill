@@ -12,7 +12,7 @@
 | `/review` 或 `hybrid review` | 自审/代码审查 | SELF_REVIEW 流程 |
 | `/test` 或 `hybrid test` | 测试驱动 | 进入 IMPLEMENTATION（确保 Context Hydration） |
 | `/qa` 或 `hybrid qa` | 质量保证 | QA 阶段验证 |
-| `/debug` 或 `hybrid debug` | 调试助手 | 问题诊断与修复 |
+| `/debug` 或 `hybrid debug` | 调试助手 | systematic-debugging 主流程 + RCA 治理增强 |
 | `/refactor` 或 `hybrid refactor` | 重构建议 | 约束内代码改进 |
 
 ### 标准工作流

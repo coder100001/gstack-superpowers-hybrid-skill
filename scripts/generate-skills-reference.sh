@@ -154,7 +154,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 | \`/review\` | 代码审查 |
 | \`/test\` | 测试驱动 |
 | \`/qa\` | 质量保证 |
-| \`/debug\` | 调试助手 |
+| \`/debug\` | systematic-debugging 主流程 + RCA 治理增强 |
 | \`/refactor\` | 重构建议 |
 
 #### 真相源
@@ -194,7 +194,7 @@ cat >> "$OUTPUT_FILE" << HYBRID_SECTION
 | **Decision Layer** | 想清楚做什么 | \`brainstorming\`, \`design\`, \`writing-plans\`, \`plan-verification\`, \`gstack:plan-eng-review\`, \`gstack:plan-devex-review\` |
 | **Context Layer** | 固化共识、防遗忘 | \`context-save\`, \`context-restore\`, \`learn\` |
 | **Execution Layer** | 严格按契约做 | \`test-driven-development\`, \`requesting-code-review\`, \`verification-before-completion\`, \`gstack:qa\`, \`gstack:cso\`, \`gstack:benchmark\`, \`gstack:codex\` |
-| **Governance** | 决策冻结、状态机控制 | \`gstack:ship\`, \`gstack:retro\`, \`gstack:investigate\`, \`freeze\`, \`guard\`, \`careful\` |
+| **Governance** | 决策冻结、状态机控制 | \`systematic-debugging\`, \`gstack:ship\`, \`gstack:retro\`, \`gstack:investigate\`, \`freeze\`, \`guard\`, \`careful\` |
 
 ---
 
