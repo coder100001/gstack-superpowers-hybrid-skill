@@ -31,7 +31,7 @@ Context Hydration（上下文注水）是连接 Context Layer 和 Execution Laye
 | 编码标准 | `context-layer/specs/coding-standards/index.md` | P0 | 规则变更时 | 每次重新加载 |
 | ADR 历史 | `decision-layer/adr/` 目录 | P0 | 决策更新时 | 仅加载活跃 ADR |
 | 任务清单 | `specs/plans/tasks.md` | P1 | 任务分解时 | 每次重新加载 |
-| 工作流状态 | `artifacts/workflow-state.md` | P1 | 状态变更时 | 每次重新加载 |
+| 工作流状态 | `artifacts/workflow-state.md` | P1 | 状态变更时 | 由 `governance/lib/state-manager.sh` 统一管理 |
 | 项目配置 | `project-config.yml` | P2 | 项目级 | 首次加载后缓存 |
 
 ### 优先级说明

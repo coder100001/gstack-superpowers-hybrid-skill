@@ -148,29 +148,10 @@ if [[ "$confirmed" == "false" ]]; then
   exit 1
 fi
 
-# 记录状态
-mkdir -p "$(dirname "$STATE_FILE")"
-ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
-
-if [[ -f "$STATE_FILE" ]]; then
-  # 追加确认记录
-  echo "" >> "$STATE_FILE"
-  echo "### Task Decomposition Lock" >> "$STATE_FILE"
-  echo "- Timestamp: $ts" >> "$STATE_FILE"
-  echo "- Status: passed" >> "$STATE_FILE"
-  echo "- Plans: $(echo "$plan_files" | wc -l | tr -d ' ') file(s)" >> "$STATE_FILE"
-else
-  cat > "$STATE_FILE" << EOF
-# Workflow State
-
-> **Last Updated**: $ts
-
-### Task Decomposition Lock
-- Timestamp: $ts
-- Status: passed
-- Plans: $(echo "$plan_files" | wc -l | tr -d ' ') file(s)
-EOF
-fi
+# 记录状态（通过统一状态管理器）
+gate_workflow_state_append "$STATE_FILE" "Task Decomposition Lock" \
+  "- Status: passed" \
+  "- Plans: $(echo "$plan_files" | wc -l | tr -d ' ') file(s)"
 
 echo "✓ TASK_DECOMPOSITION 通过"
 echo "  Plan 文件: $(echo "$plan_files" | wc -l | tr -d ' ') 个"

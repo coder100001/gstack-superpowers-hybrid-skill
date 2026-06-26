@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ADR_DIR="$PROJECT_ROOT/decision-layer/adr"
 STATE_FILE="$PROJECT_ROOT/artifacts/workflow-state.md"
+source "$SCRIPT_DIR/common-context.sh"
 
 # 读取复杂度级别（兼容 YAML 键值格式和列表格式）
 complexity=""
@@ -73,28 +74,10 @@ if [[ -n "$latest_adr" ]]; then
   fi
 fi
 
-# 记录状态
-mkdir -p "$(dirname "$STATE_FILE")"
-ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
-
-if [[ -f "$STATE_FILE" ]]; then
-  echo "" >> "$STATE_FILE"
-  echo "### Arch Review Lock" >> "$STATE_FILE"
-  echo "- Timestamp: $ts" >> "$STATE_FILE"
-  echo "- Status: passed" >> "$STATE_FILE"
-  echo "- ADRs: $(echo "$adr_files" | wc -l | tr -d ' ') file(s)" >> "$STATE_FILE"
-else
-  cat > "$STATE_FILE" << EOF
-# Workflow State
-
-> **Last Updated**: $ts
-
-### Arch Review Lock
-- Timestamp: $ts
-- Status: passed
-- ADRs: $(echo "$adr_files" | wc -l | tr -d ' ') file(s)
-EOF
-fi
+# 记录状态（通过统一状态管理器）
+gate_workflow_state_append "$STATE_FILE" "Arch Review Lock" \
+  "- Status: passed" \
+  "- ADRs: $(echo "$adr_files" | wc -l | tr -d ' ') file(s)"
 
 echo "✓ ARCH_REVIEW 通过"
 echo "  复杂度级别: ${complexity:-未指定（默认 L2+）}"

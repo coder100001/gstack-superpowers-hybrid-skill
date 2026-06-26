@@ -1,4 +1,4 @@
-# 快速开始（v4.1.1）
+# 快速开始（v5.0.0）
 
 > 面向 gs-hybrid-v3 当前版本的最小可用指南。
 
@@ -7,7 +7,7 @@
 ```bash
 git clone <repo-url>
 cd gstack-superpowers-hybrid-skill
-chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
+chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh governance/lib/*.sh
 ```
 
 ## 2. 先跑校验
@@ -35,6 +35,7 @@ chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
   - `governance/check-gates.sh`
   - `scripts/resolve-skill-routes.sh`
   - `scripts/check-skill-routes.sh`
+  - `governance/lib/state-manager.sh`（workflow-state.md 统一管理器）
 - Gate 上下文优先级：`context > workflow-state（secondary） > fallback`
 - `L1` 快速通道可以把确认写进 `workflow-state/context`，不强制独立 spec/plan 文件
 - `REQ/NFR/OUT` 是需求追踪主键，`PLAN_CONFIRM` 会展示 Requirement Mapping 摘要

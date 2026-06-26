@@ -3,6 +3,12 @@ set -euo pipefail
 
 # shared helpers for gate context parsing
 
+# 引入统一的状态管理器
+_COMMON_CTX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$_COMMON_CTX_DIR/../lib/state-manager.sh" ]]; then
+  source "$_COMMON_CTX_DIR/../lib/state-manager.sh"
+fi
+
 gate_context_value() {
   local key="$1"
   local context_file="${GSTACK_GATE_CONTEXT:-}"
@@ -93,19 +99,35 @@ gate_workflow_state_append() {
   local section="$2"
   shift 2
 
-  mkdir -p "$(dirname "$state_file")"
-  if [[ ! -f "$state_file" ]]; then
-    cat > "$state_file" <<'EOF'
+  # 使用统一状态管理器写入 Gate Results 表格（而非原始追加）
+  if type state_manager_record_gate &>/dev/null; then
+    local details=""
+    for line in "$@"; do
+      # 清理 "- Key: Value" 格式为 "Key: Value"
+      local cleaned="${line#- }"
+      if [[ -n "$details" ]]; then
+        details="$details | $cleaned"
+      else
+        details="$cleaned"
+      fi
+    done
+    state_manager_record_gate "$state_file" "$section" "passed" "$details"
+  else
+    # 降级：状态管理器不可用时保留旧的追加逻辑
+    mkdir -p "$(dirname "$state_file")"
+    if [[ ! -f "$state_file" ]]; then
+      cat > "$state_file" <<'EOF'
 # Workflow State
 
 > **Auto-updated by gate quick path**
 EOF
+    fi
+    {
+      echo ""
+      echo "### $section"
+      for line in "$@"; do
+        echo "$line"
+      done
+    } >> "$state_file"
   fi
-  {
-    echo ""
-    echo "### $section"
-    for line in "$@"; do
-      echo "$line"
-    done
-  } >> "$state_file"
 }
