@@ -81,6 +81,27 @@ ARCH_REVIEW 状态已用结构化标准做过多子系统检测。L1 场景则�
 
 ---
 
+### 2b. Global Constraints (v5.0 NEW)
+
+在 File Structure 之后、task 列表之前，声明整个 plan 的全局约束：
+
+```markdown
+## Global Constraints
+
+- **Performance**: P95 latency < 200ms
+- **Memory**: Max heap usage < 512MB
+- **Compatibility**: Must work on Node 18+
+- **Data safety**: All database migrations must be reversible
+- **Forbidden areas**: Do not modify files in `src/core/` (frozen by ADR-005)
+```
+
+规则：
+- 约束必须可测试或可验证
+- 每个 task 的实现必须遵守这些约束
+- 如需违反，必须在 task 中显式说明并获得批准
+
+---
+
 ### 3. Spec→Task 分解 (NEW)
 
 这是 plan 最核心的环节——从 spec 的需求列表映射到可执行的 task 列表。
@@ -159,6 +180,10 @@ Step E: 排序
 
 **Dependencies:** [Task X, Task Y] | **Parallel with:** [Task Z] | **Estimate:** ~10min
 **Covers:** REQ-001, NFR-001
+
+**Interfaces:**
+- `functionName(input: InputType): OutputType` — exported by this task, consumed by Task M
+- `interface SharedConfig { ... }` — defined here, used by Task K
 
 **Files:**
 - Create: `src/path/to/component.ext`

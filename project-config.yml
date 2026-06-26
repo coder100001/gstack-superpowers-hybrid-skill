@@ -3,7 +3,7 @@
 
 ## Project Identity
 project_name: "gstack-superpowers-hybrid-skill"
-version: "4.1.1"
+version: "5.0.0"
 description: "AI Engineering Governance System — 三层架构（治理收敛与上下文契约优先级）"
 
 ## Runtime

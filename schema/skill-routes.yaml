@@ -5,8 +5,8 @@
 # Consumed by scripts/resolve-skill-routes.sh
 # Summary references are checked by scripts/check-skill-routes.sh
 
-version: "4.1"
-updated: "2026-05-25"
+version: "5.0"
+updated: "2026-06-26"
 canonical_source: "schema/skill-routes.yaml"
 
 routes:
@@ -59,9 +59,13 @@ routes:
         manual: true
 
     SELF_REVIEW:
+      - name: subagent-driven-development
+        trigger: "SDD flow: task-reviewer single-pass dual verdict"
+        purpose: "SDD task review (spec compliance + code quality in one pass)"
+        note: "v5.0: 对齐 Superpowers 6.0 单 task-reviewer 模式"
       - name: requesting-code-review
-        trigger: "L2+ tasks"
-        purpose: "代码规范审查"
+        trigger: "non-SDD review, L2+ tasks"
+        purpose: "独立代码规范审查 (非 SDD 流程)"
       - name: receiving-code-review
         trigger: "review feedback received"
         purpose: "technical rigor before implementing suggestions"

@@ -1,14 +1,13 @@
 ---
 name: "gs-hybrid-v3"
-description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v4.1.1 渐进式加载优化与治理收敛版。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v5.0.0 Superpowers 6.0 对齐版。"
 ---
 
-# AI Engineering Governance System v4.1.1 (三层架构正式版)
+# AI Engineering Governance System v5.0.0 (三层架构正式版)
 
 > **核心理念**: 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
 > 本系统将 Superpowers 的工程纪律 + GStack 的多角色审议 + Context Layer 的契约驱动，统一为可执行的三层职责系统
-> **v4.0 升级**: 从技能分类升级为职责分层系统 | 9 状态状态机 | 决策冻结 | 上下文注水
-> **v4.1 升级**: 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载
+> **版本演进**: v4.0 三层架构 → v4.1 渐进式加载 → v5.0 Superpowers 6.0 对齐 (SDD 单 reviewer、Global Constraints、PLAN_CONFIRM 状态)
 
 ---
 
@@ -19,7 +18,7 @@ description: "AI Engineering Governance System — 三层架构（决策层/上�
 ```
 用户: hybrid 帮我开发用户认证功能
 
-AI: 收到。我将按照 AI Engineering Governance System (v4.1.1) 三层架构执行：
+AI: 收到。我将按照 AI Engineering Governance System (v5.0.0) 三层架构执行：
 
 Step 0:     评估任务复杂度 (L0/L1/L2/L3)
 
@@ -179,7 +178,7 @@ RETRO:          复盘记录
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│         AI Engineering Governance System v4.1.1 — 三层职责分层 (三层架构)                     │
+│         AI Engineering Governance System v5.0.0 — 三层职责分层 (三层架构)                     │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                         │
 │   需求输入                                                                               │
@@ -197,24 +196,26 @@ RETRO:          复盘记录
 │   ┌───────────────────────────────────────────────────────────────────────────┐       │
 │   │ ◆ DECISION LAYER (决策层)                                               │       │
 │   ├───────────────────────────────────────────────────────────────────────────┤       │
-│   │ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION  │       │
-│   │ [L1⚪   [L1⚪  [L1🔴  [L1⚪   [L1✅  │       │
-│   │  L0✅   L2🔴   L2🔴   L2🔴   L2✅  │       │
-│   │         L3🔴   L3🔴   L3🔴   L3✅  │       │
+│   │ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM │
+│   │ [L1⚪   [L1⚪  [L1🔴  [L2🔴   [L1✅  [L1✅  │       │
+│   │  L0✅   L2🔴   L2🔴   L3🔴   L2✅  L2✅  │       │
+│   │         L3🔴   L3🔴                 L3✅  L3✅  │       │
 │   │                                                                         │       │
 │   │ L0 路径: IDEA → (跳过全部) → IMPLEMENTATION                             │       │
-│   │ 加载: 03a-discovery-arch.md, architecture-review.md                    │       │
+│   │ L1 快速: IDEA → REQUIREMENT_LOCK → TASK_DECOMPOSITION → PLAN_CONFIRM → IMPLEMENTATION → SHIP_REVIEW │
+│   │ 加载: 03a-discovery-arch.md, 03b-task-decomposition.md                │       │
 │   │ - DISCOVERY: Superpowers brainstorming → 需求文档                        │       │
 │   │ - REQUIREMENT_LOCK: 用户必须确认 🔴                                 │       │
-│   │ - ARCH_REVIEW: 5 个维度审议 → ADR                                   │       │
+│   │ - ARCH_REVIEW: L2→2维度 / L3→5维度审议 → ADR                         │       │
 │   │ - TASK_DECOMPOSITION: writing-plans → 任务清单                        │       │
+│   │ - PLAN_CONFIRM: 用户确认 Plan + Requirement Mapping 🔴            │       │
 │   └───────────────────────────────────────────────────────────────────────────┘       │
 │      │                                                                                   │
 │      ▼                                                                                   │
 │   ┌───────────────────────────────────────────────────────────────────────────┐       │
 │   │ ◆ CONTEXT LAYER (上下文层) → 桥接                                             │       │
 │   ├───────────────────────────────────────────────────────────────────────────┤       │
-│   │ Context Hydration (强制) 🔴                                            │       │
+│   │ CONTEXT_HYDRATION (强制) 🔴                                            │       │
 │   │ 加载: bridges/decision-to-context.md, bridges/context-hydration.md         │       │
 │   │ - 加载所有 Spec 契约 → 进入 Execution Layer 必须完成                     │       │
 │   └───────────────────────────────────────────────────────────────────────────┘       │
@@ -244,18 +245,27 @@ RETRO:          复盘记录
 
 ## 状态转换验证
 
+> **SSOT**: 以下表格以 [state-machine.yaml](../../../governance/state-machine.yaml) 为唯一真相源。
+
 | 当前状态 | 目标状态 | 前置依赖 | L0 | L1 | L2/L3 |
 |---------|---------|---------|----|----|-------|
 | IDEA → | DISCOVERY | 无 | ⚪ | ✅ | ✅ |
-| DISCOVERY → | REQUIREMENT_LOCK | IDEA | ⚪ | ✅ | ✅ |
-| REQUIREMENT_LOCK → | ARCH_REVIEW | DISCOVERY | ⚪ | ✅ | ✅ |
-| ARCH_REVIEW → | TASK_DECOMPOSITION | REQUIREMENT_LOCK | ⚪ | ✅ | ✅ |
-| TASK_DECOMPOSITION → | Context Hydration | ARCH_REVIEW | ⚪ | ✅ | ✅ |
-| Context Hydration → | IMPLEMENTATION | TASK_DECOMPOSITION | ⚪ | ✅ | ✅ |
-| IMPLEMENTATION → | SELF_REVIEW | IMPLEMENTATION | ✅ | ✅ | ✅ |
-| SELF_REVIEW → | QA | SELF_REVIEW | ⚪ | ⚪ | ✅ |
-| QA → | SHIP_REVIEW | QA | ⚪ | ⚪ | ✅ |
-| SHIP_REVIEW → | RETRO | SHIP_REVIEW | ✅ | ✅ | ✅ |
+| IDEA → | IMPLEMENTATION | L0 极简确认 | ✅ | ⚪ | ⚪ |
+| DISCOVERY → | REQUIREMENT_LOCK | 需求澄清完成 | ⚪ | ✅ | ✅ |
+| REQUIREMENT_LOCK → | ARCH_REVIEW | 用户确认需求 | ⚪ | ⚪ | ✅ |
+| REQUIREMENT_LOCK → | TASK_DECOMPOSITION | L1 用户确认需求 | ⚪ | ✅ | ⚪ |
+| ARCH_REVIEW → | TASK_DECOMPOSITION | 架构审议通过 | ⚪ | ⚪ | ✅ |
+| TASK_DECOMPOSITION → | PLAN_CONFIRM | 任务拆解完成 | ⚪ | ✅ | ✅ |
+| PLAN_CONFIRM → | CONTEXT_HYDRATION | 用户确认 Plan | ⚪ | ⚪ | ✅ |
+| PLAN_CONFIRM → | IMPLEMENTATION | L1 用户确认 Plan | ⚪ | ✅ | ⚪ |
+| CONTEXT_HYDRATION → | IMPLEMENTATION | 所有契约已加载 | ⚪ | ⚪ | ✅ |
+| IMPLEMENTATION → | SELF_REVIEW | 实现完成 | ⚪ | ✅ | ✅ |
+| IMPLEMENTATION → | SHIP_REVIEW | L0/L1 实现完成 | ✅ | ✅ | ⚪ |
+| SELF_REVIEW → | QA | 自审通过 | ⚪ | ⚪ | ✅ |
+| SELF_REVIEW → | SHIP_REVIEW | 自审通过（L1/L2 跳过 QA） | ⚪ | ✅ | ✅ |
+| QA → | SHIP_REVIEW | QA 通过 | ⚪ | ⚪ | ✅ |
+| SHIP_REVIEW → | RETRO | 发布审查通过 | ⚪ | ⚪ | ✅ |
+| 任意 → | ABORTED | 错误或用户取消 | ✅ | ✅ | ✅ |
 | 任意 → | Decision Layer | 决策冻结变更 | 变更流程 | 变更流程 | 变更流程 |
 
 ---
@@ -301,7 +311,7 @@ concurrency_model: "goroutine"          # 并发模型
 | **ARCH_REVIEW** | `design` | L2+ 任务 | ADR 编写 (方案对比/设计决策存档) |
 | **TASK_DECOMPOSITION** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
 | **PLAN_CONFIRM** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
-| **SELF_REVIEW** | `requesting-code-review` | L2+ 任务 | 代码规范审查 |
+| **SELF_REVIEW** | `subagent-driven-development` (task-reviewer) / `requesting-code-review` | SDD 流程用 task-reviewer 单次双 verdict；独立审查用 requesting-code-review | 代码规范审查 (v5.0: 对齐 SDD 6.0 单 reviewer 模式) |
 | **IMPLEMENTATION** | `test-driven-development` | 所有任务 | TDD 编码 |
 | **SHIP_REVIEW** | `verification-before-completion` | 所有任务 | 验证交付 |
 
@@ -449,13 +459,14 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
+| **v5.0.0** | **2026-06-26** | **Superpowers 6.0 对齐**: SDD 单 task-reviewer 双 verdict 模式；writing-plans 增加 Global Constraints + Interfaces；路由表更新 |
 | **v4.1.1** | **2026-05-29** | 渐进式加载优化与治理收敛版；SKILL.md 合并完整流程文档，修复断链引用 |
 | **v4.1** | **2026-05-16** | 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载 |
 | **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水 |
 
 ---
 
-版本: v4.1.1
-最后更新: 2026-05-29
+版本: v5.0.0
+最后更新: 2026-06-26
 
 **详细文档请参考各模块文件。**

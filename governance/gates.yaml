@@ -1,9 +1,9 @@
 # Gates Definition
-# AI Engineering Governance System v4.1.1
+# AI Engineering Governance System v5.0.0
 # This is the SINGLE SOURCE OF TRUTH for gate definitions.
 # Do NOT duplicate this content in SKILL.md or other documents.
 
-version: "4.1.1"
+version: "5.0.0"
 updated: "2026-05-29"
 adr_ref: "ADR-009"
 

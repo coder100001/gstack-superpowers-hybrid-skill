@@ -1,24 +1,43 @@
 # 04b — Execution Layer: SELF_REVIEW → QA
 
 > **Context Load**: 加载 `execution-layer/review.md`, `execution-layer/validation.md`（SELF_REVIEW 阶段）。
+> **v5.0 更新**: 对齐 Superpowers 6.0 SDD 审查机制——单 task-reviewer 双 verdict 模式。
 
 ## SELF_REVIEW 状态
 
-**触发条件**: L3 任务必须；L1/L2 可选，但必须执行最小自审
+**触发条件**: L3 任务必须；L2 必须（简化版）；L1 可选，但建议执行最小自审
 
-### 最小自审要求（所有级别）
+### 最小自审要求（L1 快速通道）
 
-即使是 L1 任务，也必须完成以下最小自审检查，不可跳过：
+L1 任务不要求进入正式 SELF_REVIEW 状态（见 [02-complexity.md](./02-complexity.md) L1 快速路径），但建议在 SHIP_REVIEW 前完成以下最小检查：
 
-- [ ] **契约对照**: 实现是否与 Context Layer 注水的约束一致？
-- [ ] **冻结项检查**: 是否触碰了决策冻结项（架构/需求/API/领域边界）？
+- [ ] **契约对照**: 实现是否与用户确认的需求一致？
+- [ ] **冻结项检查**: 是否触碰了决策冻结项（架构/需求/API/领域边界）？L1 通常无冻结项
 - [ ] **测试通过**: 所有测试是否通过？
 
-> L1/L2 可跳过完整的测试策略自审和安全扫描，但以上 3 项不可省略。
+> L1 可将以上检查合并到 SHIP_REVIEW 中完成。L2/L3 必须进入正式 SELF_REVIEW 状态。
 
 ### 目标
 
 在 Execution Layer 内进行自审，确保代码质量、测试策略完善、边界条件覆盖充分，并符合 Governance 层的安全规则。
+
+### SDD Task Review（v5.0 单 reviewer 模式）
+
+当使用 `subagent-driven-development` 执行 plan 时，每个 task 完成后使用**单 task-reviewer** 同时返回两个 verdict：
+
+| Verdict | 说明 |
+|---------|------|
+| **Spec Compliance** | 实现是否满足 task brief 中的需求 |
+| **Code Quality** | 代码质量、测试覆盖、架构合规 |
+
+**关键约束**（来自 Superpowers 6.0）：
+- Reviewer 只读一次 diff，同时给出两个结论
+- Controller **不能**压制发现或预评级严重程度
+- 每个结论必须用**文件 + 行号**支撑
+- Reviewer 是只读的，不修改工作树
+- 每次 dispatch 必须**显式声明模型**
+
+> 详细审查模板见 `skills/superpowers/subagent-driven-development/task-reviewer-prompt.md`
 
 ### 代码规则审查
 

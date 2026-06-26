@@ -1,6 +1,6 @@
 # AI Engineering Governance System
 
-> gs-hybrid-v3 v4.1.1（治理收敛版）
+> gs-hybrid-v3 v5.0.0（Superpowers 6.0 对齐版）
 > 三层架构：Decision / Context / Execution + Bridges + Governance
 
 ## 这是什么
@@ -11,7 +11,7 @@
 - Execution Layer：在约束内实现、验证、交付
 - Governance：用状态机和 Gate 阻断违规流程
 
-## 当前设计原则（v4.1.1）
+## 当前设计原则（v5.0.0）
 
 - `SKILL.md` 是薄入口，不重复大表
 - `governance/state-machine.yaml` 是状态机真相源
@@ -88,5 +88,5 @@ docs/skills-reference.md                    # 自动生成的技能索引
 ## 版本
 
 - Skill: `gs-hybrid-v3`
-- 架构版本: `v4.1.1`
+- 架构版本: `v5.0.0`
 - 更新时间: `2026-05-29`

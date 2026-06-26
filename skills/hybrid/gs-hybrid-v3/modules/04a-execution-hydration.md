@@ -199,6 +199,22 @@ Context Hydration 是执行前的**强制检查阶段**，确保 Execution Layer
 
 ---
 
+## SDD 文件化交接与 Progress Ledger（v5.0）
+
+当使用 `subagent-driven-development` 执行时，上下文注水后的执行采用文件化交接：
+
+| 文件 | 脚本 | 用途 |
+|------|------|------|
+| `.superpowers/sdd/task-<N>-brief.md` | `scripts/task-brief` | 单个 task 的完整文本，implementer 一次 Read 获取 |
+| `.superpowers/sdd/review-*.diff` | `scripts/review-package` | 审查 diff 包，reviewer 一次 Read 获取 |
+| `.superpowers/sdd/progress.md` | controller 维护 | Progress Ledger，支持断点恢复 |
+
+**断点恢复**：session 中断后重新进入时，controller 应先检查 `.superpowers/sdd/progress.md` 是否存在。如有，读取进度账本恢复到中断前的 task 状态，而非从头开始。
+
+> 详见 [execution-layer/implementation.md §5-6](../../../../execution-layer/implementation.md)
+
+---
+
 ## Execution Layer 规则
 
 > 执行层的编码规范遵循 SOLID 原则和通用工程最佳实践。

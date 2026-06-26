@@ -80,7 +80,82 @@ Step 3: 自审
 
 ---
 
-## 5. 与 Superpowers TDD 的关系
+## 5. SDD 文件化交接（v5.0）
+
+当使用 `subagent-driven-development` 执行 plan 时，任务上下文和审查通过文件传递，而非 prompt 嵌入：
+
+### 5.1 Task Brief（任务文本文件化）
+
+Controller 调用脚本将 plan 中单个 task 的完整文本提取到文件：
+
+```bash
+skills/superpowers/subagent-driven-development/scripts/task-brief PLAN_FILE TASK_NUMBER
+```
+
+产出：`.superpowers/sdd/task-<N>-brief.md`
+
+Implementer subagent 通过一次 `Read` 调用获取完整 task 上下文，避免 prompt 嵌入导致的 token 浪费和截断。
+
+### 5.2 Review Package（审查 diff 文件化）
+
+实现完成后，controller 调用脚本生成审查包：
+
+```bash
+skills/superpowers/subagent-driven-development/scripts/review-package BASE HEAD
+```
+
+产出：`.superpowers/sdd/review-<base7>..<head7>.diff`
+
+包含 commit 列表、文件变更统计和完整 diff（-U10 上下文）。Reviewer subagent 通过一次 `Read` 调用获取完整审查材料。
+
+### 5.3 SDD Workspace
+
+所有 SDD 临时文件存放在 `.superpowers/sdd/`，由 `sdd-workspace` 脚本管理。该目录通过 `.gitignore` 自动忽略，不会进入 `git status` 或意外提交。
+
+```
+.superpowers/sdd/
+├── .gitignore          # 自动忽略所有文件
+├── task-1-brief.md     # Task 1 的完整文本
+├── task-2-brief.md     # Task 2 的完整文本
+├── review-abc1234..def5678.diff  # 审查包
+└── progress.md         # Progress Ledger（见 §6）
+```
+
+### 5.4 与执行层的关系
+
+- **Task Brief** 替代了 prompt 中嵌入的 task 描述 → implementer 更准确、更少遗漏
+- **Review Package** 替代了 prompt 中嵌入的 diff → reviewer 看到完整变更
+- **Controller 禁止干预**：不能压制 reviewer 发现或预评级严重程度
+
+---
+
+## 6. Progress Ledger（v5.0）
+
+长任务执行过程中，controller 维护进度账本到 `.superpowers/sdd/progress.md`：
+
+```markdown
+# Progress Ledger
+
+## Task Status
+| Task | Status | Verdict | Notes |
+|------|--------|---------|-------|
+| Task 1 | ✅ done | PASS | spec: PASS, quality: PASS |
+| Task 2 | ✅ done | PASS (fixed) | initial FAIL → fix → re-review PASS |
+| Task 3 | 🔄 in progress | — | implementer running |
+| Task 4 | ⏳ pending | — | blocked on Task 3 |
+
+## Key Decisions
+- Task 2: reviewer flagged missing error handling → fixed in commit def5678
+```
+
+**用途**：
+- 断点恢复：session 中断后重新进入时，controller 可通过读取 `progress.md` 恢复进度
+- 进度可见：用户可随时查看当前执行状态
+- 审计追踪：记录每个 task 的审查 verdict 和修复历史
+
+---
+
+## 7. 与 Superpowers TDD 的关系
 
 本协议与 Superpowers 的 [test-driven-development](../skills/superpowers/test-driven-development/SKILL.md) 技能协作：
 
@@ -91,4 +166,4 @@ Step 3: 自审
 
 ---
 
-**关联文件**: [testing.md](./testing.md) · [review.md](./review.md) · [validation.md](./validation.md) · [context-hydration](../bridges/context-hydration.md)
+**关联文件**: [testing.md](./testing.md) · [review.md](./review.md) · [validation.md](./validation.md) · [context-hydration](../bridges/context-hydration.md) · [subagent-driven-development](../skills/superpowers/subagent-driven-development/SKILL.md)

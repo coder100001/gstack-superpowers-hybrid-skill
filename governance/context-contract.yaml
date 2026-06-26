@@ -34,6 +34,14 @@ keys:
   approval_mode:
     aliases: ["approval_source"]
     example: "conversation"
+  sdd_workspace:
+    aliases: ["sdd_dir"]
+    example: ".superpowers/sdd"
+    note: "v5.0: SDD 文件化交接的工作目录，由 sdd-workspace 脚本管理"
+  progress_ledger:
+    aliases: ["sdd_progress"]
+    example: ".superpowers/sdd/progress.md"
+    note: "v5.0: SDD 进度账本，支持长任务断点恢复"
 
 rules:
   - "Gates must prefer context keys over implicit discovery."

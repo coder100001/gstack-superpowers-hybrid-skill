@@ -3,6 +3,22 @@
 > **层**: Execution Layer · **职责**: 质量把关 + 编码规则强制校验
 > **前置条件**: 测试已通过（见 testing.md），编码规则已加载（见 coding-standards/index.md）
 > **禁止**: 跳过审查、流于形式、个人偏好主导
+> **v5.0 更新**: 对齐 Superpowers 6.0 SDD 单 task-reviewer 双 verdict 模式
+
+---
+
+## 0. SDD Task Review 模式（v5.0）
+
+当通过 `subagent-driven-development` 执行时，审查采用单 task-reviewer 模式：
+
+- **一次 diff 读取，两个 verdict**：spec compliance + code quality
+- **文件化交接**：task brief 写入 `.superpowers/sdd/task-N-brief.md`，review diff 写入 `.superpowers/sdd/review-package-N.diff`
+- **Progress Ledger**：审查结果记录到 `.superpowers/sdd/progress.md`，支持断点恢复
+- **禁止干预**：controller 不能压制 reviewer 发现或预评级严重程度
+- **证据要求**：每个结论必须用文件 + 行号支撑
+
+> 详细模板：`skills/superpowers/subagent-driven-development/task-reviewer-prompt.md`
+> 交接脚本：`skills/superpowers/subagent-driven-development/scripts/`
 
 ---
 

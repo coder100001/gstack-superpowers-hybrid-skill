@@ -37,7 +37,7 @@ ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
 
 在需求澄清开始时，必须声明：
 
-> "我将按照 AI Engineering Governance System (v4.1.1) 三层架构执行。现在进入 DISCOVERY 状态，使用 brainstorming 方法论进行需求澄清。我会先探索项目上下文，然后通过渐进式提问理解需求，整理问题定义、范围和验收标准，并给出候选方向供你确认。"
+> "我将按照 AI Engineering Governance System (v5.0.0) 三层架构执行。现在进入 DISCOVERY 状态，使用 brainstorming 方法论进行需求澄清。我会先探索项目上下文，然后通过渐进式提问理解需求，整理问题定义、范围和验收标准，并给出候选方向供你确认。"
 
 ### Step 1: 探索项目上下文
 
