@@ -109,8 +109,8 @@ resolve_paths_by_agent() {
             BACKUP_BASE="$HOME/.claude/skills/.gs-hybrid-v3-backups"
             ;;
         trae)
-            DEFAULT_TARGET="$HOME/.trae-cn/superpowers"
-            BACKUP_BASE="$HOME/.trae-cn/superpowers-backups"
+            DEFAULT_TARGET="$HOME/.trae-cn/skills/gs-hybrid-v3"
+            BACKUP_BASE="$HOME/.trae-cn/skills/.gs-hybrid-v3-backups"
             ;;
         *)
             die "未知 agent: $TARGET_AGENT（支持: codex|claude|trae）"
