@@ -3,6 +3,7 @@
 > **版本**: v1.0 · **日期**: 2026-07-26
 > **父计划**: [2026-07-26-gs-hybrid-v6-capable-model-plan.md](./2026-07-26-gs-hybrid-v6-capable-model-plan.md)
 > **任务拆分**: [2026-07-26-gs-hybrid-v6-task-breakdown.md](./2026-07-26-gs-hybrid-v6-task-breakdown.md)
+> **Trae 启动 Prompt**: [2026-07-26-gs-hybrid-v6-trae-implementation-prompt.md](./2026-07-26-gs-hybrid-v6-trae-implementation-prompt.md)
 > **执行模式**: subagent-driven-development (SDD) + TDD
 > **复杂度**: L3
 
