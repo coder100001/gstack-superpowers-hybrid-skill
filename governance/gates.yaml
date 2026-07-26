@@ -294,6 +294,25 @@ gates:
       - "允许 type: feat|fix|refactor|docs|test|chore|perf|ci|build|revert"
       - "建议在提交前自检最近提交信息格式一致性"
 
+  verification-evidence:
+    id: "G016"
+    name: "verification-evidence"
+    description: "SHIP_REVIEW 前必须有可机器检查的测试证据；L1 可使用 conversation + 证据确认"
+    script: "governance/gates/verification-evidence.sh"
+    applies_to:
+      - SHIP_REVIEW
+    severity: "hard"
+    l1_exempt: false
+    fail_message: "VERIFICATION_EVIDENCE 未通过：缺少测试验证证据"
+    exit_codes:
+      pass: 0
+      block: 1
+      infra_error: 2
+    remediation:
+      - "运行测试并将输出保存到 artifacts/verification/ 目录"
+      - "设置 context test_output 包含测试结果"
+      - "L1 快速通道可设置 verification_confirmed: true + approval_mode: conversation"
+
 validation_rules:
   gate_uniqueness: true
   script_existence: true

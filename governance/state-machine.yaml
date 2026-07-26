@@ -84,7 +84,7 @@ states:
   SHIP_REVIEW:
     description: "Release readiness check"
     layer: "execution"
-    entry_gate: null
+    entry_gate: "verification-evidence"
     required: true
     
   RETRO:
