@@ -1,92 +1,137 @@
 # AI Engineering Governance System
 
-> gs-hybrid-v3 v5.0.0（Superpowers 6.0 对齐版）
-> 三层架构：Decision / Context / Execution + Bridges + Governance
+让 AI 编程助手（Claude Code、Codex 等）按规范流程工作，而不是直接写代码。
 
-## 这是什么
+[![CI](https://github.com/coder100001/gstack-superpowers-hybrid-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/coder100001/gstack-superpowers-hybrid-skill/actions/workflows/ci.yml)
 
-这是一个把 AI 开发流程治理化的技能工程：
-- Decision Layer：做什么、为什么做
-- Context Layer：把决策沉淀为可执行契约
-- Execution Layer：在约束内实现、验证、交付
-- Governance：用状态机和 Gate 阻断违规流程
+---
 
-## 当前设计原则（v5.0.0）
+## 解决的问题
 
-- `SKILL.md` 是薄入口，不重复大表
-- `governance/state-machine.yaml` 是状态机真相源
-- `governance/gates.yaml` 是 Gate 真相源
-- `schema/skill-routes.yaml` 是机器路由真相源
-- `governance/context-contract.yaml` 是运行时 context 契约真相源
-- Gate 读取优先级：`context > workflow-state（secondary） > fallback`
-- `L1` 快速通道可在 `workflow-state/context` 中记录对话式确认，不强制独立 spec/plan 文件
-- spec 只承载需求、约束、验收与候选方向；最终设计决策只写入 ADR
-- `DISCOVERY` 负责候选方向探索，`ARCH_REVIEW` 负责方案对比与最终决策
-- `REQ/NFR/OUT` 是需求追踪主键，ADR / plan / PLAN_CONFIRM 围绕它做显式映射
-- 文档描述若与 YAML 冲突，以 YAML 为准
+AI 编程助手很强大，但在实际工程中会反复出现三个问题：
+
+| 问题 | 表现 | 本系统的处理方式 |
+|------|------|------------------|
+| **跳过程序直接编码** | AI 拿到需求就开始写，写完发现理解错了 | 强制需求确认（`REQUIREMENT_LOCK`）和执行计划确认（`PLAN_CONFIRM`），不确认不准编码 |
+| **边写边改架构** | 写到一半觉得"这里换个方案更好"，结果越改越乱 | 进入实现阶段后锁定架构决策（`decision-freeze`），要改必须先走变更流程 |
+| **跨会话失忆** | 每次新对话 AI 不记得项目约定，反复踩坑 | 进入实现前自动注入项目契约（`CONTEXT_HYDRATION`），包括架构规范、API 约定、测试策略 |
+
+如果你遇到过上述任何一个问题，这个项目就是为你准备的。
+
+---
 
 ## 快速开始
 
 ```bash
-git clone <repo-url>
+# 克隆 + 装依赖 + 一键校验
+git clone https://github.com/coder100001/gstack-superpowers-hybrid-skill.git
 cd gstack-superpowers-hybrid-skill
-chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh
+chmod +x scripts/*.sh governance/*.sh governance/gates/*.sh governance/lib/*.sh
+pip3 install pyyaml 2>/dev/null || true
+./scripts/validate-project.sh
 ```
 
-### 核心校验命令
+全部退出码为 `0` 即验证通过。
 
-```bash
-# 状态机一致性
-./scripts/validate-state-machine.sh
+---
 
-# Gate 校验（支持 from/to/level/context）
-./governance/check-gates.sh --from TASK_DECOMPOSITION --to PLAN_CONFIRM --level L2
+## 工作原理
 
-# 路由解析（消费 schema/skill-routes.yaml）
-./scripts/resolve-skill-routes.sh --category gstack --state QA --level L3 --json
+三个层次，一个目标：**让 AI 在正确的约束下做正确的事。**
 
-# 路由摘要健康检查（核对 SKILL.md 摘要与本地技能）
-./scripts/check-skill-routes.sh
-
-# YAML/JSON 同步检查
-./scripts/yaml2json.sh --check
+```
+决策层（做什么） → 上下文层（共识是什么） → 执行层（如何做好）
+     ↕                       ↕                       ↕
+  需求确认              契约沉淀                 冻结实现
+  方案审议              注水加载                 质量验证
+  计划确认                                        交付检查
 ```
 
-## 主流程
+- **决策层**：确定要做什么、为什么这么做、怎么做。产出：需求文档、架构决策记录（ADR）、执行计划。
+- **上下文层**：把决策层的产出转化为 AI 可加载的契约文件，进入实现前一次性注入。
+- **执行层**：在冻结的决策约束下实现、自审、测试、交付。不允许修改已确认的架构和需求。
 
-`IDEA -> DISCOVERY -> REQUIREMENT_LOCK -> ARCH_REVIEW -> TASK_DECOMPOSITION -> PLAN_CONFIRM -> CONTEXT_HYDRATION -> IMPLEMENTATION -> SELF_REVIEW -> QA -> SHIP_REVIEW -> RETRO`
+每层之间通过 Gate（门禁）强制校验——不满足条件就不允许进入下一阶段。
 
-回退与异常流转请以状态机 YAML 为准。
+### 复杂度自适应
 
-补充说明：
-- `L1` 默认走快速通道：需求确认和计划确认可在对话中完成，并写入 `workflow-state/context`
-- `PLAN_CONFIRM` 会展示 Requirement Mapping 摘要，确认 `REQ/NFR/OUT` 是否都已被任务或边界说明接住
+系统根据任务大小自动适配流程深度，小任务不折腾：
 
-## 关键目录
+| 级别 | 典型场景 | 流程长度 |
+|------|----------|----------|
+| L0 | 改一行配置、修复拼写 | 3 步（IDEA → 实现 → 发布） |
+| L1 | 加个小功能、修个 bug | 5 步，跳过架构审议 |
+| L2 | 新模块、中等功能 | 9 步，标准流程 |
+| L3 | 跨模块重构、复杂功能 | 12 步，完整流程含 QA |
 
-```text
-skills/hybrid/gs-hybrid-v3/SKILL.md          # 主入口（薄层）
-governance/state-machine.yaml                # 状态机真相源
-governance/gates.yaml                        # Gate 真相源
-governance/check-gates.sh                    # Gate 检查入口
-scripts/validate-state-machine.sh            # 状态机校验
-scripts/resolve-skill-routes.sh              # 机器路由解析
-scripts/check-skill-routes.sh                # 路由健康检查
-schema/skill-routes.yaml                     # 机器路由真相源
-docs/getting-started.md                      # 上手说明
-docs/architecture.md                         # 架构说明
-docs/skills-reference.md                    # 自动生成的技能索引
+---
+
+## 一个典型的开发流程
+
+假设你要给一个 Web 应用加"用户导出 CSV"功能（L2 复杂度）：
+
+```
+1. AI 接到需求，进入 DISCOVERY
+   → 澄清：导出范围？权限？格式？性能要求？
+   
+2. 需求确认（REQUIREMENT_LOCK）
+   → Gate 检查：用户确认了需求清单吗？→ 没有就阻断
+   
+3. 架构审议（ARCH_REVIEW）
+   → 方案对比：后端生成 vs 前端流式写入
+   → 产出 ADR：记录选型理由和 trade-off
+   
+4. 任务拆解 + 计划确认（TASK_DECOMPOSITION → PLAN_CONFIRM）
+   → 产出执行计划，用户确认后才放行
+   
+5. 上下文注水（CONTEXT_HYDRATION）
+   → 注入项目已有的架构规范、API 风格、测试要求
+   
+6. 编码实现（IMPLEMENTATION）
+   → 约束：不能修改已确认的 ADR 和 Spec（decision-freeze）
+   → AI 在约束内写代码
+   
+7. 自审 → 发布检查（SELF_REVIEW → SHIP_REVIEW）
+   → 检查：测试存在？验收项有证据？提交信息合规？
+   
+8. 复盘（RETRO）
+   → 记录：这次哪里做得好？下次怎么改进？
 ```
 
-## 文档
+每个阶段如果失败，AI 会被引导回退到上一个可修正的阶段，而不是直接报错终止。
 
-- [快速开始](./docs/getting-started.md)
-- [架构说明](./docs/architecture.md)
-- [技能参考](./docs/skills-reference.md)
-- [文档维护](./docs/documentation-maintenance.md)
+---
 
-## 版本
+## 项目结构
 
-- Skill: `gs-hybrid-v3`
-- 架构版本: `v5.0.0`
-- 更新时间: `2026-05-29`
+```
+├── governance/              # 治理规则（核心）
+│   ├── state-machine.yaml   #   状态机：定义所有状态和跃迁
+│   ├── gates.yaml           #   Gate：定义所有门禁条件
+│   ├── check-gates.sh       #   Gate 检查入口
+│   └── gates/               #   每个 Gate 的校验脚本
+├── schema/skill-routes.yaml # 技能路由表
+├── skills/                  # AI 技能（按场景分类）
+│   ├── gstack/qa/           #   QA 测试 → 修复 → 验证
+│   ├── gstack/ship/         #   发布检查
+│   ├── gstack/design-review/#   设计审查
+│   └── superpowers/         #   通用开发技能
+├── scripts/                 # 校验和工具脚本
+├── tests/claude-code/       # 集成测试
+└── docs/                    # 文档
+    ├── getting-started.md
+    ├── architecture.md
+    └── glossary.md          # 术语表
+```
+
+---
+
+## 下一步
+
+- [快速开始](docs/getting-started.md)——详细的安装和操作指南
+- [架构说明](docs/architecture.md)——三层 + 治理的完整设计
+- [术语表](docs/glossary.md)——ADR、Gate、注水、冻结……一次性搞懂
+
+---
+
+提交 PR 前请阅读 [AGENTS.md](AGENTS.md)（PR 拒绝率 94%）。
