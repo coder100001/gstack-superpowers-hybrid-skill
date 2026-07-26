@@ -77,11 +77,12 @@ routes:
     SHIP_REVIEW:
       - name: verification-before-completion
         trigger: "all tasks"
-        purpose: "验证交付"
-      - name: finishing-a-development-branch
-        trigger: "implementation complete"
-        purpose: "decide merge/PR/cleanup strategy"
-        manual: true
+        purpose: "证据优先验证 — 必须先过 verification-evidence gate"
+        note: "v6.0: 先过 verification-evidence gate，再执行 ship 流程"
+      - name: gstack:ship
+        trigger: "needs deploy/PR"
+        purpose: "发布检查清单"
+        note: "capable tier: ship 已内置 pre-landing review"
 
     EXCEPTION:
       - name: systematic-debugging
@@ -146,10 +147,7 @@ routes:
 
     SHIP_REVIEW:
       - name: gstack:ship
-        trigger: "ready to deploy"
-        detect:
-          file_patterns: ["**/VERSION", "**/CHANGELOG*", "**/package.json"]
-          keywords: ["release", "deploy", "ship", "publish"]
+        trigger: "needs deploy/PR after verification-evidence gate passes"
         purpose: "发布检查清单"
 
     RETRO:
