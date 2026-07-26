@@ -1,0 +1,353 @@
+{
+  "recorded_at": "2026-07-26T03:16:37Z",
+  "entries": [
+    {
+      "path": "skills/superpowers/brainstorming/SKILL.md",
+      "lines": 159,
+      "bytes": 10435,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/design/SKILL.md",
+      "lines": 15,
+      "bytes": 448,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/dispatching-parallel-agents/SKILL.md",
+      "lines": 185,
+      "bytes": 6644,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/executing-plans/SKILL.md",
+      "lines": 70,
+      "bytes": 2600,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/finishing-a-development-branch/SKILL.md",
+      "lines": 241,
+      "bytes": 6832,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/plan-verification/SKILL.md",
+      "lines": 15,
+      "bytes": 513,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/receiving-code-review/SKILL.md",
+      "lines": 213,
+      "bytes": 6382,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/requesting-code-review/SKILL.md",
+      "lines": 103,
+      "bytes": 2826,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/subagent-driven-development/SKILL.md",
+      "lines": 418,
+      "bytes": 21647,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/systematic-debugging/SKILL.md",
+      "lines": 296,
+      "bytes": 9885,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/test-driven-development/SKILL.md",
+      "lines": 371,
+      "bytes": 9894,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/using-git-worktrees/SKILL.md",
+      "lines": 202,
+      "bytes": 7472,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/using-superpowers/SKILL.md",
+      "lines": 121,
+      "bytes": 5899,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/verification-before-completion/SKILL.md",
+      "lines": 139,
+      "bytes": 4201,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/writing-plans/SKILL.md",
+      "lines": 174,
+      "bytes": 7092,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/superpowers/writing-skills/SKILL.md",
+      "lines": 689,
+      "bytes": 26852,
+      "category": "superpowers",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/benchmark/SKILL.md",
+      "lines": 785,
+      "bytes": 36411,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/careful/SKILL.md",
+      "lines": 67,
+      "bytes": 2567,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/codex/SKILL.md",
+      "lines": 1596,
+      "bytes": 90006,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/context-restore/SKILL.md",
+      "lines": 910,
+      "bytes": 50780,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/context-save/SKILL.md",
+      "lines": 1028,
+      "bytes": 54977,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/cso/SKILL.md",
+      "lines": 1285,
+      "bytes": 74011,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/design-review/SKILL.md",
+      "lines": 1994,
+      "bytes": 104943,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/freeze/SKILL.md",
+      "lines": 91,
+      "bytes": 3184,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/guard/SKILL.md",
+      "lines": 90,
+      "bytes": 3314,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/investigate/SKILL.md",
+      "lines": 1074,
+      "bytes": 59696,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/learn/SKILL.md",
+      "lines": 953,
+      "bytes": 51009,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/plan-devex-review/SKILL.md",
+      "lines": 1460,
+      "bytes": 78977,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/plan-eng-review/SKILL.md",
+      "lines": 1050,
+      "bytes": 65642,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/qa/SKILL.md",
+      "lines": 1684,
+      "bytes": 83150,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/retro/SKILL.md",
+      "lines": 1812,
+      "bytes": 92176,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/gstack/ship/SKILL.md",
+      "lines": 1417,
+      "bytes": 81085,
+      "category": "gstack",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/SKILL.md",
+      "lines": 472,
+      "bytes": 30162,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/01-intro.md",
+      "lines": 157,
+      "bytes": 7045,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/02-complexity.md",
+      "lines": 185,
+      "bytes": 5850,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/03a-discovery-arch.md",
+      "lines": 478,
+      "bytes": 16354,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/03b-task-decomposition.md",
+      "lines": 780,
+      "bytes": 26046,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/04a-execution-hydration.md",
+      "lines": 248,
+      "bytes": 7722,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/04b-self-review.md",
+      "lines": 332,
+      "bytes": 7958,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/05-ship-review-retro.md",
+      "lines": 187,
+      "bytes": 3349,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/06-workflows.md",
+      "lines": 61,
+      "bytes": 2887,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    },
+    {
+      "path": "skills/hybrid/gs-hybrid-v3/modules/07-handling.md",
+      "lines": 316,
+      "bytes": 10917,
+      "category": "hybrid",
+      "recorded_at": "2026-07-26T03:16:37Z"
+    }
+  ],
+  "summary": {
+    "total_files": 42,
+    "total_lines": 23923,
+    "total_bytes": 1179840,
+    "by_category": {
+      "superpowers": {
+        "lines": 3411,
+        "bytes": 129622,
+        "count": 16
+      },
+      "gstack": {
+        "lines": 17296,
+        "bytes": 931928,
+        "count": 16
+      },
+      "hybrid": {
+        "lines": 3216,
+        "bytes": 118290,
+        "count": 10
+      }
+    }
+  },
+  "top_5_largest": [
+    {
+      "path": "skills/gstack/design-review/SKILL.md",
+      "lines": 1994,
+      "bytes": 104943,
+      "category": "gstack"
+    },
+    {
+      "path": "skills/gstack/retro/SKILL.md",
+      "lines": 1812,
+      "bytes": 92176,
+      "category": "gstack"
+    },
+    {
+      "path": "skills/gstack/qa/SKILL.md",
+      "lines": 1684,
+      "bytes": 83150,
+      "category": "gstack"
+    },
+    {
+      "path": "skills/gstack/codex/SKILL.md",
+      "lines": 1596,
+      "bytes": 90006,
+      "category": "gstack"
+    },
+    {
+      "path": "skills/gstack/plan-devex-review/SKILL.md",
+      "lines": 1460,
+      "bytes": 78977,
+      "category": "gstack"
+    }
+  ]
+}
