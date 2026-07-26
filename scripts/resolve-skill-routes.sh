@@ -17,6 +17,15 @@ FILES=""
 TEXT=""
 OUTPUT_JSON=false
 
+# model_tier support
+model_tier="${HYBRID_MODEL_TIER:-capable}"
+if [[ -f "${GSTACK_GATE_CONTEXT:-}" ]]; then
+  mt=$(grep -iE "^model_tier:" "$GSTACK_GATE_CONTEXT" 2>/dev/null | head -1 | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"'"'"')
+  if [[ -n "$mt" ]]; then
+    model_tier="$mt"
+  fi
+fi
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --category) CATEGORY="$2"; shift 2 ;;
@@ -43,7 +52,7 @@ if [[ ! -f "$ROUTES_FILE" ]]; then
   exit 1
 fi
 
-python3 - "$ROUTES_FILE" "$CATEGORY" "$STATE" "$LEVEL" "$FILES" "$TEXT" "$OUTPUT_JSON" << 'PYEOF'
+python3 - "$ROUTES_FILE" "$CATEGORY" "$STATE" "$LEVEL" "$FILES" "$TEXT" "$OUTPUT_JSON" "$model_tier" << 'PYEOF'
 import fnmatch
 import json
 import sys
@@ -58,6 +67,7 @@ level = sys.argv[4]
 files_csv = sys.argv[5]
 text = sys.argv[6]
 output_json = sys.argv[7].lower() == "true"
+model_tier = sys.argv[8] if len(sys.argv) > 8 else "capable"
 
 files = [f.strip() for f in files_csv.split(",") if f.strip()]
 text_l = text.casefold()
@@ -79,6 +89,10 @@ for route in state_routes:
 
     # 手动技能不能被自动路由命中。
     if manual:
+        continue
+
+    # model_tier: capable 时跳过 full_subagent_review 路由
+    if model_tier == "capable" and "full_subagent_review" in trigger:
         continue
 
     # 无 detect 的路由使用轻量语义规则兜底。

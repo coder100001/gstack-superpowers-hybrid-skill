@@ -31,6 +31,14 @@ keys:
   plan_summary_confirmed:
     aliases: ["task_summary_confirmed"]
     example: "true"
+  confirmed_at:
+    aliases: ["confirmation_timestamp"]
+    example: "2026-07-26T10:00:00Z"
+    note: "ISO8601 timestamp of user confirmation"
+  confirmed_by:
+    aliases: ["confirmer"]
+    example: "user"
+    note: "Who confirmed; must be 'user' for hard gate pass"
   approval_mode:
     aliases: ["approval_source"]
     example: "conversation"
@@ -47,6 +55,20 @@ keys:
     aliases: ["evidence_dir", "verification_path"]
     example: "artifacts/verification"
     note: "verification-evidence gate 的默认搜索路径"
+
+model_tier:
+  aliases: ["model_profile"]
+  values: ["capable", "baseline"]
+  default: "capable"
+
+model_overlay_rules:
+  capable:
+    inline_review: true
+    compress_discovery: true
+    keep_hard_gates: true
+  baseline:
+    inline_review: false
+    full_subagent_review: true
 
 rules:
   - "Gates must prefer context keys over implicit discovery."

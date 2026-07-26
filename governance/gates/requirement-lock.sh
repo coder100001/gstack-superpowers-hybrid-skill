@@ -29,6 +29,35 @@ if [[ -n "$state_file" ]]; then
 fi
 
 if [[ "$level" == "L1" ]] && gate_is_truthy "$requirements_confirmed"; then
+  confirmed_at="$(gate_context_get "confirmed_at" "confirmation_timestamp")"
+  confirmed_by="$(gate_context_get "confirmed_by" "confirmer")"
+  
+  # Also try workflow-state fallback
+  if [[ -z "$confirmed_at" && -n "$state_file" ]]; then
+    confirmed_at="$(gate_workflow_state_value "confirmed_at" "$state_file")"
+  fi
+  if [[ -z "$confirmed_by" && -n "$state_file" ]]; then
+    confirmed_by="$(gate_workflow_state_value "confirmed_by" "$state_file")"
+  fi
+  
+  if [[ -z "$confirmed_at" || "$confirmed_by" != "user" ]]; then
+    echo ""
+    echo "✗ REQUIREMENT_LOCK 未通过：L1 对话确认缺少完整确认三元组"
+    echo ""
+    echo "需要以下三项："
+    echo "  1. requirements_confirmed: true"
+    echo "  2. confirmed_at: <ISO8601 timestamp>"
+    echo "  3. confirmed_by: user"
+    echo ""
+    echo "当前状态:"
+    echo "  requirements_confirmed: $requirements_confirmed"
+    echo "  confirmed_at: ${confirmed_at:-未设置}"
+    echo "  confirmed_by: ${confirmed_by:-未设置}"
+    echo ""
+    echo "修复: 请与用户口头确认需求后，在 context/workflow-state 中写入完整三元组"
+    exit 1
+  fi
+  
   ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%S+00:00")
   if [[ -n "$state_file" ]]; then
     gate_workflow_state_append "$state_file" "Requirement Lock" \

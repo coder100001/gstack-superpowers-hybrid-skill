@@ -160,6 +160,15 @@ Step 0 → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION
 
 ---
 
+### model_tier 支持
+
+当 `model_tier: capable` 时（默认值），DISCOVERY 和 ARCH_REVIEW 可合并为一次对话，
+但仍需通过 REQUIREMENT_LOCK gate。Hard gate 不会因 model_tier 减免。
+
+当 `model_tier: baseline` 时，所有流程按标准 L2/L3 执行。
+
+---
+
 ## 评估输出模板
 
 ### 复杂度评估报告
