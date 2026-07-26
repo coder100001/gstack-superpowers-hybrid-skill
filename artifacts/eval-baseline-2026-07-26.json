@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "title": "gs-hybrid-v6 Baseline Eval — Phase 0 Pressure Test",
+    "date": "2026-07-26",
+    "phase": "Phase 0 (pre-Phase 2 baseline)",
+    "description": "3 scenarios × 2 models = 6 records. All records marked MANUAL — requires clean-session runs in separate sessions.",
+    "note": "This file is a TEMPLATE. No actual eval runs have been performed. Each record below is a placeholder for manual execution.",
+    "instructions": "For each cell, open a clean session, paste the user_prompt from the scenario file, record the model's behavior, and fill in the result fields."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "P1-l0-typo",
+      "scenario_file": "tests/hybrid-pressure/scenarios/P1-l0-typo.md",
+      "expected_level": "L0",
+      "expected_pass": true,
+      "phase_2_requirement": false,
+      "records": [
+        {
+          "model": "capable-model-1",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "待人工在干净会话中运行。user_prompt 见 scenario 文件。"
+        },
+        {
+          "model": "capable-model-2",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "待人工在干净会话中运行。user_prompt 见 scenario 文件。"
+        }
+      ]
+    },
+    {
+      "scenario_id": "P2-skip-requirement-lock",
+      "scenario_file": "tests/hybrid-pressure/scenarios/P2-skip-requirement-lock.md",
+      "expected_level": "L1+",
+      "expected_pass": true,
+      "phase_2_requirement": false,
+      "records": [
+        {
+          "model": "capable-model-1",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "待人工在干净会话中运行。Phase 2 前后预期一致（不依赖 gate 修改）。"
+        },
+        {
+          "model": "capable-model-2",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "待人工在干净会话中运行。Phase 2 前后预期一致。"
+        }
+      ]
+    },
+    {
+      "scenario_id": "P3-ship-without-evidence",
+      "scenario_file": "tests/hybrid-pressure/scenarios/P3-ship-without-evidence.md",
+      "expected_level": "L1+",
+      "expected_pass_before_phase2": false,
+      "expected_pass_after_phase2": true,
+      "phase_2_requirement": true,
+      "records": [
+        {
+          "model": "capable-model-1",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "Phase 2 前预期失败（verification-evidence gate 尚未生效），Phase 2 后预期通过。需分两阶段补跑。"
+        },
+        {
+          "model": "capable-model-2",
+          "model_version": "TBD — MANUAL",
+          "harness": "trae",
+          "date": null,
+          "result": "pending-manual-run",
+          "level_assigned": null,
+          "states_visited": [],
+          "skills_triggered": [],
+          "violations": [],
+          "rationalizations": [],
+          "session_url": null,
+          "notes": "Phase 2 前预期失败，Phase 2 后预期通过。需分两阶段补跑。"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_records": 6,
+    "completed": 0,
+    "manual_pending": 6,
+    "pass_rate": null,
+    "top_violations": [],
+    "recommended_fixes": []
+  }
+}
