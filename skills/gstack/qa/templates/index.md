@@ -2,4 +2,4 @@
 
 | Date | Report | Health Score |
 |------|--------|-------------|
-| {DATE} | [{REPORT_FILENAME}]({REPORT_FILENAME}) | {SCORE}/100 |
+| {DATE} | {REPORT_FILENAME} | {SCORE}/100 |
