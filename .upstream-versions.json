@@ -1,15 +1,15 @@
 {
   "superpowers": {
     "repo": "https://github.com/obra/superpowers",
-    "version": "v6.0.3",
-    "last_sync": "2026-06-26",
+    "version": "synced",
+    "last_sync": "2026-07-26",
     "skill_count":       16,
     "path": "skills/superpowers/"
   },
   "gstack": {
     "path": "~/.claude/skills/gstack",
-    "version": "1.39.0.0",
-    "last_sync": "2026-05-18",
+    "version": "1.58.5.0",
+    "last_sync": "2026-07-26",
     "skill_count":       16,
     "skill_path": "skills/gstack/"
   },
@@ -22,5 +22,5 @@
     "description": "自定义扩展技能",
     "path": "skills/custom/"
   },
-  "last_sync": "2026-06-26"
+  "last_sync": "2026-07-26"
 }
