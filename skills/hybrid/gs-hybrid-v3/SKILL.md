@@ -1,57 +1,33 @@
 ---
 name: "gs-hybrid-v3"
-description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v5.0.0 Superpowers 6.0 对齐版。"
+description: "AI Engineering Governance System — 三层架构（决策层/上下文层/执行层）+ Bridges + Governance。v6.0.0 按级别区分审查策略。"
 ---
 
-# AI Engineering Governance System v5.0.0 (三层架构正式版)
+# AI Engineering Governance System v6.0.0
 
-> **核心理念**: 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
-> 本系统将 Superpowers 的工程纪律 + GStack 的多角色审议 + Context Layer 的契约驱动，统一为可执行的三层职责系统
-> **版本演进**: v4.0 三层架构 → v4.1 渐进式加载 → v5.0 Superpowers 6.0 对齐 (SDD 单 reviewer、Global Constraints、PLAN_CONFIRM 状态)
+> 决策层 → 桥接 → 上下文层 → 桥接 → 执行层，思考与实现严格分离
 
 ---
 
 ## 快速开始
 
-### 启动方式
-
 ```
 用户: hybrid 帮我开发用户认证功能
 
-AI: 收到。我将按照 AI Engineering Governance System (v5.0.0) 三层架构执行：
+AI: 收到。我将按照三层架构执行：
 
-Step 0:     评估任务复杂度 (L0/L1/L2/L3)
+Step 0: 评估任务复杂度 (L0/L1/L2/L3)
 
-┌─────────────────────────────────────────────────────────────────┐
-│  DECISION LAYER (决策层)                                         │
-└─────────────────────────────────────────────────────────────────┘
-IDEA:       任务接收
-DISCOVERY:  需求澄清 (Superpowers brainstorming - 渐进式提问)
-             ↓ 产出：需求文档
-REQUIREMENT_LOCK: 需求确认 (用户必须确认)
-             ↓
-ARCH_REVIEW: 多角色架构审议 (5 个维度独立投票)
-             ↓ 产出：架构设计 + ADR
-TASK_DECOMPOSITION: 任务拆解 (Superpowers writing-plans)
-             ↓ 用户确认
-
-┌─────────────────────────────────────────────────────────────────┐
-│  CONTEXT LAYER (上下文层)                                        │
-└─────────────────────────────────────────────────────────────────┘
-Context Hydration: 加载所有 Spec 契约
-
-┌─────────────────────────────────────────────────────────────────┐
-│  EXECUTION LAYER (执行层)                                        │
-└─────────────────────────────────────────────────────────────────┘
-IMPLEMENTATION:  TDD 编码 (决策冻结)
-SELF_REVIEW:    自审 (对照契约)
-QA:             质量验证 (GStack qa)
-SHIP_REVIEW:    发布检查 (GStack 检查清单)
-RETRO:          复盘记录
+DECISION LAYER:
+  IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM
+  ↓ 产出：ADR（唯一设计决策产物）+ Spec + Plan
+CONTEXT LAYER:
+  Context Hydration: 加载所有 Spec 契约
+EXECUTION LAYER:
+  IMPLEMENTATION(TDD, 决策冻结) → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
 ### 专用指令
-
 快捷指令列表请参考 [commands/README.md](../../../commands/README.md)。
 
 ---
@@ -65,86 +41,23 @@ RETRO:          复盘记录
 | L2 | QA, RETRO | IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM → CONTEXT_HYDRATION → IMPLEMENTATION → SELF_REVIEW → SHIP_REVIEW | 新功能、重构 |
 | L3 | 无 | 完整流程 + 全量 Gate | 架构变更、跨模块影响 |
 
-快速路径触发条件见 [02-complexity.md](./modules/02-complexity.md)。
-
-级别说明：
-- L1 是对话式快路径，不是降级版完整流程。可以不落独立 spec / plan 文件，但仍要记录 `requirements_confirmed`、`plan_summary_confirmed`、`plan_confirmed` 与 `approval_mode: conversation`。
-- `DISCOVERY` 只负责需求澄清和候选方向，不做最终设计决策。
-- `ARCH_REVIEW` 才产出 ADR，且 ADR 是唯一设计决策产物。
-- `PLAN_CONFIRM` 只确认执行计划与 Requirement Mapping，不再讨论设计本身。
-- hard gate 只挡住确认缺失、冻结违例和结构性缺陷；quality gate 只提供告警和补充建议。
+触发条件见 [02-complexity.md](./modules/02-complexity.md)。
 
 ---
 
 ## 架构职责索引
 
-### 层职责表
-
 | 层 | 路径 | 用途 |
 |----|------|------|
 | **Decision Layer** | `decision-layer/` | 需求发散 → 多角色审议 → ADR 决策 |
-| **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 → 边界隔离 |
+| **Context Layer** | `context-layer/` | 契约持久化 → Spec → 约束强制 |
 | **Execution Layer** | `execution-layer/` | 受约束 TDD → 自审 → QA → 交付 |
 | **Bridges** | `bridges/` | Decision→Context 转化 + Context→Execution 注水 |
 | **Governance** | `governance/` | 决策冻结 + 状态验证 + 变更流程 |
 
 ---
 
-## 原技能保留索引（向后兼容）
-
-| 分类 | 路径 | 技能数量 | 说明 |
-|------|------|---------|------|
-| **Superpowers** | `skills/superpowers/` | 16个 | 核心方法论技能 |
-| **GStack** | `skills/gstack/` | 16个 | 工程工具技能 |
-| **Hybrid** | `skills/hybrid/` | 1个 | 混合流程技能 |
-| **Custom** | `skills/custom/` | - | 自定义扩展 |
-
-16 个核心方法论技能（来自 [Superpowers](https://github.com/obra/superpowers)），按阶段触发（自动/技能调用/手动）。完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
-
-### GStack 技能 (16个)
-
-16 个工程工具技能（来自 [GStack](https://github.com/gstack)），按类别分组，仅在对应阶段满足条件时触发。类别概览：
-
-| 类别 | 数量 | 典型技能 |
-|:-----|:----:|:---------|
-| 规划与审查 | 3 | `plan-eng-review`, `plan-devex-review`, `design-review` |
-| 质量保证 | 2 | `qa`, `benchmark` |
-| 安全与防护 | 3 | `cso`, `careful`, `guard` |
-| 部署与发布 | 1 | `ship` |
-| 调试与调查 | 2 | `investigate`, `codex` |
-| 文档与记忆 | 3 | `context-save`, `context-restore`, `learn` |
-| 工具与实用程序 | 2 | `retro`, `freeze` |
-
-完整列表见 [skills-reference.md](../../../docs/skills-reference.md)。
-
-### Hybrid 技能 (1个)
-
-混合流程技能，结合两者优势：
-
-| 技能 | 用途 | 触发方式 |
-|------|------|---------|
-| [gs-hybrid-v3](./) | 完整混合流程 | 主入口 |
-
----
-
-## 加载策略速查表
-
-> 不同阶段加载不同模块 + 框架文件，避免一次性占用上下文。本表为模块→框架文件映射的唯一真相源。
-
-| 阶段 | 模块 | 关联的框架文件 |
-|:-----|:-----|:--------------|
-| IDEA / Step 0 | [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md) | — |
-| DISCOVERY | [03a-discovery-arch.md](./modules/03a-discovery-arch.md) | `decision-layer/reviews/product-review.md`, `decision-layer/reviews/risk-review.md` |
-| ARCH_REVIEW | 03a-discovery-arch.md | `decision-layer/reviews/architecture-review.md`, `decision-layer/reviews/tradeoff-review.md` |
-| TASK_DECOMPOSITION | [03b-task-decomposition.md](./modules/03b-task-decomposition.md) | — |
-| Context Hydration | [04a-execution-hydration.md](./modules/04a-execution-hydration.md) | `bridges/context-hydration.md`, `bridges/decision-to-context.md`, `context-layer/specs/*` |
-| IMPLEMENTATION | 04a-execution-hydration.md | `execution-layer/implementation.md`, `execution-layer/testing.md`, `governance/decision-freeze.md` |
-| SELF_REVIEW | [04b-self-review.md](./modules/04b-self-review.md) | `execution-layer/review.md`, `execution-layer/validation.md` |
-| QA / SHIP_REVIEW / RETRO | 04b-self-review.md, [05-ship-review-retro.md](./modules/05-ship-review-retro.md) | `governance/decision-freeze.md` |
-| 指令触发 | [06-workflows.md](./modules/06-workflows.md) | — |
-| 异常/变更 | [07-handling.md](./modules/07-handling.md) | `governance/decision-freeze.md`（按需）|
-
-> **加载规则**: 每阶段只加载该行指定的模块 + 框架文件；前序文件进入下一阶段后释放上下文（仅保留契约摘要）。各模块文件头部声明了精确的文件路径，以此为准。
+加载策略速查表见 `schema/module-load-map.yaml`。
 
 ---
 
@@ -153,305 +66,90 @@ RETRO:          复盘记录
 - 状态机真相源: [governance/state-machine.yaml](../../../governance/state-machine.yaml)
 - Gate 真相源: [governance/gates.yaml](../../../governance/gates.yaml)
 - 路由真相源: [schema/skill-routes.yaml](../../../schema/skill-routes.yaml)
-- 状态机校验: `scripts/validate-state-machine.sh`
+- 校验: `scripts/validate-state-machine.sh`, `scripts/check-skill-routes.sh`, `scripts/resolve-skill-routes.sh`
 - Gate 校验: `governance/check-gates.sh --from <state> --to <state> --level <L0|L1|L2|L3>`
-- 路由解析: `scripts/resolve-skill-routes.sh --category <category> --state <state> --level <L0|L1|L2|L3>`
-- 路由摘要健康检查: `scripts/check-skill-routes.sh`
-- 运行时上下文契约: `governance/context-contract.yaml`
+- 运行时契约: `governance/context-contract.yaml`
 
-规则：
-- 本文件不再重复维护"状态转换明细表"和"Hard Gate 细则表"。
-- 若本文件路由摘要与 `schema/skill-routes.yaml` 冲突，以 `schema/skill-routes.yaml` 为准。
-- 若本文件状态/Gate 摘要与治理层 YAML 冲突，以治理层 YAML 为准。
-- Gate 读取优先级：`context 文件 > workflow-state（secondary source） > 自动发现（fallback）`。
-- `workflow-state` 中的 `plan_file` / `level` 仅作为 secondary hints，不应覆盖 context。
-- `L1` 快速通道允许在 `context/workflow-state` 中记录 `requirements_confirmed`、`plan_summary_confirmed`、`plan_confirmed`、`approval_mode: conversation`，无需强制独立 spec/plan 文件。
-- 设计产物约束：ADR 为唯一设计决策产物；plan 仅用于执行拆解，不维护平行设计文档。
-- spec 只承载 `what / why / constraints / acceptance / candidate directions`；最终设计决策、trade-off 与 requirement mapping 只写入 ADR。
-- 需求追踪约束：spec 使用 `REQ/NFR/OUT` 编号；ADR 与 plan 必须显式映射这些编号，避免弱匹配覆盖。
-- 优化策略：优先增强既有 Superpowers 产物（spec/ADR/plan）质量，不新增产物类型。
-- 提交信息规范由 SHIP_REVIEW Gate 执行：建议统一 `type(scope): summary`（scope 可选）。
+规则：本文件不再重复维护状态转换明细表和 Hard Gate 细则表。若路由摘要/状态摘要与 YAML 冲突，以 YAML 为准。ADR 为唯一设计决策产物，plan 仅用于执行拆解。spec 使用 `REQ/NFR/OUT` 编号。
 
 ---
 
-## 流程概览
+## 流程概览（简化）
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│         AI Engineering Governance System v5.0.0 — 三层职责分层 (三层架构)                     │
-├─────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                         │
-│   需求输入                                                                               │
-│      │                                                                                   │
-│      ▼                                                                                   │
-│   ┌───────────────────────────────────────────────────────────────────────────┐       │
-│   │ Step 0: 复杂度评估                                                     │       │
-│   │ 加载: 02-complexity.md                                               │       │
-│   │ - 统计变更文件数                                                     │       │
-│   │ - 预估代码行数                                                       │       │
-│   │ - 确定级别: L0 / L1 / L2 / L3                                        │       │
-│   └───────────────────────────────────────────────────────────────────────────┘       │
-│      │                                                                                   │
-│      ▼                                                                                   │
-│   ┌───────────────────────────────────────────────────────────────────────────┐       │
-│   │ ◆ DECISION LAYER (决策层)                                               │       │
-│   ├───────────────────────────────────────────────────────────────────────────┤       │
-│   │ IDEA → DISCOVERY → REQUIREMENT_LOCK → ARCH_REVIEW → TASK_DECOMPOSITION → PLAN_CONFIRM │
-│   │ [L1⚪   [L1⚪  [L1🔴  [L2🔴   [L1✅  [L1✅  │       │
-│   │  L0✅   L2🔴   L2🔴   L3🔴   L2✅  L2✅  │       │
-│   │         L3🔴   L3🔴                 L3✅  L3✅  │       │
-│   │                                                                         │       │
-│   │ L0 路径: IDEA → (跳过全部) → IMPLEMENTATION                             │       │
-│   │ L1 快速: IDEA → REQUIREMENT_LOCK → TASK_DECOMPOSITION → PLAN_CONFIRM → IMPLEMENTATION → SHIP_REVIEW │
-│   │ 加载: 03a-discovery-arch.md, 03b-task-decomposition.md                │       │
-│   │ - DISCOVERY: Superpowers brainstorming → 需求文档                        │       │
-│   │ - REQUIREMENT_LOCK: 用户必须确认 🔴                                 │       │
-│   │ - ARCH_REVIEW: L2→2维度 / L3→5维度审议 → ADR                         │       │
-│   │ - TASK_DECOMPOSITION: writing-plans → 任务清单                        │       │
-│   │ - PLAN_CONFIRM: 用户确认 Plan + Requirement Mapping 🔴            │       │
-│   └───────────────────────────────────────────────────────────────────────────┘       │
-│      │                                                                                   │
-│      ▼                                                                                   │
-│   ┌───────────────────────────────────────────────────────────────────────────┐       │
-│   │ ◆ CONTEXT LAYER (上下文层) → 桥接                                             │       │
-│   ├───────────────────────────────────────────────────────────────────────────┤       │
-│   │ CONTEXT_HYDRATION (强制) 🔴                                            │       │
-│   │ 加载: bridges/decision-to-context.md, bridges/context-hydration.md         │       │
-│   │ - 加载所有 Spec 契约 → 进入 Execution Layer 必须完成                     │       │
-│   └───────────────────────────────────────────────────────────────────────────┘       │
-│      │                                                                                   │
-│      ▼                                                                                   │
-│   ┌───────────────────────────────────────────────────────────────────────────┐       │
-│   │ ◆ EXECUTION LAYER (执行层)                                               │       │
-│   ├───────────────────────────────────────────────────────────────────────────┤       │
-│   │ IMPLEMENTATION → SELF_REVIEW → QA → SHIP_REVIEW → RETRO       │       │
-│   │ [L1✅      [L1✅    [L1✅    [L1✅    [L1✅  │       │
-│   │           L2✅      L2🟡    L2🟡    L2⚪  │       │
-│   │           L3✅      L3🔴    L3🔴    L3🔴  │       │
-│   │ 加载: 04a-execution-hydration.md, 04b-self-review.md             │       │
-│   │ - IMPLEMENTATION: TDD (决策冻结)                                   │       │
-│   │ - SELF_REVIEW: 对照契约自审                                         │       │
-│   │ - QA: GStack qa                                                       │       │
-│   │ - SHIP_REVIEW: 发布检查                                             │       │
-│   │ - RETRO: 复盘记录                                                   │       │
-│   └───────────────────────────────────────────────────────────────────────────┘       │
-│                                                                                         │
-│   图例: ✅ 必须   🟡 L2+必须   🔴 L3必须   ⚪ 可选   L0 仅 IDEA+IMPLEMENTATION+SHIP_REVIEW   │
-│                                                                                         │
-└─────────────────────────────────────────────────────────────────────────────────────────┘
+DECISION LAYER:  IDEA → DISCOVERY → REQ_LOCK → ARCH_REVIEW → TASK_DECOMP → PLAN_CONFIRM
+                      ↓ 产出：ADR + Plan + Spec
+CONTEXT LAYER:   Context Hydration（加载所有 Spec 契约）
+                      ↓
+EXECUTION LAYER: IMPLEMENTATION(TDD, 决策冻结) → SELF_REVIEW → QA → SHIP_REVIEW → RETRO
 ```
 
----
-
-## 状态转换验证
-
-> **SSOT**: 以下表格以 [state-machine.yaml](../../../governance/state-machine.yaml) 为唯一真相源。
-
-| 当前状态 | 目标状态 | 前置依赖 | L0 | L1 | L2/L3 |
-|---------|---------|---------|----|----|-------|
-| IDEA → | DISCOVERY | 无 | ⚪ | ✅ | ✅ |
-| IDEA → | IMPLEMENTATION | L0 极简确认 | ✅ | ⚪ | ⚪ |
-| DISCOVERY → | REQUIREMENT_LOCK | 需求澄清完成 | ⚪ | ✅ | ✅ |
-| REQUIREMENT_LOCK → | ARCH_REVIEW | 用户确认需求 | ⚪ | ⚪ | ✅ |
-| REQUIREMENT_LOCK → | TASK_DECOMPOSITION | L1 用户确认需求 | ⚪ | ✅ | ⚪ |
-| ARCH_REVIEW → | TASK_DECOMPOSITION | 架构审议通过 | ⚪ | ⚪ | ✅ |
-| TASK_DECOMPOSITION → | PLAN_CONFIRM | 任务拆解完成 | ⚪ | ✅ | ✅ |
-| PLAN_CONFIRM → | CONTEXT_HYDRATION | 用户确认 Plan | ⚪ | ⚪ | ✅ |
-| PLAN_CONFIRM → | IMPLEMENTATION | L1 用户确认 Plan | ⚪ | ✅ | ⚪ |
-| CONTEXT_HYDRATION → | IMPLEMENTATION | 所有契约已加载 | ⚪ | ⚪ | ✅ |
-| IMPLEMENTATION → | SELF_REVIEW | 实现完成 | ⚪ | ✅ | ✅ |
-| IMPLEMENTATION → | SHIP_REVIEW | L0/L1 实现完成 | ✅ | ✅ | ⚪ |
-| SELF_REVIEW → | QA | 自审通过 | ⚪ | ⚪ | ✅ |
-| SELF_REVIEW → | SHIP_REVIEW | 自审通过（L1/L2 跳过 QA） | ⚪ | ✅ | ✅ |
-| QA → | SHIP_REVIEW | QA 通过 | ⚪ | ⚪ | ✅ |
-| SHIP_REVIEW → | RETRO | 发布审查通过 | ⚪ | ⚪ | ✅ |
-| 任意 → | ABORTED | 错误或用户取消 | ✅ | ✅ | ✅ |
-| 任意 → | Decision Layer | 决策冻结变更 | 变更流程 | 变更流程 | 变更流程 |
+详细状态转换表见 `governance/state-machine.yaml`，Gate 细则见 `governance/gates.yaml`。
 
 ---
 
 ## 强制阻断规则
 
 <HARD-GATE>
-1. **REQUIREMENT_LOCK 需求确认**: 用户必须明确确认需求范围，否则不能进入 ARCH_REVIEW
-2. **TASK_DECOMPOSITION 任务确认**: 用户必须明确确认执行计划，否则不能进入 Context Hydration
-3. **Context Hydration**: 执行层编码前必须完成上下文注水，否则禁止进入 IMPLEMENTATION
-4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改，必须走 Decision Layer 变更流程
-5. **状态跳步**: 禁止从 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
-6. **配置缺失**: 如果项目配置缺失，必须提示用户补充，否则阻断
-7. **评审不通过**: 如果审议/QA发现阻断性问题，必须修复后才能继续
+1. **REQUIREMENT_LOCK**: 用户必须明确确认需求范围
+2. **TASK_DECOMPOSITION**: 用户必须明确确认执行计划
+3. **Context Hydration**: 编码前必须完成上下文注水
+4. **决策冻结**: IMPLEMENTATION 期间架构/需求/契约不得自行更改
+5. **状态跳步**: 禁止 IDEA → IMPLEMENTATION，L2/L3 必须走全流程
+6. **配置缺失**: 必须提示用户补充
+7. **评审不通过**: 阻断性问题必须修复后才能继续
 </HARD-GATE>
-
----
-
-## 项目配置 (快速参考)
-
-使用前必须配置以下项目参数：
-
-```yaml
-language: "Go 1.21+"                    # 开发语言
-test_command: "go test ./... -race"     # 测试命令
-coverage_command: "go test ./... -coverprofile=coverage.out"  # 覆盖率
-lint_command: "golangci-lint run"       # 代码检查
-security_scanner: "gosec ./..."         # 安全扫描
-concurrency_model: "goroutine"          # 并发模型
-```
-
-**详细配置请参考**: [01-intro.md](./modules/01-intro.md)
-
----
-
-## Skill 路由表（按需加载）
-
-### Superpowers Skills 路由（状态机映射）
-
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **DISCOVERY** | `brainstorming` | L2+ 任务 | 需求澄清、渐进式提问、方案探索、spec 文件 |
-| **ARCH_REVIEW** | `design` | L2+ 任务 | ADR 编写 (方案对比/设计决策存档) |
-| **TASK_DECOMPOSITION** | `writing-plans` | 所有任务 | 结构化 Plan (Spec→Task分解/5类模板/依赖图) |
-| **PLAN_CONFIRM** | `plan-verification` | 所有任务 | Plan 验证确认 (范围/拆解/风险/验收硬阻断) |
-| **SELF_REVIEW** | `subagent-driven-development` (task-reviewer) / `requesting-code-review` | SDD 流程用 task-reviewer 单次双 verdict；独立审查用 requesting-code-review | 代码规范审查 (v5.0: 对齐 SDD 6.0 单 reviewer 模式) |
-| **IMPLEMENTATION** | `test-driven-development` | 所有任务 | TDD 编码 |
-| **SHIP_REVIEW** | `verification-before-completion` | 所有任务 | 验证交付 |
-
-### GStack Skills 路由（激活条件）
-
-| 状态 | Skill | 触发条件 | 用途 |
-|------|-------|---------|------|
-| **ARCH_REVIEW** | `gstack:design-review` | 涉及前端 UI/UX | 前端视觉审查 |
-| **ARCH_REVIEW** | `gstack:plan-eng-review` | L2+ 任务 | 工程可行性审查 |
-| **ARCH_REVIEW** | `gstack:plan-devex-review` | L2+ 任务 | 开发者体验审查 |
-| **QA** | `gstack:qa` | L3 任务 | QA 测试、功能验证 |
-| **QA** | `gstack:cso` | 检测到安全相关代码 | 安全扫描 |
-| **QA** | `gstack:benchmark` | L3 + 性能敏感任务 | 性能基准测试 |
-| **SELF_REVIEW** | `gstack:codex` | L3 任务 | 跨模型审查 |
-| **SHIP_REVIEW** | `gstack:ship` | 需要发布/部署 | 发布检查清单 |
-| **RETRO** | `gstack:retro` | L3 任务 | 工程复盘 |
-| **异常处理** | `gstack:investigate` | 调试/根因分析 | 根因调试 |
-
-> **激活规则**: GStack 技能不是默认加载，而是在对应状态满足触发条件时显式调用。AI 必须在进入对应状态时检查触发条件，满足则调用，不满足则跳过。
-
-### 三层架构路由
-
-| 层 | 职责 | 核心文件 | 激活的 Skills |
-|:---|:-----|:---------|:------------|
-| **Decision Layer** | 多角色审议、方案决策 | [architecture-review](../../../decision-layer/reviews/architecture-review.md) | `brainstorming`, `design`, `writing-plans`, `plan-verification`, `gstack:design-review`, `gstack:plan-eng-review`, `gstack:plan-devex-review` |
-| **Context Layer** | 上下文持久化、契约强制 | [project-spec](../../../context-layer/specs/project-spec.md), [context-hydration](../../../bridges/context-hydration.md) | `context-save`, `context-restore`, `learn` |
-| **Execution Layer** | 受约束实现、验证 | [implementation](../../../execution-layer/implementation.md) | `test-driven-development`, `requesting-code-review`, `verification-before-completion`, `gstack:qa`, `gstack:cso`, `gstack:benchmark`, `gstack:codex` |
-| **Bridges** | 层间传递 | [decision-to-context](../../../bridges/decision-to-context.md), [context-hydration](../../../bridges/context-hydration.md) | 无（纯协议层） |
-| **Governance** | 跨层规则强制 | [decision-freeze](../../../governance/decision-freeze.md) | `gstack:ship`, `gstack:retro`, `gstack:investigate`, `freeze`, `guard`, `careful` |
 
 ---
 
 ## 三层架构核心原则
 
-1. **思考与实现严格分离**: Decision Layer 负责决策，Execution Layer 负责执行，互不越界
-2. **所有决策必须有记录和理由**: 每个 ADR 记录方案、否决理由、风险、回滚策略
-3. **上下文契约是唯一真相来源**: Context Layer 的 spec 是执行的唯一依据
-4. **执行时不允许偏离契约**: Execution Layer 必须在约束范围内工作
-5. **变更必须走正式流程**: 冻结项变更需退回 Decision Layer 重新审议
+1. 思考与实现严格分离：Decision Layer 负责决策，Execution Layer 负责执行
+2. 所有决策必须有记录和理由
+3. 上下文契约是唯一真相来源
+4. 执行时不允许偏离契约
+5. 变更必须走正式流程
 
 ---
 
 ## 治理规则
 
-### 决策冻结
-一旦进入 IMPLEMENTATION 状态，以下内容被冻结：
-- 架构决策
-- 需求范围
-- API 契约
-- 领域边界
+**决策冻结**: 进入 IMPLEMENTATION 后架构决策/需求范围/API 契约/领域边界被冻结。变更须退回 Decision Layer。详见 [decision-freeze.md](../../../governance/decision-freeze.md)
 
-变更冻结项必须退回 Decision Layer 重新审议。
-
-**详细规则**: [decision-freeze.md](../../../governance/decision-freeze.md)
-
-### 上下文注水
-进入 Execution Layer 前必须加载：
-1. project-spec（项目约束）
-2. architecture-spec（架构约束）
-3. 当前 ADR 历史
-4. 活跃约束清单
-
-**详细协议**: [context-hydration.md](../../../bridges/context-hydration.md)
-
----
-
-## 异常处理
-
-当遇到以下情况时，参考 [07-handling.md](./modules/07-handling.md)：
-
-- 评审意见冲突 → 冲突仲裁机制
-- 需要回退流程 → 回滚机制
-- 方案需要变更 → 变更审批流程
-- 评审发现问题 → 异常处理流程
+**上下文注水**: 进入 Execution Layer 前加载 project-spec、architecture-spec、ADR 历史、活跃约束清单。详见 [context-hydration.md](../../../bridges/context-hydration.md)
 
 ---
 
 ## 模块入口（按阶段加载）
 
-- IDEA / Step 0： [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md)
-- DISCOVERY / ARCH_REVIEW： [03a-discovery-arch.md](./modules/03a-discovery-arch.md)
-- TASK_DECOMPOSITION / PLAN_CONFIRM： [03b-task-decomposition.md](./modules/03b-task-decomposition.md)
-- CONTEXT_HYDRATION / IMPLEMENTATION： [04a-execution-hydration.md](./modules/04a-execution-hydration.md)
-- SELF_REVIEW / QA / SHIP_REVIEW / RETRO： [04b-self-review.md](./modules/04b-self-review.md), [05-ship-review-retro.md](./modules/05-ship-review-retro.md)
-- 指令触发： [06-workflows.md](./modules/06-workflows.md)
-- 异常/变更： [07-handling.md](./modules/07-handling.md)
-
-加载规则：进入下一阶段后释放前序上下文，仅保留契约摘要。
+- IDEA / Step 0: [01-intro.md](./modules/01-intro.md), [02-complexity.md](./modules/02-complexity.md)
+- DISCOVERY / ARCH_REVIEW: [03a-discovery-arch.md](./modules/03a-discovery-arch.md)
+- TASK_DECOMPOSITION / PLAN_CONFIRM: [03b-task-decomposition.md](./modules/03b-task-decomposition.md)
+- CONTEXT_HYDRATION / IMPLEMENTATION: [04a-execution-hydration.md](./modules/04a-execution-hydration.md)
+- SELF_REVIEW / QA / SHIP_REVIEW / RETRO: [04b-self-review.md](./modules/04b-self-review.md), [05-ship-review-retro.md](./modules/05-ship-review-retro.md)
+- 指令触发: [06-workflows.md](./modules/06-workflows.md)
+- 异常/变更: [07-handling.md](./modules/07-handling.md)
 
 ---
 
 ## 路由与职责（摘要）
 
-- 执行路由机器真相源：`schema/skill-routes.yaml`
-- 路由可读说明：`docs/skills-reference.md`
-- 路由解析与体检：`scripts/resolve-skill-routes.sh` / `scripts/check-skill-routes.sh`
-- 三层职责与治理说明：`docs/architecture.md`
+- 路由真相源: `schema/skill-routes.yaml`
+- 路由解析: `scripts/resolve-skill-routes.sh` / `scripts/check-skill-routes.sh`
 
-最小路由锚点（用于保持入口可读性与路由体检价值）：
-- Decision：`brainstorming`, `design`, `writing-plans`, `plan-verification`
-- Execution：`test-driven-development`, `requesting-code-review`, `verification-before-completion`, `systematic-debugging`
-- GStack：`gstack:plan-eng-review`, `gstack:qa`, `gstack:ship`, `gstack:investigate`
-
-路由语义锚点：
-- `brainstorming` → 需求澄清与候选方向收敛
-- `design` → 方案对比、权衡分析与 ADR 记录
-- `writing-plans` → 执行拆解与任务编排，不承载设计决策
-- `plan-verification` → 计划确认、Requirement Mapping 检查与风险确认
-- `systematic-debugging` → 原生 debug 主流程，先锁定根因再修复
-- `gstack:investigate` → debug 治理增强，记录 RCA 证据、冻结影响和验证摘要
-
----
-
-## 文档索引
-
-### 文档维护规则（单一真相源）
-
-**原则**: `SKILL.md` 是本技能的唯一真相源。其他文档通过以下方式保持同步：
-
-| 文档 | 同步方式 | 说明 |
-|------|---------|------|
-| [README.md](../../../README.md) | 链接引用 | 仅保留项目概述和指向 SKILL.md 的链接 |
-| [docs/getting-started.md](../../../docs/getting-started.md) | 链接引用 | 快速开始指引，详细内容指向 SKILL.md |
-| [docs/architecture.md](../../../docs/architecture.md) | 链接引用 | 架构概览，详细设计指向各模块文件 |
-| [docs/skills-reference.md](../../../docs/skills-reference.md) | 自动生成 | 由 SKILL.md 提取生成，禁止手动编辑 |
-| [skills/README.md](../../../skills/README.md) | 链接引用 | 技能目录索引，指向各技能 SKILL.md |
-
-**修改流程**:
-1. 所有修改首先在 `SKILL.md` 完成
-2. 其他文档如需更新，仅更新链接或重新自动生成
-3. 禁止在其他文档中重复定义与 SKILL.md 冲突的内容
+路由锚点:
+- Decision: `brainstorming`, `design`, `writing-plans`, `plan-verification`
+- Execution: `test-driven-development`, `requesting-code-review`, `verification-before-completion`
+- Quality/Ship: `gstack:qa`, `gstack:ship`
 
 ---
 
 ## 文档与校验索引
 
-- 项目总览： [README.md](../../../README.md)
-- 快速上手： [docs/getting-started.md](../../../docs/getting-started.md)
-- 架构说明： [docs/architecture.md](../../../docs/architecture.md)
-- 技能索引： [docs/skills-reference.md](../../../docs/skills-reference.md)
+- 项目总览: [README.md](../../../README.md)
+- 快速上手: [docs/getting-started.md](../../../docs/getting-started.md)
+- 架构说明: [docs/architecture.md](../../../docs/architecture.md)
+- 技能索引: [docs/skills-reference.md](../../../docs/skills-reference.md)
 
 ---
 
@@ -459,14 +157,13 @@ concurrency_model: "goroutine"          # 并发模型
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
-| **v5.0.0** | **2026-06-26** | **Superpowers 6.0 对齐**: SDD 单 task-reviewer 双 verdict 模式；writing-plans 增加 Global Constraints + Interfaces；路由表更新 |
-| **v4.1.1** | **2026-05-29** | 渐进式加载优化与治理收敛版；SKILL.md 合并完整流程文档，修复断链引用 |
-| **v4.1** | **2026-05-16** | 渐进式加载优化：SKILL.md 精简 32%，框架文件按阶段加载 |
-| **v4.0** | **2026-05-16** | **AI Engineering Governance System**: 从技能分类升级为职责分层系统；新增状态机、决策冻结、上下文注水 |
+| **v6.0.0** | **2026-07-26** | 按级别区分审查策略: L1/L2 inline checklist; L3 才跨模型审查; SDD 仅并行任务; 路由表对齐 |
+| **v4.1.1** | **2026-05-29** | 渐进式加载优化与治理收敛版 |
+| **v4.1** | **2026-05-16** | SKILL.md 精简 32%，框架文件按阶段加载 |
+| **v4.0** | **2026-05-16** | AI Engineering Governance System: 职责分层系统 |
 
 ---
 
-版本: v5.0.0
-最后更新: 2026-06-26
+版本: v6.0.0 | 最后更新: 2026-07-26
 
 **详细文档请参考各模块文件。**

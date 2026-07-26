@@ -1,7 +1,7 @@
 # 04b — Execution Layer: SELF_REVIEW → QA
 
 > **Context Load**: 加载 `execution-layer/review.md`, `execution-layer/validation.md`（SELF_REVIEW 阶段）。
-> **v5.0 更新**: 对齐 Superpowers 6.0 SDD 审查机制——单 task-reviewer 双 verdict 模式。
+> **v6.0 更新**: 按级别区分审查策略——L1/L2 inline checklist；L3 才跨模型审查；SDD 仅用于并行任务执行。
 
 ## SELF_REVIEW 状态
 
@@ -21,23 +21,26 @@ L1 任务不要求进入正式 SELF_REVIEW 状态（见 [02-complexity.md](./02-
 
 在 Execution Layer 内进行自审，确保代码质量、测试策略完善、边界条件覆盖充分，并符合 Governance 层的安全规则。
 
-### SDD Task Review（v5.0 单 reviewer 模式）
+### 按级别审查策略
 
-当使用 `subagent-driven-development` 执行 plan 时，每个 task 完成后使用**单 task-reviewer** 同时返回两个 verdict：
+| 级别 | 审查方式 | 技能 |
+|------|---------|------|
+| L1 | inline checklist（30s） | 无 subagent |
+| L2 | inline checklist + requesting-code-review（可选） | 可选 |
+| L3 | inline + gstack:codex 跨模型 | 仅 L3 |
 
-| Verdict | 说明 |
-|---------|------|
-| **Spec Compliance** | 实现是否满足 task brief 中的需求 |
-| **Code Quality** | 代码质量、测试覆盖、架构合规 |
+### SDD 审查（仅限并行任务执行）
 
-**关键约束**（来自 Superpowers 6.0）：
-- Reviewer 只读一次 diff，同时给出两个结论
-- Controller **不能**压制发现或预评级严重程度
-- 每个结论必须用**文件 + 行号**支撑
-- Reviewer 是只读的，不修改工作树
-- 每次 dispatch 必须**显式声明模型**
+`subagent-driven-development` 的 task-reviewer 仅用于 `dispatching-parallel-agents` 场景（并行任务执行），不作为 plan/spec 的默认审查方式。
 
-> 详细审查模板见 `skills/superpowers/subagent-driven-development/task-reviewer-prompt.md`
+### L1/L2 inline checklist
+
+执行 SELF_REVIEW 时，先完成以下快速检查项（30 秒）：
+
+- [ ] **占位符检查**: 代码中无 TODO/FIXME/XXX 等未处理占位符
+- [ ] **一致性检查**: 实现与需求和计划一致，无范围蔓延
+- [ ] **范围检查**: 未引入超出 task 范围的非预期修改
+- [ ] **歧义检查**: 变量命名、函数签名、注释无歧义或误导
 
 ### 代码规则审查
 

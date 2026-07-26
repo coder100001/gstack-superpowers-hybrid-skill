@@ -59,13 +59,16 @@ routes:
         manual: true
 
     SELF_REVIEW:
-      - name: subagent-driven-development
-        trigger: "SDD flow: task-reviewer single-pass dual verdict"
-        purpose: "SDD task review (spec compliance + code quality in one pass)"
-        note: "v5.0: 对齐 Superpowers 6.0 单 task-reviewer 模式"
       - name: requesting-code-review
-        trigger: "non-SDD review, L2+ tasks"
-        purpose: "独立代码规范审查 (非 SDD 流程)"
+        trigger: "L2+ tasks (optional)"
+        purpose: "代码审查"
+      - name: gstack:codex
+        trigger: "L3 tasks"
+        purpose: "跨模型审查"
+      - name: subagent-driven-development
+        trigger: "parallel task execution only"
+        purpose: "SDD task review - only used when dispatching-parallel-agents"
+        manual: true
       - name: receiving-code-review
         trigger: "review feedback received"
         purpose: "technical rigor before implementing suggestions"
