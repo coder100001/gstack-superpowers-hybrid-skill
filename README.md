@@ -1,4 +1,4 @@
-# AI Engineering Governance System
+# AI Engineering Governance System · v5.0
 
 让 AI 编程助手（Claude Code、Codex 等）按规范流程工作，而不是直接写代码。
 
