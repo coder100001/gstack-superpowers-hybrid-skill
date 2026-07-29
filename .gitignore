@@ -52,3 +52,4 @@ artifacts/hydration-state.md
 # Generated route health report
 docs/route-health.md
 .gstack/
+gstack-skills/bin/gstack-global-discover
