@@ -128,7 +128,7 @@ hydration:
 
 ## 7. 架构演进规则
 
-> **复杂度分级**: L1/L2/L3 的判定标准以 [02-complexity.md](../../skills/hybrid/gs-hybrid-v3/modules/02-complexity.md) 为唯一真相源。本节仅描述架构演进流程。
+> **复杂度分级**: L1/L2/L3 的判定标准以 [01-define.md](../../skills/hybrid/gs-hybrid-v3/modules/01-define.md) 为唯一真相源。本节仅描述架构演进流程。
 
 ### 演进流程
 - L1: 直接执行，事后记录

@@ -106,19 +106,15 @@
 
 | 模块 | 内容 | 加载时机 |
 |------|------|---------|
-| 01-intro.md | 三层架构介绍、项目配置 | 初始 |
-| 02-complexity.md | 复杂度分级 (L0/L1/L2/L3) | Step 0 |
-| 03a-discovery-arch.md | DISCOVERY（候选方向） + REQUIREMENT_LOCK + ARCH_REVIEW（方案对比） | Decision Layer |
-| 03b-task-decomposition.md | TASK_DECOMPOSITION + PLAN_CONFIRM | Decision Layer |
-| 04a-execution-hydration.md | CONTEXT_HYDRATION + IMPLEMENTATION 规范 | Context -> Execution |
-| 04b-self-review.md | SELF_REVIEW + QA | Execution Layer |
-| 05-ship-review-retro.md | SHIP_REVIEW + RETRO | Execution -> Governance |
-| 06-workflows.md | 专用流程指令 | 指令触发 |
-| 07-handling.md | 异常处理和状态回滚 | 异常发生时 |
+| 01-define.md | 复杂度评估、需求澄清、确认（对应 DEFINE） | DEFINE 态 |
+| 02-plan.md | 方案设计、任务拆解、确认（对应 PLAN） | PLAN 态 |
+| 03-implement.md | 上下文注水、TDD 实现、决策冻结（对应 IMPLEMENT） | IMPLEMENT 态 |
+| 04-validate.md | 自审、QA、异常恢复（对应 VALIDATE） | VALIDATE 态 |
+| 05-ship.md | 发布检查、复盘（对应 SHIP） | SHIP 态 |
 
 #### 主流程（由状态机真相源定义）
 
-`IDEA -> DISCOVERY -> REQUIREMENT_LOCK -> ARCH_REVIEW -> TASK_DECOMPOSITION -> PLAN_CONFIRM -> CONTEXT_HYDRATION -> IMPLEMENTATION -> SELF_REVIEW -> QA -> SHIP_REVIEW -> RETRO`
+`DEFINE -> PLAN -> IMPLEMENT -> VALIDATE -> SHIP`（5 态工作流 v7，governance 层保留 13 状态定义）
 
 #### Gate 检查点（7个）
 

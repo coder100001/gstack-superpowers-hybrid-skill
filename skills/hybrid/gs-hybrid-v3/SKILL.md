@@ -22,7 +22,7 @@ DEFINE → PLAN → IMPLEMENT → VALIDATE → SHIP
 | L2 | DEFINE → PLAN → IMPLEMENT → VALIDATE → SHIP | 新功能、重构 |
 | L3 | 全流程 + 多轮 VALIDATE | 架构变更、跨模块影响 |
 
-复杂度评估见 [02-complexity.md](./modules/02-complexity.md)。
+复杂度评估见 [01-define.md](./modules/01-define.md)。
 
 ### 跃迁条件（硬阻断）
 
