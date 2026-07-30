@@ -107,7 +107,7 @@ hydration:
 
 ## 4. 加载验证（强制引述）
 
-> **单一真相源**: 引述规则的定义以本节为准。@mod(implement) 中的引述规则引用本协议。
+> **单一真相源**: 引述规则的定义以本节为准。[03-implement.md](../skills/hybrid/gs-hybrid-v3/modules/03-implement.md) 中的引述规则引用本协议。
 
 每加载一项后，AI **必须引述具体约束条款作为证明**，而非仅声明"已加载"：
 
@@ -266,4 +266,4 @@ AI: 我直接开始编码...
 
 ---
 
-**关联文件**: [decision-to-context](decision-to-context.md) · [decision-freeze](../governance/decision-freeze.md) · @mod(implement)
+**关联文件**: [decision-to-context](decision-to-context.md) · [decision-freeze](../governance/decision-freeze.md) · [03-implement.md](../skills/hybrid/gs-hybrid-v3/modules/03-implement.md)

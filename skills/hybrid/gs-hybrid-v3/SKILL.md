@@ -22,7 +22,7 @@ DEFINE → PLAN → IMPLEMENT → VALIDATE → SHIP
 | L2 | DEFINE → PLAN → IMPLEMENT → VALIDATE → SHIP | 新功能、重构 |
 | L3 | 全流程 + 多轮 VALIDATE | 架构变更、跨模块影响 |
 
-复杂度评估见 @mod(define)。
+复杂度评估见 [01-define.md](modules/01-define.md)。
 
 ### 跃迁条件（硬阻断）
 
@@ -57,11 +57,11 @@ DEFINE → PLAN → IMPLEMENT → VALIDATE → SHIP
 
 | 态 | 模块 |
 |----|------|
-| DEFINE | @mod(define) |
-| PLAN | @mod(plan) |
-| IMPLEMENT | @mod(implement) |
-| VALIDATE | @mod(validate) |
-| SHIP | @mod(ship) |
+| DEFINE | [01-define.md](modules/01-define.md) |
+| PLAN | [02-plan.md](modules/02-plan.md) |
+| IMPLEMENT | [03-implement.md](modules/03-implement.md) |
+| VALIDATE | [04-validate.md](modules/04-validate.md) |
+| SHIP | [05-ship.md](modules/05-ship.md) |
 
 ### 路由
 

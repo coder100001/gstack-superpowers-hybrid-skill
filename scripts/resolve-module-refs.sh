@@ -49,6 +49,7 @@ pattern = re.compile(r'@mod\((\w+)\)')
 errors = 0
 warnings = 0
 resolved_count = 0
+changed_files = []
 
 # Scan all .md files in the project (exclude .git, .omo, .codegraph, .history)
 for root, dirs, files in os.walk(project_root):
@@ -91,6 +92,7 @@ for root, dirs, files in os.walk(project_root):
             if changed:
                 with open(path, 'w', encoding='utf-8') as fh:
                     fh.write(new_content)
+                changed_files.append(rel)
         else:
             # Check mode or default
             for mid in set(matches):
@@ -104,14 +106,34 @@ for root, dirs, files in os.walk(project_root):
                         print(f"  ✗ {rel}: @mod({mid}) → {filename} — file not found on disk")
                         errors += 1
 
+# R1: Reverse check — scan modules/ for files not registered in registry
+orphan_warnings = 0
+if mode != "--resolve":
+    mod_abs = os.path.join(project_root, modules_dir)
+    if os.path.isdir(mod_abs):
+        disk_files = set(f for f in os.listdir(mod_abs) if f.endswith('.md'))
+        registered_files = set(id_to_file.values())
+        orphans = disk_files - registered_files
+        for orphan in sorted(orphans):
+            print(f"  ⚠ {modules_dir}/{orphan} — file exists but not registered in module-registry.yaml")
+            orphan_warnings += 1
+        if not orphans:
+            pass
+
 print(f"\n{'='*50}")
 if mode == "--resolve":
     print(f"Resolved {resolved_count} references, {warnings} warnings")
+    if changed_files:
+        for f in changed_files:
+            print(f"  ✎ {f}")
 else:
-    print(f"Checked: {errors} errors, {warnings} warnings")
+    print(f"Checked: {errors} errors, {orphan_warnings} orphan files")
     if errors > 0:
-        print(f"✗ Run ./scripts/resolve-module-refs.sh --resolve to fix")
+        print(f"✗ Run ./scripts/resolve-module-refs.sh --resolve to fix broken @mod() refs")
         sys.exit(1)
+    if orphan_warnings > 0:
+        print(f"⚠  {orphan_warnings} unregistered module file(s). Check schema/module-registry.yaml")
+        sys.exit(2)  # distinct exit code: 1 = broken refs, 2 = orphan files
     else:
         print("✓ All module references valid")
 PYEOF
