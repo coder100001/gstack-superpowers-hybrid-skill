@@ -53,3 +53,5 @@ artifacts/hydration-state.md
 docs/route-health.md
 .gstack/
 gstack-skills/bin/gstack-global-discover
+.omo/
+.codegraph/
