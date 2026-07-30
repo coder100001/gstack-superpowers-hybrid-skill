@@ -1,45 +1,24 @@
 # Module Load Map
 # Machine-readable mapping from state to module + framework files.
+# Module filenames are resolved via schema/module-registry.yaml.
 # SSOT: schema/module-load-map.yaml
-# SKILL.md references this file — do not maintain duplicate tables.
 
-version: "1.0"
-updated: "2026-07-26"
+version: "2.0"
+updated: "2026-07-29"
 
 load_map:
-  - state: "IDEA"
-    module: ["01-intro.md", "02-complexity.md"]
+  - state: "DEFINE"
+    module: ["define"]
     framework_files: []
-  - state: "DISCOVERY"
-    module: ["03a-discovery-arch.md"]
-    framework_files: ["decision-layer/reviews/product-review.md", "decision-layer/reviews/risk-review.md"]
-  - state: "ARCH_REVIEW"
-    module: ["03a-discovery-arch.md"]
-    framework_files: ["decision-layer/reviews/architecture-review.md", "decision-layer/reviews/tradeoff-review.md"]
-  - state: "TASK_DECOMPOSITION"
-    module: ["03b-task-decomposition.md"]
+  - state: "PLAN"
+    module: ["plan"]
     framework_files: []
-  - state: "CONTEXT_HYDRATION"
-    module: ["04a-execution-hydration.md"]
-    framework_files: ["bridges/context-hydration.md", "bridges/decision-to-context.md"]
-  - state: "IMPLEMENTATION"
-    module: ["04a-execution-hydration.md"]
-    framework_files: ["execution-layer/implementation.md", "execution-layer/testing.md", "governance/decision-freeze.md"]
-  - state: "SELF_REVIEW"
-    module: ["04b-self-review.md"]
-    framework_files: ["execution-layer/review.md", "execution-layer/validation.md"]
-  - state: "QA"
-    module: ["04b-self-review.md"]
+  - state: "IMPLEMENT"
+    module: ["implement"]
+    framework_files: ["bridges/context-hydration.md", "governance/decision-freeze.md"]
+  - state: "VALIDATE"
+    module: ["validate"]
     framework_files: []
-  - state: "SHIP_REVIEW"
-    module: ["04b-self-review.md", "05-ship-review-retro.md"]
-    framework_files: ["governance/decision-freeze.md"]
-  - state: "RETRO"
-    module: ["04b-self-review.md", "05-ship-review-retro.md"]
-    framework_files: ["governance/decision-freeze.md"]
-  - state: "TRIGGER"
-    module: ["06-workflows.md"]
+  - state: "SHIP"
+    module: ["ship"]
     framework_files: []
-  - state: "EXCEPTION"
-    module: ["07-handling.md"]
-    framework_files: ["governance/decision-freeze.md"]

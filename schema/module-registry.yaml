@@ -1,0 +1,14 @@
+# Module Registry
+# Single source of truth for module filenames. All .md files reference modules
+# via @mod(id) pattern. This file maps IDs to filenames.
+# Update this file when adding/renaming/deleting modules.
+
+version: "1.0"
+updated: "2026-07-29"
+
+modules:
+  define: "01-define.md"
+  plan: "02-plan.md"
+  implement: "03-implement.md"
+  validate: "04-validate.md"
+  ship: "05-ship.md"

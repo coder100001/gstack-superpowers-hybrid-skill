@@ -142,7 +142,7 @@ hydration:
 
 ## 7. 协作约束
 
-> **复杂度分级**: L1/L2/L3 的判定标准以 [01-define.md](../../skills/hybrid/gs-hybrid-v3/modules/01-define.md) 为唯一真相源。本节仅描述协作流程要求。
+> **复杂度分级**: L1/L2/L3 的判定标准以 @mod(define) 为唯一真相源。本节仅描述协作流程要求。
 
 ### 版本控制
 - 所有变更必须有清晰的 commit message
